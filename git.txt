@@ -1,0 +1,30 @@
+// Iniciar un nuevo repositorio
+// Crear la carpeta oculta .git
+	git init
+// Ver que archivos no han sido registrados
+	git status
+// Agregar todos los archivos para que esté pendiente de los cambios
+	git add .
+// Crear commit (fotografía del proyecto en ese momento)
+	git commit -m "primer commit"
+// Muestra la lista de commit del mas reciente al más antigüo
+	git log
+
+// Crea una nueva rama
+	git branch nombreRama
+// Nos muestra en que rama estamos
+	git branch
+// Nos movemos a otra rama
+	git checkout nombreRama
+
+
+//subir por primera vez el repositorio
+	git remote add origin https://github.com/RubenRock/sanmar.git
+//subir en la rama "master"
+	git push -u origin master
+
+//subir
+	git push
+
+//descargar
+	git pull
