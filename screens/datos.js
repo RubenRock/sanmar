@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button} from 'react-native'
 
 const productos = [
     {id:'1', producto:'azucar',precio:'20.5'},
@@ -16,15 +16,25 @@ const empaques = [
   {id:'5', id_producto:'3',empaque:'ltr',precio:'17'},
 ]
 
+const productoFilter = (text) =>  productos.filter((x)=>String(x.producto).includes(text))
+  
+
+
 function datosScreen() {
     const [empaqueFiltrado,setempaqueFiltrado]= useState([])
+    const [productoFiltrado,setproductoFiltrado] = useState(productos)
+    
     
     return (
       <View >
-          <TextInput placeholder='Producto'/>
+          <TextInput 
+            placeholder='Producto' 
+            onChangeText={(t) => setproductoFiltrado(productoFilter(t))}
+            style={styles.input}
+          />
           <FlatList 
             style={styles.lists}
-            data={productos}
+            data={productoFiltrado}
             renderItem={({item}) => <TouchableOpacity
                 onPress={ () => setempaqueFiltrado(empaques.filter(data => data.id_producto ==item.id ))}
               >                
@@ -35,9 +45,11 @@ function datosScreen() {
             style={styles.lists}
             data={empaqueFiltrado}
             renderItem={({item}) => <TouchableOpacity
-                  onPress={ () => console.log(item.precio)}
+                  //onPress={ () => console.log(item.precio)}
+                  style={{flexDirection:'row'}}
                 >                
-                <Text >{item.id} - {item.empaque}</Text>
+                <Text >{item.empaque} - {item.precio}</Text>
+                <Button title="pushame" onPress={ () => console.log(item.precio)}></Button>
               </TouchableOpacity>}
           />             
       </View>
@@ -54,5 +66,10 @@ const styles = StyleSheet.create({
     height:200,
     borderWidth:2,
     borderColor:'black',
+    
+  },
+  input:{
+    padding:5,
+    margin:5,
   }
 })
