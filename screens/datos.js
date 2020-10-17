@@ -23,7 +23,7 @@ const productoFilter = (text) =>  productos.filter((x)=>String(x.producto).inclu
 function datosScreen() {
     const [empaqueFiltrado,setempaqueFiltrado]= useState([])
     const [productoFiltrado,setproductoFiltrado] = useState(productos)
-    
+    const [cantidad,setCantidad] = useState('1')    
     
     return (
       <View >
@@ -31,6 +31,12 @@ function datosScreen() {
             placeholder='Producto' 
             onChangeText={(t) => setproductoFiltrado(productoFilter(t))}
             style={styles.input}
+          />
+          <TextInput 
+            style={styles.input}
+            placeholder='Cantidad'                        
+            onChangeText={(x) => setCantidad(x)}
+            value={cantidad} 
           />
           <FlatList 
             style={styles.lists}
@@ -44,13 +50,15 @@ function datosScreen() {
           <FlatList 
             style={styles.lists}
             data={empaqueFiltrado}
-            renderItem={({item}) => <TouchableOpacity
+            renderItem={({item}) => <View
                   //onPress={ () => console.log(item.precio)}
-                  style={{flexDirection:'row'}}
+                  style={{flexDirection:'row', justifyContent:'space-between'}}
                 >                
-                <Text >{item.empaque} - {item.precio}</Text>
-                <Button title="pushame" onPress={ () => console.log(item.precio)}></Button>
-              </TouchableOpacity>}
+                <Text  >{item.empaque} - {item.precio}</Text>
+                <View >
+                  <Button title="pushame" onPress={ () => console.log(item.precio,'  ',cantidad)}></Button>
+                </View>
+              </View>}
           />             
       </View>
     )
