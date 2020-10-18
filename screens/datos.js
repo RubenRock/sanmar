@@ -16,33 +16,88 @@ const empaques = [
   {id:'5', id_producto:'3',empaque:'ltr',precio:'17'},
 ]
 
+
+
 const productoFilter = (text) =>  productos.filter((x)=>String(x.producto).includes(text))
+
+
   
 
 
 function datosScreen() {
-    const [empaqueFiltrado,setempaqueFiltrado]= useState([])
+    const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
     const [productoFiltrado,setproductoFiltrado] = useState(productos)
     const [cantidad,setCantidad] = useState('1')    
+    const [productoSeleccionado, setproductoSeleccionado] = useState('')    
+    const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
+    const [txtProducto, settxtProducto] = useState([])  //necesario para limpiar la caja de producto
+    
+    
+    
+    //necesitan los hooks por eso tienen que estar dentro de esta funcion
+    const changeCantidad = (cant) => {
+      setCantidad(cant)
+    }
+
+    const handleTxtProducto = (texto) => {
+      setproductoFiltrado(productoFilter(texto))
+      settxtProducto(texto)
+    }
+
+    const handleListaProductos = (item)=>{  
+      setempaqueFiltrado(empaques.filter(data => data.id_producto ==item.id )) //filtra la lista de empaques     
+      setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
+    }
+
+    console.log(cantidad)
+    console.log(listProductos)
+
+    const handleListaEmpaque = (item) =>{
+      
+      setlistProductos([{
+        producto:productoSeleccionado,
+        empaque:item.empaque,
+        precio:item.precio, 
+        cantidad:cantidad},
+        ...listProductos]
+      )
+
+      
+
+      //limpiar ventana
+      /* setproductoFiltrado('')
+      setCantidad('1')
+      setproductoFiltrado(productos)
+      setempaqueFiltrado([])
+      settxtProducto('')
+       */
+    }
+    
     
     return (
       <View >
           <TextInput 
             placeholder='Producto' 
-            onChangeText={(t) => setproductoFiltrado(productoFilter(t))}
+            onChangeText={(texto) => handleTxtProducto(texto) }
             style={styles.input}
+            value={txtProducto}
+            
           />
           <TextInput 
             style={styles.input}
             placeholder='Cantidad'                        
-            onChangeText={(x) => setCantidad(x)}
+            onChangeText={(x) => changeCantidad(x)}
+            onBlur={() => changeCantidad(cantidad)}
+            //console.log(cantidad)}
             value={cantidad} 
+            
           />
+          <Text> input : {cantidad}</Text>
           <FlatList 
             style={styles.lists}
             data={productoFiltrado}
             renderItem={({item}) => <TouchableOpacity
-                onPress={ () => setempaqueFiltrado(empaques.filter(data => data.id_producto ==item.id ))}
+                onPress={ () => handleListaProductos(item)}
               >                
                 <Text >{item.id} - {item.producto}</Text>
             </TouchableOpacity>}
@@ -50,16 +105,14 @@ function datosScreen() {
           <FlatList 
             style={styles.lists}
             data={empaqueFiltrado}
-            renderItem={({item}) => <View
-                  //onPress={ () => console.log(item.precio)}
-                  style={{flexDirection:'row', justifyContent:'space-between'}}
-                >                
-                <Text  >{item.empaque} - {item.precio}</Text>
-                <View >
-                  <Button title="pushame" onPress={ () => console.log(item.precio,'  ',cantidad)}></Button>
+            renderItem={({item}) => 
+                <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
+                  <Text  >{item.empaque} - {item.precio}</Text>             
+                  <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
                 </View>
-              </View>}
-          />             
+                }
+          />
+           <Button title="mostrar" onPress={ () => console.log(txtProducto)} />               
       </View>
     )
   }
