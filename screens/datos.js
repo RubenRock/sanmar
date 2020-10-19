@@ -24,7 +24,7 @@ const productoFilter = (text) =>  productos.filter((x)=>String(x.producto).inclu
   
 
 
-function datosScreen() {
+function datosScreen({navigation}) {
     const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
     const [productoFiltrado,setproductoFiltrado] = useState(productos)
     const [cantidad,setCantidad] = useState('1')    
@@ -35,8 +35,9 @@ function datosScreen() {
     
     
     //necesitan los hooks por eso tienen que estar dentro de esta funcion
-    const changeCantidad = (cant) => {
-      setCantidad(cant)
+    const changeCantidad = (cant) => {      
+        setCantidad(cant)
+        setempaqueFiltrado([]) //necesito actualizar el estado de la variable actualizar cada vez que la modifico     
     }
 
     const handleTxtProducto = (texto) => {
@@ -49,28 +50,26 @@ function datosScreen() {
       setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
     }
 
-    console.log(cantidad)
-    console.log(listProductos)
-
     const handleListaEmpaque = (item) =>{
       
       setlistProductos([{
+        id: String(Math.random()),
         producto:productoSeleccionado,
         empaque:item.empaque,
         precio:item.precio, 
         cantidad:cantidad},
         ...listProductos]
-      )
-
-      
+      )     
 
       //limpiar ventana
-      /* setproductoFiltrado('')
+      setproductoFiltrado('')
       setCantidad('1')
       setproductoFiltrado(productos)
       setempaqueFiltrado([])
       settxtProducto('')
-       */
+
+      console.log(listProductos)
+      
     }
     
     
@@ -86,13 +85,10 @@ function datosScreen() {
           <TextInput 
             style={styles.input}
             placeholder='Cantidad'                        
-            onChangeText={(x) => changeCantidad(x)}
-            onBlur={() => changeCantidad(cantidad)}
-            //console.log(cantidad)}
+            onChangeText={(x) => changeCantidad(x)}                        
             value={cantidad} 
             
-          />
-          <Text> input : {cantidad}</Text>
+          />          
           <FlatList 
             style={styles.lists}
             data={productoFiltrado}
@@ -109,11 +105,13 @@ function datosScreen() {
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
                   <Text  >{item.empaque} - {item.precio}</Text>             
                   <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
+                  {/* <Button title="Agregar" onPress={ () =>  setlistProductos([{cantidad:cantidad}])} /> */}
                 </View>
                 }
           />
-           <Button title="mostrar" onPress={ () => console.log(txtProducto)} />               
+          <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos})} />    
       </View>
+                               
     )
   }
 

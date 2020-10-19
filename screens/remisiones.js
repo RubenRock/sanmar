@@ -1,7 +1,13 @@
 import React,{useState, useEffect} from 'react'
-import {View, Text, Button, TextInput, StyleSheet,Picker} from 'react-native'
+import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList} from 'react-native'
 
-function Remisiones({navigation}){
+function Remisiones({navigation, route}){
+    const {dataTable} = route.params
+
+    console.log(dataTable)
+
+    
+
     const [selectedValue, setSelectedValue] = useState('CONTADO')
     const [currentDate, setCurrentDate] = useState('perame');
 
@@ -20,7 +26,7 @@ function Remisiones({navigation}){
 
     return (
       <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'white'}}>          
-      <View style={styles.header}>
+      <View style={styles.header}>        
         <TextInput placeholder="Nombre del cliente" style={styles.input}/>  
         <TextInput placeholder="Domicilio" style={styles.input}/>  
         <Picker           
@@ -35,6 +41,17 @@ function Remisiones({navigation}){
         <Text>Fecha: {currentDate}</Text>
         <Button title='Productos' onPress={() => navigation.navigate('Datos')} />
       </View>
+      <FlatList 
+            style={styles.header}
+            data={dataTable}
+            //keyExtractor={}
+            renderItem={({item}) => 
+                <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
+                  <Text  >{item.cantidad} - {item.empaque} {item.producto}  ${item.precio}</Text>             
+                  <Button title="Accion 1" />                                               
+                </View>
+                }
+          />
         
       </View>
     );
@@ -44,6 +61,7 @@ function Remisiones({navigation}){
 
   const styles = StyleSheet.create({
     header:{
+      marginTop:20,
       backgroundColor:'#dfe6e9',
       // borderWidth:1,
       // borderColor:'#81ecec',
@@ -55,5 +73,15 @@ function Remisiones({navigation}){
     input:{
       borderBottomWidth:2,
       borderColor:'#eee',
+    },
+    lists:{
+      backgroundColor:'#dfe6e9',
+      borderRadius:10,
+      padding:5,
+      marginHorizontal:5,
+      marginTop:20,      
+      borderWidth:2,
+      borderColor:'black',
+      
     }
 })
