@@ -6,10 +6,10 @@ function Remisiones({navigation, route}){
 
     const [selectedValue, setSelectedValue] = useState('CONTADO')
     const [currentDate, setCurrentDate] = useState('Cargando..');
-    const [table, setTable] = useState([]);
+    const [counter, setCounter] = useState(1);    
 
     useEffect(() => {      
-      
+         
       var date = new Date().getDate(); //Current Date
       var month = new Date().getMonth() + 1; //Current Month
       var year = new Date().getFullYear(); //Current Year
@@ -20,17 +20,28 @@ function Remisiones({navigation, route}){
         date + '/' + month + '/' + year 
         + ' ' + hours + ':' + min + ':' + sec
       );
-    },[]) 
+           
+    },[counter]) 
 
    
     
-    let data= dataTable
+    let data= dataTable    
+    console.log(data)
+    
 
-    const aumentar = item =>{      
-      
+    const aumentar = item =>{           
       let id = (data.findIndex((x) => x.id == item.id))
-      data[id].cantidad = parseInt(item.cantidad)+1
-      console.log(data)       
+      setCounter(counter+1)      
+      data[id].cantidad = counter                
+     
+    }
+
+    const disminur = item =>{           
+      let id = (data.findIndex((x) => x.id == item.id))
+      setCounter(counter-1)      
+      data[id].cantidad = counter                
+      
+     
     }
     
 
@@ -53,6 +64,7 @@ function Remisiones({navigation, route}){
           <Picker.Item label="CREDITO" value="CREDITO" />
         </Picker>        
         <Text>Fecha: {currentDate}</Text>
+        <Text>counter: {counter}</Text>
         <Button title='Productos' onPress={() => navigation.navigate('Datos')} />
       </View>
       <FlatList 
@@ -64,7 +76,7 @@ function Remisiones({navigation, route}){
                   <Text  style={{flex:2}}>{item.cantidad} - {item.empaque} {item.producto}  ${item.precio}  ${item.total} </Text>             
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between'}}>
                     <Button title="+" onPress={() => aumentar(item)}/>
-                    <Button title=" - " />
+                    <Button title=" - " onPress={() => disminur(item)}/>
                     <Button title="borrar" />                                               
                   </View>
                 </View>

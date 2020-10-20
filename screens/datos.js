@@ -69,7 +69,7 @@ function datosScreen({navigation}) {
       setempaqueFiltrado([])
       settxtProducto('')
 
-      console.log(listProductos)
+      
       
     }
     
