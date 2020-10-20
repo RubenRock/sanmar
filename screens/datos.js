@@ -57,7 +57,8 @@ function datosScreen({navigation}) {
         producto:productoSeleccionado,
         empaque:item.empaque,
         precio:item.precio, 
-        cantidad:cantidad},
+        cantidad:cantidad,
+        total: item.precio*cantidad},
         ...listProductos]
       )     
 

@@ -4,14 +4,12 @@ import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList} from 'react-
 function Remisiones({navigation, route}){
     const {dataTable} = route.params
 
-    console.log(dataTable)
-
-    
-
     const [selectedValue, setSelectedValue] = useState('CONTADO')
-    const [currentDate, setCurrentDate] = useState('perame');
+    const [currentDate, setCurrentDate] = useState('Cargando..');
+    const [table, setTable] = useState([]);
 
-    useEffect(() => {
+    useEffect(() => {      
+      
       var date = new Date().getDate(); //Current Date
       var month = new Date().getMonth() + 1; //Current Month
       var year = new Date().getFullYear(); //Current Year
@@ -22,11 +20,27 @@ function Remisiones({navigation, route}){
         date + '/' + month + '/' + year 
         + ' ' + hours + ':' + min + ':' + sec
       );
-    },[])    
+    },[]) 
+
+   
+    
+    let data= dataTable
+
+    const aumentar = item =>{      
+      
+      let id = (data.findIndex((x) => x.id == item.id))
+      data[id].cantidad = parseInt(item.cantidad)+1
+      console.log(data)       
+    }
+    
 
     return (
       <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'white'}}>          
       <View style={styles.header}>        
+        <View style={{flexDirection:'row', justifyContent:'space-around'}}>
+          <Button title="guardar" />
+          <Button title="limpiar" />
+        </View>
         <TextInput placeholder="Nombre del cliente" style={styles.input}/>  
         <TextInput placeholder="Domicilio" style={styles.input}/>  
         <Picker           
@@ -43,12 +57,16 @@ function Remisiones({navigation, route}){
       </View>
       <FlatList 
             style={styles.header}
-            data={dataTable}
+            data={data}
             //keyExtractor={}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
-                  <Text  >{item.cantidad} - {item.empaque} {item.producto}  ${item.precio}</Text>             
-                  <Button title="Accion 1" />                                               
+                  <Text  style={{flex:2}}>{item.cantidad} - {item.empaque} {item.producto}  ${item.precio}  ${item.total} </Text>             
+                  <View style={{flex:1,flexDirection:'row',justifyContent:'space-between'}}>
+                    <Button title="+" onPress={() => aumentar(item)}/>
+                    <Button title=" - " />
+                    <Button title="borrar" />                                               
+                  </View>
                 </View>
                 }
           />
