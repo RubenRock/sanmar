@@ -76,6 +76,7 @@ function datosScreen({navigation}) {
     
     return (
       <View >
+          <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos})} />    
           <TextInput 
             placeholder='Producto' 
             onChangeText={(texto) => handleTxtProducto(texto) }
@@ -110,7 +111,7 @@ function datosScreen({navigation}) {
                 </View>
                 }
           />
-          <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos})} />    
+          
       </View>
                                
     )

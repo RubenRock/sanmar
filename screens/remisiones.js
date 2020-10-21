@@ -7,9 +7,13 @@ function Remisiones({navigation, route}){
     const [selectedValue, setSelectedValue] = useState('CONTADO')
     const [currentDate, setCurrentDate] = useState('Cargando..');
     const [counter, setCounter] = useState(1);    
+    const [table, setTable] = useState([]);    
 
-    useEffect(() => {      
-         
+
+    useEffect(() => {               
+      console.log('cambio')
+      setTable(dataTable)
+      setCounter(1)
       var date = new Date().getDate(); //Current Date
       var month = new Date().getMonth() + 1; //Current Month
       var year = new Date().getFullYear(); //Current Year
@@ -19,29 +23,25 @@ function Remisiones({navigation, route}){
       setCurrentDate(
         date + '/' + month + '/' + year 
         + ' ' + hours + ':' + min + ':' + sec
-      );
-           
-    },[counter]) 
-
-   
+      );           
+    },[route])     
     
-    let data= dataTable    
-    console.log(data)
-    
-
-    const aumentar = item =>{           
+    let data = [...table] 
+    const aumentar = (item,cant) =>{              
       let id = (data.findIndex((x) => x.id == item.id))
-      setCounter(counter+1)      
-      data[id].cantidad = counter                
-     
+      setCounter(parseInt(cant)+1)      
+      data[id].cantidad = counter     
+      let newTable = table.map(el => el.id ==item.id ? {...el,cantidad:counter}: el)
+      console.log(counter)
+      setTable(newTable)
+      
     }
 
-    const disminur = item =>{           
+    const disminur = item =>{          
       let id = (data.findIndex((x) => x.id == item.id))
       setCounter(counter-1)      
-      data[id].cantidad = counter                
-      
-     
+      data[id].cantidad = counter      
+      setTable(data)
     }
     
 
@@ -69,19 +69,21 @@ function Remisiones({navigation, route}){
       </View>
       <FlatList 
             style={styles.header}
-            data={data}
+            data={table}
             //keyExtractor={}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
                   <Text  style={{flex:2}}>{item.cantidad} - {item.empaque} {item.producto}  ${item.precio}  ${item.total} </Text>             
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between'}}>
-                    <Button title="+" onPress={() => aumentar(item)}/>
+                    <Button title="+" onPress={() => aumentar(item,item.cantidad)}/>
                     <Button title=" - " onPress={() => disminur(item)}/>
-                    <Button title="borrar" />                                               
-                  </View>
+                    <Button title="borrar" onPress={() => setTable(table.filter((data)=> data.id !==item.id))}/>                                               
+                  </View>                  
                 </View>
                 }
+              
           />
+        
         
       </View>
     );
