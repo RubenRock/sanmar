@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button} from 'react-native'
 
 const productos = [
@@ -9,22 +9,17 @@ const productos = [
 ]
 
 const empaques = [
-  {id:'1', id_producto:'1',empaque:'kg',precio:'20.5'},
+  {id:'1', id_producto:'1',empaque:'kg',precio:'20.5',seis:'112'},
   {id:'2', id_producto:'1',empaque:'bulto',precio:'700'},
   {id:'3', id_producto:'2',empaque:'250g',precio:'11'},
   {id:'4', id_producto:'2',empaque:'caja',precio:'256'},
-  {id:'5', id_producto:'3',empaque:'ltr',precio:'17'},
+  {id:'5', id_producto:'3',empaque:'ltr',precio:'17', doce:'200'},
 ]
-
-
 
 const productoFilter = (text) =>  productos.filter((x)=>String(x.producto).includes(text))
 
-
-  
-
-
-function datosScreen({navigation}) {
+function datosScreen({navigation, route}) {
+    const {dataTable} = route.params
     const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
     const [productoFiltrado,setproductoFiltrado] = useState(productos)
     const [cantidad,setCantidad] = useState('1')    
@@ -32,7 +27,9 @@ function datosScreen({navigation}) {
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
     const [txtProducto, settxtProducto] = useState([])  //necesario para limpiar la caja de producto
     
-    
+    useEffect(() =>{
+      setlistProductos(dataTable)
+    },[route])
     
     //necesitan los hooks por eso tienen que estar dentro de esta funcion
     const changeCantidad = (cant) => {      
@@ -50,17 +47,35 @@ function datosScreen({navigation}) {
       setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
     }
 
+    const handlePrice = (item) => {      
+      if (cantidad == '6')  {if (item.seis)  return parseFloat(item.seis/6).toFixed(2)}
+
+      if (cantidad % 12 == 0)  {if (item.doce)  return parseFloat(item.doce/12).toFixed(2)}
+
+      return item.precio
+    }
+
+    const handleTotal = (item) =>{
+      if (cantidad == '6')  {if (item.seis)  return item.seis}
+
+      if (cantidad % 12 == 0)  {if (item.doce)  return (cantidad/12)*item.doce}
+
+      return item.precio*cantidad
+    }
+
     const handleListaEmpaque = (item) =>{
+
+      handlePrice(item)
       
-      setlistProductos([{
+      setlistProductos([
+        ...listProductos,{
         id: String(Math.random()),
         producto:productoSeleccionado,
         empaque:item.empaque,
-        precio:item.precio, 
+        precio:handlePrice(item), 
         cantidad:cantidad,
-        total: item.precio*cantidad},
-        ...listProductos]
-      )     
+        total: handleTotal(item)}
+      ])     
 
       //limpiar ventana
       setproductoFiltrado('')

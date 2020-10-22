@@ -69,7 +69,7 @@ function Remisiones({navigation, route}){
             <Picker.Item label="CREDITO" value="CREDITO" />
           </Picker>        
           <Text>Fecha: {currentDate}</Text>          
-          <Button title='Productos' onPress={() => navigation.navigate('Datos')} />
+          <Button title='Productos' onPress={() => navigation.navigate('Datos', {dataTable: table})} />
         </View>
 
         <Text>total: {total}</Text>
