@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react'
 import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList} from 'react-native'
 
+
 function Remisiones({navigation, route}){
     const {dataTable} = route.params
 
@@ -8,6 +9,7 @@ function Remisiones({navigation, route}){
     const [currentDate, setCurrentDate] = useState('Cargando..');    
     const [table, setTable] = useState([]);    
     const [total, setTotal] = useState(0)
+    const [header, setHeader]= useState({name:'',direccion:'',condicion:'CONTADO'})
 
 
     useEffect(() => {                 
@@ -49,7 +51,7 @@ function Remisiones({navigation, route}){
       setTable(data)
     }
     
-
+    console.log(header)
     return (
       <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'white'}}>          
         <View style={styles.header}>        
@@ -57,12 +59,23 @@ function Remisiones({navigation, route}){
             <Button title="guardar" />
             <Button title="limpiar" />
           </View>
-          <TextInput placeholder="Nombre del cliente" style={styles.input}/>  
-          <TextInput placeholder="Domicilio" style={styles.input}/>  
+          <TextInput 
+            placeholder="Nombre del cliente" 
+            style={styles.input}
+            onChangeText={(val) => setHeader({...header,name:val}) }            
+          />  
+          <TextInput 
+            placeholder="Domicilio" 
+            style={styles.input}
+            onChangeText={(val) => setHeader({...header,direccion:val})}
+          />  
           <Picker           
             selectedValue={selectedValue}
             //style={{ height: 50, width: 150 }}
-            onValueChange={(itemValue) => setSelectedValue(itemValue)}
+            onValueChange={(itemValue) => {
+                setSelectedValue(itemValue)
+                setHeader({...header,condicion:itemValue})
+              }}
           >
             <Picker.Item label="CONTADO" value="CONTADO" />
             <Picker.Item label="PAGA AL RECIBIR" value="PAGA AL RECIBIR" />
@@ -90,6 +103,8 @@ function Remisiones({navigation, route}){
                 }
               
           />
+
+        
         
         
       </View>
@@ -122,5 +137,7 @@ function Remisiones({navigation, route}){
       borderWidth:2,
       borderColor:'black',
       
-    }
+    },
+    head: { height: 40, backgroundColor: '#f1f8ff' },
+    text: { margin: 6 }
 })

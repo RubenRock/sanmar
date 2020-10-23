@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button} from 'react-native'
+import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ScrollView} from 'react-native'
 
 const productos = [
     {id:'1', producto:'azucar',precio:'20.5'},
@@ -25,7 +25,7 @@ function datosScreen({navigation, route}) {
     const [cantidad,setCantidad] = useState('1')    
     const [productoSeleccionado, setproductoSeleccionado] = useState('')    
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
-    const [txtProducto, settxtProducto] = useState([])  //necesario para limpiar la caja de producto
+    const [txtProducto, settxtProducto] = useState(' ')  //necesario para limpiar la caja de producto
     
     useEffect(() =>{
       setlistProductos(dataTable)
@@ -91,6 +91,7 @@ function datosScreen({navigation, route}) {
     
     return (
       <View >
+        <ScrollView>
           <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos})} />    
           <TextInput 
             placeholder='Producto' 
@@ -126,7 +127,7 @@ function datosScreen({navigation, route}) {
                 </View>
                 }
           />
-          
+        </ScrollView>    
       </View>
                                
     )
