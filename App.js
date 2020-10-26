@@ -15,7 +15,7 @@ const Prueba = createStackNavigator();
 
 const isLogged =() => {
  
-  return (true)
+  return (false)
 }
 
 function MyStack() {
@@ -25,6 +25,7 @@ function MyStack() {
       <Stack.Screen name="Home" component={HomeScreen}/>      
       <Stack.Screen name="Remisiones" component={remisionesScreen} />      
       <Stack.Screen name="Datos" component={datosScreen} />      
+      <Stack.Screen name="Prueba" component={datosScreen} />      
     </Stack.Navigator>
   );
 }

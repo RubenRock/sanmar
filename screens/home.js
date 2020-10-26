@@ -14,7 +14,7 @@ function HomeScreen({ navigation }) {
         <TouchableOpacity>
           <Text>Lista de remisiones</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity >
           <Text>Ajustes</Text>
         </TouchableOpacity>
       <Button
