@@ -3,7 +3,7 @@ import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList} from 'react-
 
 
 function Remisiones({navigation, route}){
-    const {dataTable} = route.params
+    const {dataTable} = route.params    
 
     const [selectedValue, setSelectedValue] = useState('CONTADO')
     const [currentDate, setCurrentDate] = useState('Cargando..');    
@@ -51,7 +51,7 @@ function Remisiones({navigation, route}){
       setTable(data)
     }
     
-    console.log(header)
+    
     return (
       <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'white'}}>          
         <View style={styles.header}>        
@@ -92,8 +92,12 @@ function Remisiones({navigation, route}){
             data={table}
             //keyExtractor={}
             renderItem={({item}) => 
-                <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
-                  <Text  style={{flex:2}}>{item.cantidad} - {item.empaque} {item.producto}  ${item.precio}  ${item.total} </Text>             
+                <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                  <View style={{flex:2}}>
+                    <Text>{item.cantidad} - {item.empaque} {item.producto}</Text>
+                    <Text  >     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>             
+                    
+                  </View>
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between'}}>
                     <Button title="+" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
                     <Button title=" - " onPress={() => disminur(item,parseInt(item.cantidad))}/>

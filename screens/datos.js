@@ -1,31 +1,64 @@
 import React,{useEffect, useState} from 'react'
 import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ScrollView} from 'react-native'
 
+/* 
 const productos = [
     {id:'1', producto:'azucar',precio:'20.5'},
     {id:'2', producto:'jabon',precio:'40'},
     {id:'3', producto:'leche',precio:'12.5'},
 
-]
+] */
+ 
+
 
 const empaques = [
-  {id:'1', id_producto:'1',empaque:'kg',precio:'20.5',seis:'112'},
-  {id:'2', id_producto:'1',empaque:'bulto',precio:'700'},
+  {id:'1', id_producto:"21/10/202005:51:54 p.m.",empaque:'kg',precio:'20.5',seis:'112'},
+  {id:'2', id_producto:"21/10/202005:51:54 p.m.",empaque:'bulto',precio:'700'},
   {id:'3', id_producto:'2',empaque:'250g',precio:'11'},
   {id:'4', id_producto:'2',empaque:'caja',precio:'256'},
   {id:'5', id_producto:'3',empaque:'ltr',precio:'17', doce:'200'},
 ]
 
-const productoFilter = (text) =>  productos.filter((x)=>String(x.producto).includes(text))
+
 
 function datosScreen({navigation, route}) {
     const {dataTable} = route.params
+    
     const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
-    const [productoFiltrado,setproductoFiltrado] = useState(productos)
+    const [productoFiltrado,setproductoFiltrado] = useState(dataInventario)
     const [cantidad,setCantidad] = useState('1')    
     const [productoSeleccionado, setproductoSeleccionado] = useState('')    
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
     const [txtProducto, settxtProducto] = useState(' ')  //necesario para limpiar la caja de producto
+    const [dataInventario,setDataInventario] = useState() 
+
+    const productoFilter = (text) =>  dataInventario.filter((x)=>String(x.PRODUCTO).includes(text))
+
+    //llamamos los datos del inventario
+    useEffect(() => {
+      const fetchInventario = async () => {       
+        const response = await fetch('https://cors-anywhere.herokuapp.com/' +'https://mysilver.webcindario.com/Tiendas/SMinventario.json')   
+        console.log(response)
+        const data = await response.json()       
+        let simpleData =''        
+        
+        
+        //el objeto que traigo con fetch tiene muchas ramas, lo hago mas corto con este codigo
+        for (let index = 0; index < data.FDBS.Manager.TableList[0].RowList.length; index++) {
+          simpleData = [data.FDBS.Manager.TableList[0].RowList[index].Original,...simpleData]
+        } 
+
+        
+        setDataInventario(simpleData)                      
+      }
+      fetchInventario()
+    },[])   
+    
+    console.log(productoFiltrado)
+    useEffect(() =>{
+      setproductoFiltrado(dataInventario)
+    },[dataInventario])
+    
     
     useEffect(() =>{
       setlistProductos(dataTable)
@@ -34,7 +67,7 @@ function datosScreen({navigation, route}) {
     //necesitan los hooks por eso tienen que estar dentro de esta funcion
     const changeCantidad = (cant) => {      
         setCantidad(cant)
-        setempaqueFiltrado([]) //necesito actualizar el estado de la variable actualizar cada vez que la modifico     
+        setempaqueFiltrado([]) //necesito actualizar el estado de la variable cada vez que la modifico     
     }
 
     const handleTxtProducto = (texto) => {
@@ -43,8 +76,8 @@ function datosScreen({navigation, route}) {
     }
 
     const handleListaProductos = (item)=>{  
-      setempaqueFiltrado(empaques.filter(data => data.id_producto ==item.id )) //filtra la lista de empaques     
-      setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
+      setempaqueFiltrado(empaques.filter(data => data.id_producto ==item.CLAVE )) //filtra la lista de empaques     
+      setproductoSeleccionado(item.PRODUCTO) //almaceno el producto seleccionado
     }
 
     const handlePrice = (item) => {      
@@ -80,7 +113,7 @@ function datosScreen({navigation, route}) {
       //limpiar ventana
       setproductoFiltrado('')
       setCantidad('1')
-      setproductoFiltrado(productos)
+      setproductoFiltrado(dataInventario)
       setempaqueFiltrado([])
       settxtProducto('')
 
@@ -91,7 +124,7 @@ function datosScreen({navigation, route}) {
     
     return (
       <View >
-        <ScrollView>
+      
           <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos})} />    
           <TextInput 
             placeholder='Producto' 
@@ -109,11 +142,12 @@ function datosScreen({navigation, route}) {
           />          
           <FlatList 
             style={styles.lists}
-            data={productoFiltrado}
+            data={productoFiltrado}            
+            keyExtractor={item =>item.CLAVE}
             renderItem={({item}) => <TouchableOpacity
                 onPress={ () => handleListaProductos(item)}
               >                
-                <Text >{item.id} - {item.producto}</Text>
+                <Text >{item.PRODUCTO}</Text>
             </TouchableOpacity>}
           />             
           <FlatList 
@@ -127,7 +161,7 @@ function datosScreen({navigation, route}) {
                 </View>
                 }
           />
-        </ScrollView>    
+       
       </View>
                                
     )
