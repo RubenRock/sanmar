@@ -17,9 +17,10 @@
 // Nos movemos a otra rama
 	git checkout nombreRama
 
-
 //subir por primera vez el repositorio
 	git remote add origin https://github.com/RubenRock/sanmar.git
+	git branch -M main
+	git push -u origin main
 //subir en la rama "master"
 	git push -u origin master
 
