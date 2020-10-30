@@ -29,3 +29,8 @@
 
 //descargar
 	git pull
+
+//mostrar hasta las ramas remotas
+	git branch -a
+//pull a una rama en especifico
+	git pull origin nombreRama
