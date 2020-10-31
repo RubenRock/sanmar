@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import { ActivityIndicator, Button, FlatList, Text, View } from 'react-native';
 import * as SQLITE from 'expo-sqlite'
 import * as FileSystem from 'expo-file-system';
 
 console.log(FileSystem.documentDirectory)
-const db = SQLITE.openDatabase('../lib/NEWDB.s3db')
+const db = SQLITE.openDatabase("db.db");
+//const db = SQLITE.openDatabase('../lib/NEWDB.s3db')
 
-console.log(db)
+
+
 
 
 
@@ -30,9 +32,18 @@ console.log(db)
 }, []);
  */
 function pruebaScreen({ navigation }) {
+  
+
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState(['orale']);
 
+  useEffect(() =>{
+    db.transaction(tx => {
+      tx.executeSql(        
+        "create table if not exists articulos (id integer, producto text, precio text)");
+    });    
+  },[])
+ 
   useEffect(() => {
     const fetchInventario = async () => {       
       const response = await fetch('https://vercel-serverless.rubenrock.vercel.app/api/platillos' )
@@ -45,21 +56,39 @@ function pruebaScreen({ navigation }) {
     }
     fetchInventario()
   },[])   
-  console.log(data)
+  
+  //console.log(data)
 
- /*  useEffect(() => {
-    fetch('https://reactnative.dev/movies.json')
-      .then((response) => response.json())
-      .then((json) => setData(json.movies))
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
-  }, []); */
+  const agregarSql = (data) => {
+    db.transaction(
+      tx => {       
+        tx.executeSql("insert into items (done, value) values (0, ?)", [data]);        
+        tx.executeSql("select * from items", [],(_,{ rows }) =>
+          console.log(JSON.stringify(rows))
+        );
+      })
+  }
+
+  const borrarSql = (data) => {
+    db.transaction(
+      tx => {       
+        tx.executeSql(`delete from items where id = ?;`, [data])        
+      },
+      (e) => console.log(e.message),//error
+      console.log('Chido mi hermano'))
+  }
+  
+ 
 
   return (
     <View style={{ flex: 1, padding: 24 }}>
       
-      {isLoading ? <ActivityIndicator/> : (
-        <Text>Cargo</Text>     
+      {isLoading ?  <ActivityIndicator/> : (
+        <>
+          <Text>Cargo</Text>     
+          <Button title="agregar" onPress={()=>agregarSql('joder')}/>
+          <Button title="borrar" onPress={()=>borrarSql('2')}/>
+        </>
       )}
     </View>
   );
