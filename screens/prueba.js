@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, FlatList, Text, View } from 'react-native';
 import * as SQLITE from 'expo-sqlite'
-import * as FileSystem from 'expo-file-system';
 
-console.log(FileSystem.documentDirectory)
+
 const db = SQLITE.openDatabase("db.db");
-//const db = SQLITE.openDatabase('../lib/NEWDB.s3db')
+
 
 
 
@@ -59,25 +58,51 @@ function pruebaScreen({ navigation }) {
   
   //console.log(data)
 
-  const agregarSql = (data) => {
+  const agregarSql = (product, precio) => {
     db.transaction(
       tx => {       
-        tx.executeSql("insert into items (done, value) values (0, ?)", [data]);        
-        tx.executeSql("select * from items", [],(_,{ rows }) =>
+        tx.executeSql("insert into articulos (id, producto,precio) values (0, ?,?)", [product, precio]);        
+        tx.executeSql("select * from articulos", [],(_,{ rows }) =>
           console.log(JSON.stringify(rows))
         );
-      })
+      },
+      (e) => console.log(e.message))
   }
 
   const borrarSql = (data) => {
     db.transaction(
       tx => {       
-        tx.executeSql(`delete from items where id = ?;`, [data])        
+        tx.executeSql(`delete from articulos where rowid = ?;`, [data])        
       },
       (e) => console.log(e.message),//error
-      console.log('Chido mi hermano'))
+      console.log('Chido mi hermano'))// exito
+  }
+
+  const borrartodoSql = () => {
+    db.transaction(
+      tx => {       
+        tx.executeSql(`delete from articulos;`, [])        
+      },
+      (e) => console.log(e.message),//error
+      console.log('Chido mi hermano'))// exito
+  }
+
+  const modificarSql = (data, id) => {
+    db.transaction(
+      tx => {       
+        tx.executeSql(`update articulos set producto = ? where  rowid = ?;`, [data, id])        
+      },
+      (e) => console.log(e.message),//error
+      console.log('Cambio realizado'))// exito
   }
   
+  const mostrarSql = () => {
+    db.transaction(
+      tx => {               
+        tx.executeSql("select * from articulos", [], (tx, res) =>  console.log(res.rows) );
+      },
+      (e) => console.log(e.message))
+  }
  
 
   return (
@@ -86,8 +111,11 @@ function pruebaScreen({ navigation }) {
       {isLoading ?  <ActivityIndicator/> : (
         <>
           <Text>Cargo</Text>     
-          <Button title="agregar" onPress={()=>agregarSql('joder')}/>
+          <Button title="agregar" onPress={()=>agregarSql('azucar','10.5')}/>
           <Button title="borrar" onPress={()=>borrarSql('2')}/>
+          <Button title="modificar" onPress={()=>modificarSql('lechita', '1')}/>
+          <Button title="borrar todo" onPress={()=>borrartodoSql('lechita', '1')}/>
+          <Button title="mostar" onPress={()=>mostrarSql('lechita', '1')}/>
         </>
       )}
     </View>

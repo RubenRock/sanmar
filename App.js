@@ -5,6 +5,7 @@ import pruebaScreen from './screens/prueba'
 import HomeScreen from './screens/home'
 import remisionesScreen from './screens/remisiones'
 import datosScreen from './screens/datos'
+import DescargarInventario from './screens/descargarinventario'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -15,7 +16,7 @@ const Prueba = createStackNavigator();
 
 const isLogged =() => {
  
-  return (false)
+  return (true)
 }
 
 function MyStack() {
@@ -26,6 +27,7 @@ function MyStack() {
       <Stack.Screen name="Remisiones" component={remisionesScreen} />      
       <Stack.Screen name="Datos" component={datosScreen} />      
       <Stack.Screen name="Prueba" component={datosScreen} />      
+      <Stack.Screen name="InventarioNube" component={DescargarInventario} />  
     </Stack.Navigator>
   );
 }

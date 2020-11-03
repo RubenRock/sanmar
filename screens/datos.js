@@ -1,5 +1,9 @@
 import React,{useEffect, useState} from 'react'
 import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ScrollView} from 'react-native'
+import * as SQLITE from 'expo-sqlite'
+
+
+const db = SQLITE.openDatabase("db.db");
 
 /* 
 const productos = [
@@ -22,7 +26,7 @@ const empaques = [
 
 
 function datosScreen({navigation, route}) {
-    const {dataTable} = route.params
+    const {dataTable} = route.params    
     
     const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
     const [productoFiltrado,setproductoFiltrado] = useState(dataInventario)
@@ -34,35 +38,33 @@ function datosScreen({navigation, route}) {
 
     const productoFilter = (text) =>  dataInventario.filter((x)=>String(x.PRODUCTO).includes(text))
 
-    //llamamos los datos del inventario
-    useEffect(() => {
-      const fetchInventario = async () => {       
-        const response = await fetch('https://cors-anywhere.herokuapp.com/' +'https://mysilver.webcindario.com/Tiendas/SMinventario.json')   
-        console.log(response)
-        const data = await response.json()       
-        let simpleData =''        
-        
-        
-        //el objeto que traigo con fetch tiene muchas ramas, lo hago mas corto con este codigo
-        for (let index = 0; index < data.FDBS.Manager.TableList[0].RowList.length; index++) {
-          simpleData = [data.FDBS.Manager.TableList[0].RowList[index].Original,...simpleData]
-        } 
+    //leemos los datos de la bd local
+    useEffect( () => {
+      db.transaction(
+        tx => {               
+          tx.executeSql("select * from inventario where  rowid <= 10", [],  (tx, res) =>  {            
+            let resul = []
+            for (let index = 0; index < res.rows.length; index++) {              
+              resul = [...resul,res.rows.item(index)]
+            }
+            setDataInventario(resul)                                  
+          });
+        },
+        (e) => console.log(e.message))
+    },[])
 
-        
-        setDataInventario(simpleData)                      
-      }
-      fetchInventario()
-    },[])   
     
-    console.log(productoFiltrado)
-    useEffect(() =>{
+    
+    
+    
+     useEffect(() =>{
       setproductoFiltrado(dataInventario)
     },[dataInventario])
     
-    
+    /*
     useEffect(() =>{
       setlistProductos(dataTable)
-    },[route])
+    },[route]) */
     
     //necesitan los hooks por eso tienen que estar dentro de esta funcion
     const changeCantidad = (cant) => {      
@@ -143,11 +145,11 @@ function datosScreen({navigation, route}) {
           <FlatList 
             style={styles.lists}
             data={productoFiltrado}            
-            keyExtractor={item =>item.CLAVE}
+            keyExtractor={(item) =>item.clave}
             renderItem={({item}) => <TouchableOpacity
                 onPress={ () => handleListaProductos(item)}
               >                
-                <Text >{item.PRODUCTO}</Text>
+                <Text >{item.producto}</Text>
             </TouchableOpacity>}
           />             
           <FlatList 

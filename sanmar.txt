@@ -2,4 +2,5 @@ npm i react-native-dotenv  //leer variables de entonrno
 
 npm install expo-sqlite//instalacion sqlite
 
-expo install expo-file-system //manejador de directorios para la bd
+npm install firebase-admin --save 
+npm install firebase --save // coneccion a firebase

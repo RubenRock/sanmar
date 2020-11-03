@@ -17,6 +17,9 @@ function HomeScreen({ navigation }) {
         <TouchableOpacity >
           <Text>Ajustes</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('InventarioNube')}>
+          <Text>Descargar inventario de la Nube</Text>
+        </TouchableOpacity>
       <Button
         title="Menus.."
         
