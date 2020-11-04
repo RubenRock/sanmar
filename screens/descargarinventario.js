@@ -31,7 +31,8 @@ function DescargarInventario (){
         });    
       },[])
 
-    //llenar db local con los datos de la nube
+    //llenar db local con los datos de la nube    
+
     const agregarSql = () => {        
         db.transaction(
           tx => {       
@@ -80,14 +81,14 @@ function DescargarInventario (){
 
     useEffect(() => {
       const fetchInventario = async () => {       
-        const response = await fetch('https://vercel-api-6118ey9w4.vercel.app/api/inventario' )
+        const response = await fetch('https://vercel-api-eta.vercel.app/api/inventario' )
         
         const data = await response.json()       
         setDataInventario(data)        
       }
 
       const fetchEmpaque = async () => {       
-        const response = await fetch('https://vercel-api-6118ey9w4.vercel.app/api/empaque' )
+        const response = await fetch('https://vercel-api-eta.vercel.app/api/empaque' )
         
         const data = await response.json()       
         setDataEmpaque(data)        
@@ -98,13 +99,7 @@ function DescargarInventario (){
       fetchEmpaque()
     },[])   
 
-    console.log(dataInventario)
-    console.log(dataEmpaque)
-
-    
-    
-     
-    return(
+return(
         <View >
             <Text style={styles.texto}>Aqui puedes actualizar tu inventario</Text>
             {dataEmpaque ==undefined && <ActivityIndicator />}

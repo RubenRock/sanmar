@@ -35,20 +35,32 @@ function datosScreen({navigation, route}) {
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
     const [txtProducto, settxtProducto] = useState(' ')  //necesario para limpiar la caja de producto
     const [dataInventario,setDataInventario] = useState() 
+    const [dataEmpaque,setDataEmpaque] = useState() 
 
-    const productoFilter = (text) =>  dataInventario.filter((x)=>String(x.PRODUCTO).includes(text))
+    const productoFilter = (text) =>  dataInventario.filter((x)=>String(x.producto).includes(text))
 
     //leemos los datos de la bd local
     useEffect( () => {
       db.transaction(
         tx => {               
-          tx.executeSql("select * from inventario where  rowid <= 10", [],  (tx, res) =>  {            
-            let resul = []
-            for (let index = 0; index < res.rows.length; index++) {              
+          tx.executeSql("select * from inventario", [],  (tx, res) =>  {            
+            let resul = [];let index = 0
+            while (index < res.rows.length) {
               resul = [...resul,res.rows.item(index)]
-            }
+              index++              
+            }            
             setDataInventario(resul)                                  
-          });
+          }),
+
+          tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
+            let resul = [];let index = 0
+            while (index < res.rows.length) {
+              resul = [...resul,res.rows.item(index)]
+              index++              
+            }            
+            setDataEmpaque(resul)                                  
+          })
+
         },
         (e) => console.log(e.message))
     },[])
@@ -78,8 +90,8 @@ function datosScreen({navigation, route}) {
     }
 
     const handleListaProductos = (item)=>{  
-      setempaqueFiltrado(empaques.filter(data => data.id_producto ==item.CLAVE )) //filtra la lista de empaques     
-      setproductoSeleccionado(item.PRODUCTO) //almaceno el producto seleccionado
+      setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques     
+      setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
     }
 
     const handlePrice = (item) => {      
@@ -155,6 +167,7 @@ function datosScreen({navigation, route}) {
           <FlatList 
             style={styles.lists}
             data={empaqueFiltrado}
+            keyExtractor={(item) =>String(item.id)}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
                   <Text  >{item.empaque} - {item.precio}</Text>             
