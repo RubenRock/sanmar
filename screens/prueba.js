@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, FlatList, Text, View } from 'react-native';
 import * as SQLITE from 'expo-sqlite'
+import firebase from "firebase/app";
+import "firebase/firestore";
+import firebaseConfig from './firebaseconfig'
 
+console.log(firebaseConfig)
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+const dbfirebase = firebase.firestore();
+
+const orale = async () =>{
+  const dbRef = dbfirebase.collection("SMINVENTARIO").doc("AZUCAR ESTANDAR");
+    const doc = await dbRef.get();
+    const user = doc.data();
+
+console.log(user)}
+
+orale()
 
 const db = SQLITE.openDatabase("db.db");
 
@@ -36,16 +54,16 @@ function pruebaScreen({ navigation }) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState(['orale']);
 
-  useEffect(() =>{
+  /* useEffect(() =>{
     db.transaction(tx => {
       tx.executeSql(        
         "create table if not exists articulos (id integer, producto text, precio text)");
     });    
-  },[])
+  },[]) */
  
   useEffect(() => {
     const fetchInventario = async () => {       
-      const response = await fetch('https://vercel-serverless.rubenrock.vercel.app/api/platillos' )
+      const response = await fetch('https://vercel-api-eta.vercel.app/api/inventario' )
       
       const data = await response.json()       
       setData(data)
@@ -54,7 +72,7 @@ function pruebaScreen({ navigation }) {
       
     }
     fetchInventario()
-  },[])   
+  },[])    
   
   //console.log(data)
 

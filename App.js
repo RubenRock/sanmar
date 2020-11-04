@@ -16,7 +16,7 @@ const Prueba = createStackNavigator();
 
 const isLogged =() => {
  
-  return (true)
+  return (false)
 }
 
 function MyStack() {
