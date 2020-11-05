@@ -28,6 +28,8 @@ function DescargarInventario (){
         db.transaction(tx => {
           tx.executeSql("create table if not exists inventario (clave text, producto text, iva text, usuario text, fecha date, ieps text)");
           tx.executeSql("create table if not exists empaques (clave text, empaque text, precio text, piezas integer, barras text, id integer)");
+          tx.executeSql("create table if not exists remisiones (folio text, cantidad text, producto text, total text, tipo text, empaque text, descuento text)");
+          tx.executeSql("create table if not exists lista_remision (folio text, cliente text, total text, fecha text, vendedor text, condicion text, estado text, domicilio text, impresion text, descuento text)");
         });    
       },[])
 

@@ -1,5 +1,8 @@
 import React,{useState, useEffect} from 'react'
-import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList} from 'react-native'
+import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList, Alert} from 'react-native'
+import * as SQLITE from 'expo-sqlite'
+
+const db = SQLITE.openDatabase("db.db");
 
 
 function Remisiones({navigation, route}){
@@ -10,7 +13,35 @@ function Remisiones({navigation, route}){
     const [table, setTable] = useState([]);    
     const [total, setTotal] = useState(0)
     const [header, setHeader]= useState({name:'',direccion:'',condicion:'CONTADO'})
+    const [dataRemisiones, setDataRemisiones] = useState([])
+    const [dataListaRemision, setDataListaRemision] = useState([])
+    const [folio, setFolio] = useState("1")
 
+   //llenar Remisiones y Lista_Remision
+    const agregarSql = () => {        
+      db.transaction(
+        tx => {       
+          dataRemisiones.forEach(
+              (ele) => tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [ele.folio, ele.cantidad, ele.producto, ele.total, ele.tipo, ele.empaque, ele.descuento])
+          )
+          dataListaRemision.forEach(
+            ele => tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [ele.folio, ele.cliente, ele.total, ele.fecha, ele.vendedor, ele.condicion, ele.estado, ele.domicilio, ele.impresion, ele.descuento])
+          )            
+        },
+        (e) => console.log(e.message))//error
+    }
+
+    //obtenemos numero de folio de la remision
+    useEffect(() =>{
+      db.transaction(
+        tx => {                 
+          tx.executeSql("select * from lista_remision", [],( _ ,{ rows }) =>
+            rows.length > 0 ? setFolio(rows.length+1)
+            : setFolio(1)
+          )
+        }
+      )
+    }, [])
 
     useEffect(() => {                 
       setTable(dataTable)      
@@ -26,10 +57,11 @@ function Remisiones({navigation, route}){
       );           
     },[route]) 
 
-    let data = [...table] 
+    
 
     //al realizar cualquier modificacion en "table" realizamos la suma 
     useEffect( () => {
+      let data = [...table] 
       let total = data.map((el) => parseFloat(el.total))      
       let  sum = total.reduce((prev, next) => prev + next,0)      
       setTotal(sum)
@@ -37,6 +69,7 @@ function Remisiones({navigation, route}){
     
     
     const aumentar = (item,cant) =>{              
+      let data = [...table] 
       let id = (data.findIndex((x) => x.id == item.id))      
       data[id].cantidad = cant+1     
       data[id].total = (cant+1)*data[id].precio
@@ -45,20 +78,67 @@ function Remisiones({navigation, route}){
     }
 
     const disminur = (item,cant) =>{          
+      let data = [...table] 
       let id = (data.findIndex((x) => x.id == item.id))      
       data[id].cantidad = cant-1      
       data[id].total = (cant-1)*data[id].precio
       setTable(data)
     }
+
+    const handleGuardar = () => {
+      db.transaction(
+        tx => {       
+          tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [folio, header.name, total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion, "SERIE", "0" ]),
+        
+        dataTable.forEach( (ele) =>{
+            tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [folio, ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
+          })
+        },
+        (e) => console.log(e.message))
+
+      /* setDataListaRemision({
+        folio: folio, 
+        cliente: header.name, 
+        total: total, 
+        fecha: currentDate, 
+        vendedor: "Admin", 
+        condicion: header.condicion, 
+        estado: "PENDIENTE", 
+        domicilio: header.direccion,
+        impresion: "SERIE", 
+        descuento: "0"   
+      }) */
+
+      /* let data = []
+      dataTable.forEach( (ele) =>{
+        data.push({
+          folio:folio,
+          cantidad : ele.cantidad,
+          producto: ele.producto, 
+          total:ele.total, 
+          tipo: "SERIE", 
+          empaque: ele.empaque, 
+          descuento: "0"
+        }) 
+      })
+      setDataRemisiones(data)*/
+      console.log('Guardado correctamente')
+      alert('Guardado correcto')
+    }
+    console.log(dataListaRemision)
+    console.log(dataRemisiones)
     
     
     return (
       <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'white'}}>          
         <View style={styles.header}>        
           <View style={{flexDirection:'row', justifyContent:'space-around'}}>
-            <Button title="guardar" />
+            <Button title="guardar" onPress={() => handleGuardar()}/>
             <Button title="limpiar" />
           </View>
+          
+          <Text>Folio: {folio} </Text>
+          
           <TextInput 
             placeholder="Nombre del cliente" 
             style={styles.input}

@@ -5,7 +5,6 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import firebaseConfig from './firebaseconfig'
 
-console.log(firebaseConfig)
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -16,10 +15,10 @@ const orale = async () =>{
   const dbRef = dbfirebase.collection("SMINVENTARIO").doc("AZUCAR ESTANDAR");
     const doc = await dbRef.get();
     const user = doc.data();
+    console.log(user)
+}
 
-console.log(user)}
 
-orale()
 
 const db = SQLITE.openDatabase("db.db");
 
