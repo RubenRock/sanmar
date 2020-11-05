@@ -7,6 +7,7 @@ const db = SQLITE.openDatabase("db.db");
 
 function Remisiones({navigation, route}){
     const {dataTable} = route.params    
+    
 
     const [selectedValue, setSelectedValue] = useState('CONTADO')
     const [currentDate, setCurrentDate] = useState('Cargando..');    
@@ -32,7 +33,8 @@ function Remisiones({navigation, route}){
     }
 
     //obtenemos numero de folio de la remision
-    useEffect(() =>{
+
+    const obtenerFolio = () => {
       db.transaction(
         tx => {                 
           tx.executeSql("select * from lista_remision", [],( _ ,{ rows }) =>
@@ -41,6 +43,10 @@ function Remisiones({navigation, route}){
           )
         }
       )
+    }
+
+    useEffect(() =>{
+     obtenerFolio()
     }, [])
 
     useEffect(() => {                 
@@ -72,8 +78,7 @@ function Remisiones({navigation, route}){
       let data = [...table] 
       let id = (data.findIndex((x) => x.id == item.id))      
       data[id].cantidad = cant+1     
-      data[id].total = (cant+1)*data[id].precio
-      //let newTable = table.map(el => el.id ==item.id ? {...el,cantidad:cant+1}: el)      
+      data[id].total = (cant+1)*data[id].precio      
       setTable(data)      
     }
 
@@ -86,49 +91,34 @@ function Remisiones({navigation, route}){
     }
 
     const handleGuardar = () => {
-      db.transaction(
-        tx => {       
-          tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [folio, header.name, total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion, "SERIE", "0" ]),
+      if (table.length >0){
+        if (header.name.trim()){     
+          db.transaction(
+            tx => {       
+              tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [folio, header.name, total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion, "SERIE", "0" ]),
+            
+            dataTable.forEach( (ele) =>{
+                tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [folio, ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
+              })
+            },
+            (e) => console.log(e.message))    
         
-        dataTable.forEach( (ele) =>{
-            tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [folio, ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
-          })
-        },
-        (e) => console.log(e.message))
+          alert('Guardado correcto')
+          handleClear()
 
-      /* setDataListaRemision({
-        folio: folio, 
-        cliente: header.name, 
-        total: total, 
-        fecha: currentDate, 
-        vendedor: "Admin", 
-        condicion: header.condicion, 
-        estado: "PENDIENTE", 
-        domicilio: header.direccion,
-        impresion: "SERIE", 
-        descuento: "0"   
-      }) */
-
-      /* let data = []
-      dataTable.forEach( (ele) =>{
-        data.push({
-          folio:folio,
-          cantidad : ele.cantidad,
-          producto: ele.producto, 
-          total:ele.total, 
-          tipo: "SERIE", 
-          empaque: ele.empaque, 
-          descuento: "0"
-        }) 
-      })
-      setDataRemisiones(data)*/
-      console.log('Guardado correctamente')
-      alert('Guardado correcto')
+        }else {
+          alert('Escribe nombre del cliente')
+        }
+      }      
     }
-    console.log(dataListaRemision)
-    console.log(dataRemisiones)
-    
-    
+
+    const handleClear = () =>{
+      setHeader({name:'',direccion:'',condicion:'CONTADO'})
+      //setTable([])
+      setTotal('0')
+      obtenerFolio()
+    }
+
     return (
       <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'white'}}>          
         <View style={styles.header}>        
@@ -142,12 +132,12 @@ function Remisiones({navigation, route}){
           <TextInput 
             placeholder="Nombre del cliente" 
             style={styles.input}
-            onChangeText={(val) => setHeader({...header,name:val}) }            
+            onChangeText={(val) => setHeader({...header,name:val.toUpperCase()}) }            
           />  
           <TextInput 
             placeholder="Domicilio" 
             style={styles.input}
-            onChangeText={(val) => setHeader({...header,direccion:val})}
+            onChangeText={(val) => setHeader({...header,direccion:val.toUpperCase()})}  
           />  
           <Picker           
             selectedValue={selectedValue}
@@ -173,24 +163,18 @@ function Remisiones({navigation, route}){
             //keyExtractor={}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <View style={{flex:2}}>
+                  <View style={{flex:2, marginTop:10}}>
                     <Text>{item.cantidad} - {item.empaque} {item.producto}</Text>
-                    <Text  >     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>             
-                    
+                    <Text  >     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
                   </View>
-                  <View style={{flex:1,flexDirection:'row',justifyContent:'space-between'}}>
+                  <View style={{flex:1,flexDirection:'row',justifyContent:'space-between', marginTop:10}}>
                     <Button title="+" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
                     <Button title=" - " onPress={() => disminur(item,parseInt(item.cantidad))}/>
                     <Button title="borrar" onPress={() => setTable(table.filter((data)=> data.id !==item.id))}/>                                               
                   </View>                  
                 </View>
                 }
-              
           />
-
-        
-        
-        
       </View>
     );
 }

@@ -33,7 +33,7 @@ function datosScreen({navigation, route}) {
     const [cantidad,setCantidad] = useState('1')    
     const [productoSeleccionado, setproductoSeleccionado] = useState('')    
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
-    const [txtProducto, settxtProducto] = useState(' ')  //necesario para limpiar la caja de producto
+    const [txtProducto, settxtProducto] = useState('')  //necesario para limpiar la caja de producto
     const [dataInventario,setDataInventario] = useState() 
     const [dataEmpaque,setDataEmpaque] = useState() 
 
@@ -73,10 +73,10 @@ function datosScreen({navigation, route}) {
       setproductoFiltrado(dataInventario)
     },[dataInventario])
     
-    /*
+    
     useEffect(() =>{
       setlistProductos(dataTable)
-    },[route]) */
+    },[route]) 
     
     //necesitan los hooks por eso tienen que estar dentro de esta funcion
     const changeCantidad = (cant) => {      
@@ -142,7 +142,7 @@ function datosScreen({navigation, route}) {
           <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos})} />    
           <TextInput 
             placeholder='Producto' 
-            onChangeText={(texto) => handleTxtProducto(texto) }
+            onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }
             style={styles.input}
             value={txtProducto}
             
@@ -169,7 +169,7 @@ function datosScreen({navigation, route}) {
             data={empaqueFiltrado}
             keyExtractor={(item) =>String(item.id)}
             renderItem={({item}) => 
-                <View style={{flexDirection:'row', justifyContent:'space-between'}}>                
+                <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                
                   <Text  >{item.empaque} - {item.precio}</Text>             
                   <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
                   {/* <Button title="Agregar" onPress={ () =>  setlistProductos([{cantidad:cantidad}])} /> */}
