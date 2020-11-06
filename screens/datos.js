@@ -26,7 +26,8 @@ const empaques = [
 
 
 function datosScreen({navigation, route}) {
-    const {dataTable} = route.params    
+    const {dataTable, encabezado} = route.params   //encabezado trae nombre, domicilio y condicion para que no se borre de remisiones 
+
     
     const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
     const [productoFiltrado,setproductoFiltrado] = useState(dataInventario)
@@ -139,7 +140,7 @@ function datosScreen({navigation, route}) {
     return (
       <View >
       
-          <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos})} />    
+          <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})} />    
           <TextInput 
             placeholder='Producto' 
             onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }

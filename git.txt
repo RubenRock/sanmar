@@ -34,3 +34,5 @@
 	git branch -a
 //pull a una rama en especifico
 	git pull origin nombreRama
+// clonar una ramma especifica
+	git clone -b <branchname> <remote-repo-url>

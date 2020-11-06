@@ -6,10 +6,8 @@ const db = SQLITE.openDatabase("db.db");
 
 
 function Remisiones({navigation, route}){
-    const {dataTable} = route.params    
+    const {dataTable, encabezado} = route.params    
     
-
-    const [selectedValue, setSelectedValue] = useState('CONTADO')
     const [currentDate, setCurrentDate] = useState('Cargando..');    
     const [table, setTable] = useState([]);    
     const [total, setTotal] = useState(0)
@@ -51,6 +49,7 @@ function Remisiones({navigation, route}){
 
     useEffect(() => {                 
       setTable(dataTable)      
+      setHeader(encabezado)
       var date = new Date().getDate(); //Current Date
       var month = new Date().getMonth() + 1; //Current Month
       var year = new Date().getFullYear(); //Current Year
@@ -114,7 +113,7 @@ function Remisiones({navigation, route}){
 
     const handleClear = () =>{
       setHeader({name:'',direccion:'',condicion:'CONTADO'})
-      //setTable([])
+      setTable([])
       setTotal('0')
       obtenerFolio()
     }
@@ -124,7 +123,7 @@ function Remisiones({navigation, route}){
         <View style={styles.header}>        
           <View style={{flexDirection:'row', justifyContent:'space-around'}}>
             <Button title="guardar" onPress={() => handleGuardar()}/>
-            <Button title="limpiar" />
+            <Button title="limpiar" onPress={() => handleClear()}/>
           </View>
           
           <Text>Folio: {folio} </Text>
@@ -133,26 +132,29 @@ function Remisiones({navigation, route}){
             placeholder="Nombre del cliente" 
             style={styles.input}
             onChangeText={(val) => setHeader({...header,name:val.toUpperCase()}) }            
+            value={header.name}
           />  
           <TextInput 
             placeholder="Domicilio" 
             style={styles.input}
             onChangeText={(val) => setHeader({...header,direccion:val.toUpperCase()})}  
+            value={header.direccion}
           />  
           <Picker           
-            selectedValue={selectedValue}
+            selectedValue={header.condicion}
             //style={{ height: 50, width: 150 }}
             onValueChange={(itemValue) => {
                 setSelectedValue(itemValue)
                 setHeader({...header,condicion:itemValue})
               }}
+              
           >
             <Picker.Item label="CONTADO" value="CONTADO" />
             <Picker.Item label="PAGA AL RECIBIR" value="PAGA AL RECIBIR" />
             <Picker.Item label="CREDITO" value="CREDITO" />
           </Picker>        
           <Text>Fecha: {currentDate}</Text>          
-          <Button title='Productos' onPress={() => navigation.navigate('Datos', {dataTable: table})} />
+          <Button title='Productos' onPress={() => navigation.navigate('Datos', {dataTable: table, encabezado: header})} />
         </View>
 
         <Text>total: {total}</Text>
