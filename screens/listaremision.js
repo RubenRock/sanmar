@@ -8,6 +8,35 @@ function listaRemisionScreen(){
   const [remisiones, setRemisiones]= useState([])
   const [folios, setFolios] = useState({inicio:'',fin:''})
 
+ 
+
+  const mandarNube = async () => {
+    const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+      },
+      body:JSON.stringify(
+        {"folio":"8",
+        "cliente": "Pau",
+        "total": "100",
+        "fecha": "01/01/20",
+        "vendedor":"admin",
+        "condicion":"contado",
+        "estado":"pendiente",
+        "domicilio":"centro",
+        "impresion":"serie",
+        "descuento":"4"}
+      )
+    })
+
+    //const data = await responde.json()
+    if (responde.status !== 204) console.log('hay error:'+ responde.details)
+    else
+    console.log('esta bien')
+    
+  }
+
   const handleBoton = () => {
     db.transaction(
       tx => {                                                                       //la bd le agrega .0 al folio
@@ -20,6 +49,7 @@ function listaRemisionScreen(){
             console.log(resul)
         },
         (e) => console.log(e.message))
+        mandarNube()
         
       })
 
