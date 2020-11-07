@@ -37,7 +37,7 @@ function Remisiones({navigation, route}){
         tx => {                 
           tx.executeSql("select * from lista_remision", [],( _ ,{ rows }) =>
             rows.length > 0 ? setFolio(rows.length+1)
-            : setFolio(1)
+            : setFolio('1')
           )
         }
       )
@@ -94,10 +94,10 @@ function Remisiones({navigation, route}){
         if (header.name.trim()){     
           db.transaction(
             tx => {       
-              tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [folio, header.name, total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion, "SERIE", "0" ]),
+              tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), header.name, total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion, "SERIE", "0" ]),
             
             dataTable.forEach( (ele) =>{
-                tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [folio, ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
+                tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
               })
             },
             (e) => console.log(e.message))    
@@ -111,6 +111,7 @@ function Remisiones({navigation, route}){
       }      
     }
 
+    console.log(folio)
     const handleClear = () =>{
       setHeader({name:'',direccion:'',condicion:'CONTADO'})
       setTable([])
@@ -143,8 +144,7 @@ function Remisiones({navigation, route}){
           <Picker           
             selectedValue={header.condicion}
             //style={{ height: 50, width: 150 }}
-            onValueChange={(itemValue) => {
-                setSelectedValue(itemValue)
+            onValueChange={(itemValue) => {                
                 setHeader({...header,condicion:itemValue})
               }}
               

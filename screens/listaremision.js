@@ -2,14 +2,28 @@ import React, {useEffect, useState} from 'react'
 import {View, Text,FlatList, StyleSheet,TouchableOpacity, Button, TextInput} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 
-const db = SQLITE.openDatabase("db.db");
-
-
-
-
+const db = SQLITE.openDatabase("db.db")
 
 function listaRemisionScreen(){
   const [remisiones, setRemisiones]= useState([])
+  const [folios, setFolios] = useState({inicio:'',fin:''})
+
+  const handleBoton = () => {
+    db.transaction(
+      tx => {                                                                       //la bd le agrega .0 al folio
+        tx.executeSql("select * from remisiones where folio >= ? and folio <= ?", [folios.inicio+'.0', folios.fin+'.0'],  (tx, res) =>  {            
+            let resul = [];let index = 0
+            while (index < res.rows.length) {
+              resul = [...resul,res.rows.item(index)]
+              index++              
+            }    
+            console.log(resul)
+        },
+        (e) => console.log(e.message))
+        
+      })
+
+  }
   
   useEffect (() => {
     db.transaction(
@@ -30,11 +44,17 @@ function listaRemisionScreen(){
         <View>
             <View style={styles.header}>
               <View style={styles.boton}>
-                <Button  title="Mandar a la nube" onPress={() => console.log('ejecuta')}/>
+                <Button  title="Mandar a la nube" onPress={() =>handleBoton()}/>
               </View>
               <View>
-                <TextInput style={styles.input} placeholder="Folio inicial"/>
-                <TextInput style={styles.input} placeholder="Folio final"/>
+                <TextInput style={styles.input} 
+                  placeholder="Folio inicial" 
+                  onChangeText={(val) => setFolios({...folios, inicio:val})}
+                />
+                <TextInput style={styles.input} 
+                  placeholder="Folio final"
+                  onChangeText={(val) => setFolios({...folios, fin:val})}
+                />
               </View>
             </View>            
 
