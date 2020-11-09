@@ -55,14 +55,14 @@ function listaRemisionScreen(){
      
      index =0
      while (index <= remisiones.length-1) {
-      console.log(remisiones[index].rowid)
-       /* const responde = await fetch('https://vercel-api-eta.vercel.app/api/remisiones',{
+      
+        const responde = await fetch('https://vercel-api-eta.vercel.app/api/remisiones',{
          method:'POST',
          headers:{
            'Content-Type':'application/json',
          },
          body:JSON.stringify(
-           {"folio":remisiones[index].folio,
+           {"folio":parseInt(remisiones[index].folio),
            "id":remisiones[index].rowid,
            "cantidad": remisiones[index].cantidad,
            "producto": remisiones[index].producto,
@@ -78,7 +78,7 @@ function listaRemisionScreen(){
        else {  // cuando hay error
          const error = await responde.json()    
          console.log('Hay error: '+ error.details)    
-       }   */ 
+       }    
       
 
       index++     
@@ -115,9 +115,12 @@ function listaRemisionScreen(){
     db.transaction(
       tx => {                                                                       //la bd le agrega .0 al folio
          tx.executeSql("select * from remisiones where folio >= ? and folio <= ?", [folios.inicio+'.0', folios.fin+'.0'],  (tx, res) =>  {            
-            let index = 0
+            let index = 0, extra ='',extra2=''
             while (index < res.rows.length) {
-              aremision = [...aremision,res.rows.item(index)]
+              extra= res.rows.item(index) 
+              //agrego campo rowid para el id del documento de firebase
+              extra2 = Object.assign({'rowid':index},extra)              
+              aremision = [...aremision,extra2]              
               index++              
             }    
            
@@ -128,34 +131,23 @@ function listaRemisionScreen(){
   }
 
   const deleteRemisiones = async () => {       
-    let datainven = []
-    const response = await fetch('https://vercel-api-eta.vercel.app/api/listaremision' )    
-    const data = await response.json()       
-
-    datainven= [data]
-    datainven[0].forEach(async element => {
-      const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision/'+element.folio,{
-         method:'DELETE',
-         headers:{
-           'Content-Type':'application/json',
-         }
-       })      
-
+    const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision/',{
+        method:'DELETE',
+        headers:{
+          'Content-Type':'application/json',
+        }
+      })      
+      
       if (responde.status == 200)  
-        console.log('exito: '+element.folio) 
+        console.log('exito') 
       else {  // cuando hay error
         const error = await responde.json()    
         console.log('Hay error: '+ error.details)    
-      }
-    }
-       );
-
-    
-            
+      }                       
   }
 
-  const handleBoton = () => {
-      deleteRemisiones() 
+  const handleBoton = async() => {
+      await deleteRemisiones() 
       obtenerRemisiones()
       obtenerLista() 
           
