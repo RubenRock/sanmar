@@ -4,8 +4,7 @@ import * as SQLITE from 'expo-sqlite'
 
 const db = SQLITE.openDatabase("db.db")
 
-function listaRemisionScreen(){
-  const [filtro, setFiltro]= useState(false)
+function listaRemisionScreen(){   
   const [remisiones, setRemisiones]= useState([])  
   const [listaRemision, setListaRemision] = useState([])
   const [data, setData]= useState([]) // listado de remisones de esta Screen
@@ -15,9 +14,12 @@ function listaRemisionScreen(){
  
 
   const mandarNube = async () => {
+
     
-     
-     let index =folios.inicio
+  
+    console.log('----lista remision------')
+     //index para whille, i para arreglo que se va a guardar
+     let index =folios.inicio,i=0
     while (index <= folios.fin) {
       const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision',{
         method:'POST',
@@ -25,16 +27,16 @@ function listaRemisionScreen(){
           'Content-Type':'application/json',
         },
         body:JSON.stringify(
-          {"folio":listaRemision[index].folio,
-          "cliente": listaRemision[index].cliente,
-          "total": listaRemision[index].total,
-          "fecha": listaRemision[index].fecha,
-          "vendedor":listaRemision[index].vendedor,
-          "condicion":listaRemision[index].condicion,
-          "estado":listaRemision[index].estado,
-          "domicilio":listaRemision[index].domicilio,
-          "impresion":listaRemision[index].impresion,
-          "descuento":listaRemision[index].descuento}
+          {"folio":parseInt(listaRemision[i].folio),
+          "cliente": listaRemision[i].cliente,
+          "total": listaRemision[i].total,
+          "fecha": listaRemision[i].fecha,
+          "vendedor":listaRemision[i].vendedor,
+          "condicion":listaRemision[i].condicion,
+          "estado":listaRemision[i].estado,
+          "domicilio":listaRemision[i].domicilio,
+          "impresion":listaRemision[i].impresion,
+          "descuento":listaRemision[i].descuento}
         )
       })
 
@@ -43,16 +45,54 @@ function listaRemisionScreen(){
       else {  // cuando hay error
         const error = await responde.json()    
         console.log('Hay error: '+ error.details)    
-      }    
+      } 
+      index++
+      i++
+
+    }
+      console.log('----remisiones------')
+      
+     
+     index =0
+     while (index <= remisiones.length-1) {
+      console.log(remisiones[index].rowid)
+       /* const responde = await fetch('https://vercel-api-eta.vercel.app/api/remisiones',{
+         method:'POST',
+         headers:{
+           'Content-Type':'application/json',
+         },
+         body:JSON.stringify(
+           {"folio":remisiones[index].folio,
+           "id":remisiones[index].rowid,
+           "cantidad": remisiones[index].cantidad,
+           "producto": remisiones[index].producto,
+           "total": remisiones[index].total,
+           "tipo":remisiones[index].tipo,
+           "empaque":remisiones[index].empaque,
+           "descuento":remisiones[index].descuento}
+         )
+       })
+ 
+       if (responde.status == 204)  
+         console.log('exito: '+index) 
+       else {  // cuando hay error
+         const error = await responde.json()    
+         console.log('Hay error: '+ error.details)    
+       }   */ 
       
 
-      index++
+      index++     
       
     }
      
     
   }
   
+  useEffect(() =>{  
+    listaRemision.length ? mandarNube()
+    : null
+  },[listaRemision])
+
   function obtenerLista (){ 
     let alisteRemision = []   
     db.transaction(
@@ -87,11 +127,38 @@ function listaRemisionScreen(){
       })
   }
 
+  const deleteRemisiones = async () => {       
+    let datainven = []
+    const response = await fetch('https://vercel-api-eta.vercel.app/api/listaremision' )    
+    const data = await response.json()       
+
+    datainven= [data]
+    datainven[0].forEach(async element => {
+      const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision/'+element.folio,{
+         method:'DELETE',
+         headers:{
+           'Content-Type':'application/json',
+         }
+       })      
+
+      if (responde.status == 200)  
+        console.log('exito: '+element.folio) 
+      else {  // cuando hay error
+        const error = await responde.json()    
+        console.log('Hay error: '+ error.details)    
+      }
+    }
+       );
+
+    
+            
+  }
+
   const handleBoton = () => {
+      deleteRemisiones() 
       obtenerRemisiones()
-      obtenerLista()
-      setFiltro(true)
-      
+      obtenerLista() 
+          
   }
   
   useEffect (() => {
@@ -112,19 +179,14 @@ function listaRemisionScreen(){
     return(
         <View>
             <View style={styles.header}>
-              {folios.inicio <= folios.fin && folios.fin.trim() !== '' && folios.inicio.trim() !== '' && filtro == false?
+              {parseInt(folios.inicio) <= parseInt(folios.fin) && folios.fin.trim() !== '' && folios.inicio.trim() !== '' ?
                 <View style={styles.boton}>
                   <Button  title="Seleccionar folios" onPress={() =>handleBoton()}/>                  
                 </View>
                 :null
               }
 
-              {filtro?
-                <View style={styles.boton}>
-                    <Button color='red' title="Mandar a la nube" onPress={() =>mandarNube()}/>                  
-                  </View>
-                  :null
-              }
+              
               <View>
                 <TextInput style={styles.input} 
                   placeholder="Folio inicial" 
