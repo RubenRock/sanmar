@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text,FlatList, StyleSheet,TouchableOpacity, Button, TextInput} from 'react-native'
+import {View, Text,FlatList, StyleSheet,TouchableOpacity, Button, TextInput, Alert} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 
 const db = SQLITE.openDatabase("db.db")
@@ -13,10 +13,8 @@ function listaRemisionScreen(){
 
  
 
-  const mandarNube = async () => {
-
-    
-  
+  const mandarNube = async () => {  
+    let fallo = false, info=''
     console.log('----lista remision------')
      //index para whille, i para arreglo que se va a guardar
      let index =folios.inicio,i=0
@@ -40,11 +38,11 @@ function listaRemisionScreen(){
         )
       })
 
-      if (responde.status == 204)  
-        console.log('exito: '+index) 
-      else {  // cuando hay error
+      if (responde.status !== 204) {  // cuando hay error
         const error = await responde.json()    
-        console.log('Hay error: '+ error.details)    
+        console.log('Hay error: '+ error.details) 
+        info= error.details          
+        fallo= true
       } 
       index++
       i++
@@ -72,18 +70,35 @@ function listaRemisionScreen(){
            "descuento":remisiones[index].descuento}
          )
        })
- 
-       if (responde.status == 204)  
-         console.log('exito: '+index) 
-       else {  // cuando hay error
+       
+       if (responde.status !== 204){  // cuando hay error
          const error = await responde.json()    
          console.log('Hay error: '+ error.details)    
+         info= error.details
+         fallo= true
        }    
       
 
       index++     
       
     }
+
+    !fallo ?   Alert.alert(
+      "Correcto",
+      "se mandaron los datos a la nube",
+      [              
+        { text: "Cerrar" }
+      ],
+      { cancelable: false }
+    )
+    :  Alert.alert(
+      "Error",
+      info, //me dice cual es el error
+      [              
+        { text: "Cerrar" }
+      ],
+      { cancelable: false }
+    )
      
     
   }
@@ -131,7 +146,7 @@ function listaRemisionScreen(){
   }
 
   const deleteRemisiones = async () => {       
-    const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision/',{
+     let responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision/',{
         method:'DELETE',
         headers:{
           'Content-Type':'application/json',
@@ -139,11 +154,24 @@ function listaRemisionScreen(){
       })      
       
       if (responde.status == 200)  
-        console.log('exito') 
+        console.log('exito borrar lista remisiones') 
       else {  // cuando hay error
         const error = await responde.json()    
         console.log('Hay error: '+ error.details)    
-      }                       
+      }   
+
+     responde = await fetch('https://vercel-api-eta.vercel.app/api/remisiones',{
+        method:'DELETE',
+        headers:{
+          'Content-Type':'application/json',
+        }
+      })            
+      if (responde.status == 200)  
+        console.log('exito borrar remisiones') 
+      else {  // cuando hay error
+        const error = await responde.json()    
+        console.log('Hay error: '+ error.details)    
+      } 
   }
 
   const handleBoton = async() => {
@@ -173,7 +201,7 @@ function listaRemisionScreen(){
             <View style={styles.header}>
               {parseInt(folios.inicio) <= parseInt(folios.fin) && folios.fin.trim() !== '' && folios.inicio.trim() !== '' ?
                 <View style={styles.boton}>
-                  <Button  title="Seleccionar folios" onPress={() =>handleBoton()}/>                  
+                  <Button  title="Mandar a nube" onPress={() =>handleBoton()}/>                  
                 </View>
                 :null
               }
@@ -215,9 +243,19 @@ const styles = StyleSheet.create({
   lista:{    
     padding:5,
     backgroundColor:"#00AFF0",
-    marginTop:5,
+    marginTop:10,
     marginHorizontal:5,   
     borderRadius:10,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.36,
+    shadowRadius: 6.68,
+    
+    elevation: 11,
   },
   texto:{
     color:'white',

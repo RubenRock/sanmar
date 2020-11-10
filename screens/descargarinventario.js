@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { View, Text, Button, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, Text, Button, ActivityIndicator, StyleSheet, Alert } from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 
 const db = SQLITE.openDatabase("db.db");
@@ -44,8 +44,15 @@ function DescargarInventario (){
             dataEmpaque.forEach(
               ele => tx.executeSql("insert into empaques (clave, empaque, precio, piezas, barras , id) values (?, ?, ?, ?, ?, ?)", [ele.clave, ele.empaque, ele.precio, ele.piezas, ele.barras, ele.id])
             )            
-          },
-          (e) => console.log(e.message))//error
+          },(e) => console.log(e),//error
+          () =>  Alert.alert(
+            "Inventario Actualizado",
+            "Puedes continuar",
+            [              
+              { text: "Cerrar" }
+            ],
+            { cancelable: false }
+          ))
       }
 
       //llamamos los datos del inventario de miarroba

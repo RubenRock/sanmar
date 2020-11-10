@@ -186,13 +186,20 @@ function Remisiones({navigation, route}){
   const styles = StyleSheet.create({
     header:{
       marginTop:20,
-      backgroundColor:'#dfe6e9',
-      // borderWidth:1,
-      // borderColor:'#81ecec',
+      backgroundColor:'#dfe6e9',    
       borderRadius:10,
       padding:8,
-      alignSelf:'stretch'
+      alignSelf:'stretch',
 
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.36,
+      shadowRadius: 6.68,
+      
+      elevation: 11,
     },
     input:{
       borderBottomWidth:2,
