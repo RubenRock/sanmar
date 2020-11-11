@@ -17,15 +17,16 @@ function listaRemisionScreen(){
     let fallo = false, info=''
     console.log('----lista remision------')
      //index para whille, i para arreglo que se va a guardar
-     let index =folios.inicio,i=0
-    while (index <= folios.fin) {
+     let index =parseInt(folios.inicio),i=0
+    while (index <= parseInt(folios.fin)) {
+      
       const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision',{
         method:'POST',
         headers:{
           'Content-Type':'application/json',
         },
         body:JSON.stringify(
-          {"folio":parseInt(listaRemision[i].folio),
+          {"folio":listaRemision[i].folio,
           "cliente": listaRemision[i].cliente,
           "total": listaRemision[i].total,
           "fecha": listaRemision[i].fecha,
@@ -53,14 +54,14 @@ function listaRemisionScreen(){
      
      index =0
      while (index <= remisiones.length-1) {
-      
+         
         const responde = await fetch('https://vercel-api-eta.vercel.app/api/remisiones',{
          method:'POST',
          headers:{
            'Content-Type':'application/json',
          },
          body:JSON.stringify(
-           {"folio":parseInt(remisiones[index].folio),
+           {"folio":remisiones[index].folio,
            "id":remisiones[index].rowid,
            "cantidad": remisiones[index].cantidad,
            "producto": remisiones[index].producto,
@@ -98,12 +99,12 @@ function listaRemisionScreen(){
         { text: "Cerrar" }
       ],
       { cancelable: false }
-    )
-     
+    )    
     
   }
   
   useEffect(() =>{  
+    console.log('datos en listaremision: '+listaRemision.length)
     listaRemision.length ? mandarNube()
     : null
   },[listaRemision])
@@ -112,7 +113,7 @@ function listaRemisionScreen(){
     let alisteRemision = []   
     db.transaction(
       tx => {
-        tx.executeSql("select * from lista_remision where folio >= ? and folio <= ?", [folios.inicio+'.0', folios.fin+'.0'],  (tx, res) =>  {            
+        tx.executeSql("select * from lista_remision where folio >= ? and folio <= ?", [folios.inicio, folios.fin],  (tx, res) =>  {            
           let index = 0
           while (index < res.rows.length) {            
             alisteRemision.push(res.rows.item(index))
@@ -128,8 +129,8 @@ function listaRemisionScreen(){
   const obtenerRemisiones = () =>{
     let aremision = []
     db.transaction(
-      tx => {                                                                       //la bd le agrega .0 al folio
-         tx.executeSql("select * from remisiones where folio >= ? and folio <= ?", [folios.inicio+'.0', folios.fin+'.0'],  (tx, res) =>  {            
+      tx => {                                                                       
+         tx.executeSql("select * from remisiones where folio >= ? and folio <= ?", [folios.inicio, folios.fin],  (tx, res) =>  {            
             let index = 0, extra ='',extra2=''
             while (index < res.rows.length) {
               extra= res.rows.item(index) 
@@ -223,11 +224,11 @@ function listaRemisionScreen(){
 
             <FlatList             
             data={data}
-            keyExtractor={(ele) => ele.folio}
+            keyExtractor={(ele) => String(ele.folio)}
             renderItem={({item}) =>
                 <View style={styles.lista}>
                   <TouchableOpacity onPress={() => alert(item.folio) }>
-                    <Text style={styles.texto} >Folio: {parseInt(item.folio)}    Cliente: {item.cliente} </Text>
+                    <Text style={styles.texto} >Folio: {(item.folio)}    Cliente: {item.cliente} </Text>
                     <Text style={[styles.texto, styles.texto_pequeño]} >Total: ${item.total}   Fecha: {item.fecha}</Text>
                     <Text style={[styles.texto, styles.texto_pequeño]} >Domicilio: {item.domicilio}</Text>
                   </TouchableOpacity>

@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import React,{useEffect, useState} from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React from 'react';
+import { StyleSheet} from 'react-native';
 import pruebaScreen from './screens/prueba'
 import HomeScreen from './screens/home'
 import remisionesScreen from './screens/remisiones'
 import datosScreen from './screens/datos'
+import extrasScreen from './screens/extras'
 import listaRemisionScreen from './screens/listaremision'
 import DescargarInventario from './screens/descargarinventario'
 import { NavigationContainer } from '@react-navigation/native';
@@ -30,6 +31,7 @@ function MyStack() {
       <Stack.Screen name="Prueba" component={datosScreen} />      
       <Stack.Screen name="InventarioNube" component={DescargarInventario} />  
       <Stack.Screen name="ListaRemision" component={listaRemisionScreen} />  
+      <Stack.Screen name="Extras" component={extrasScreen} />  
     </Stack.Navigator>
   );
 }

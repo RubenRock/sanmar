@@ -111,7 +111,7 @@ function Remisiones({navigation, route}){
       }      
     }
 
-    console.log(folio)
+    
     const handleClear = () =>{
       setHeader({name:'',direccion:'',condicion:'CONTADO'})
       setTable([])
