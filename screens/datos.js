@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ScrollView} from 'react-native'
+import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ScrollView, RefreshControlComponent} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 
 
@@ -96,9 +96,9 @@ function datosScreen({navigation, route}) {
     }
 
     const handlePrice = (item) => {      
-      if (cantidad == '6')  {if (item.seis)  return parseFloat(item.seis/6).toFixed(2)}
+      if (cantidad == '6')  {if (item.SEIS)  return parseFloat(item.SEIS/6).toFixed(2)}
 
-      if (cantidad % 12 == 0)  {if (item.doce)  return parseFloat(item.doce/12).toFixed(2)}
+      if (cantidad % 12 == 0)  {if (item.DOCE)  return parseFloat(item.DOCE/12).toFixed(2)}
 
       return item.precio
     }
@@ -169,12 +169,13 @@ function datosScreen({navigation, route}) {
             style={styles.lists}
             data={empaqueFiltrado}
             keyExtractor={(item) =>String(item.id)}
-            renderItem={({item}) => 
-                <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                
-                  <Text  >{item.empaque} - {item.precio}</Text>             
-                  <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
-                  {/* <Button title="Agregar" onPress={ () =>  setlistProductos([{cantidad:cantidad}])} /> */}
-                </View>
+            renderItem={({item}) =>                 
+                  <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                
+                      
+                    <Text  >{item.empaque} - {item.precio}</Text>             
+                    <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
+                                    
+                  </View>               
                 }
           />
        

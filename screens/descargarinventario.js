@@ -38,11 +38,15 @@ function DescargarInventario (){
     const agregarSql = () => {        
         db.transaction(
           tx => {       
+            let empaque =''
             dataInventario.forEach(
-                (ele) => tx.executeSql("insert into inventario (clave, producto, iva, usuario, fecha , ieps) values (?, ?, ?, ?, ?, ?)", [ele.clave, ele.producto, ele.iva, ele.usuario, ele.fecha, ele.ieps])
+                (ele) => tx.executeSql("insert into inventario (clave, producto, iva, usuario, fecha , ieps) values (?, ?, ?, ?, ?, ?)", [ele.clave, ele.producto, ele.iva, ele.usuario, ele.fecha, ele.ieps])                
             )
             dataEmpaque.forEach(
-              ele => tx.executeSql("insert into empaques (clave, empaque, precio, piezas, barras , id) values (?, ?, ?, ?, ?, ?)", [ele.clave, ele.empaque, ele.precio, ele.piezas, ele.barras, ele.id])
+              ele => {
+                ele.empaque == '6' ? empaque='SEIS' : ele.empaque == '12' ? empaque='DOCE' : empaque= ele.empaque                
+                tx.executeSql("insert into empaques (clave, empaque, precio, piezas, barras , id) values (?, ?, ?, ?, ?, ?)", [ele.clave, empaque, ele.precio, ele.piezas, ele.barras, ele.id])
+              }
             )            
           },(e) => console.log(e),//error
           () =>  Alert.alert(
