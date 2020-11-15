@@ -10,26 +10,12 @@ function Remisiones({navigation, route}){
     
     const [currentDate, setCurrentDate] = useState('Cargando..');    
     const [table, setTable] = useState([]);    
+    const [mayoreo, setMayoreo] = useState({total:'',cantidad:0});    
     const [total, setTotal] = useState(0)
     const [header, setHeader]= useState({name:'',direccion:'',condicion:'CONTADO'})
-    const [dataRemisiones, setDataRemisiones] = useState([])
-    const [dataListaRemision, setDataListaRemision] = useState([])
     const [folio, setFolio] = useState("1")
 
-   //llenar Remisiones y Lista_Remision
-    const agregarSql = () => {        
-      db.transaction(
-        tx => {       
-          dataRemisiones.forEach(
-              (ele) => tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [ele.folio, ele.cantidad, ele.producto, ele.total, ele.tipo, ele.empaque, ele.descuento])
-          )
-          dataListaRemision.forEach(
-            ele => tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [ele.folio, ele.cliente, ele.total, ele.fecha, ele.vendedor, ele.condicion, ele.estado, ele.domicilio, ele.impresion, ele.descuento])
-          )            
-        },
-        (e) => console.log(e.message))//error
-    }
-
+  
     //obtenemos numero de folio de la remision
 
     const obtenerFolio = () => {
@@ -71,14 +57,59 @@ function Remisiones({navigation, route}){
       let  sum = total.reduce((prev, next) => prev + next,0)      
       setTotal(sum)
     },[table])
+
     
     
+    const handlePrice =  (item,cantidad) => {      
+      let resul, datos =[]
+      db.transaction(
+         tx => { 
+           tx.executeSql("select * from empaques where clave = ?", [item.clave],  (tx, res) =>  {            
+             let index = 0
+            
+              while (index < res.rows.length) {
+                datos = [...datos,res.rows.item(index)]
+                
+                index++              
+              }
+              let arrayseis= datos, arraydoce = datos
+             
+              let seis = arrayseis.filter((ele) => ele.empaque == 'SEIS' && item.piezas == ele.piezas)                   
+
+              let doce = arraydoce.filter((ele) => ele.empaque == 'DOCE' && item.piezas == ele.piezas)      
+
+              resul = ''
+
+              if (cantidad == '6')  {if (seis.length)  resul = parseFloat(seis[0].precio).toFixed(2)}
+
+              if (cantidad % 12 == 0)  {if (doce.length) resul = parseFloat((cantidad/12)*doce[0].precio).toFixed(2)}
+
+              if (resul == '')  resul= item.precio 
+
+              setMayoreo({total:resul, cantidad:cantidad,id:item.id})
+
+              
+            })
+        }
+      )              
+    }
+
+    
+
+    useEffect(() => {
+      console.log(mayoreo)
+      if (mayoreo.cantidad){
+        let data = [...table] 
+        let id = (data.findIndex((x) => x.id == mayoreo.id))      
+        data[id].cantidad = mayoreo.cantidad     
+        data[id].precio = parseFloat(mayoreo.total/mayoreo.cantidad).toFixed(2)
+        data[id].total = mayoreo.total*mayoreo.cantidad
+        setTable(data)
+      }
+    },[mayoreo])
+
     const aumentar = (item,cant) =>{              
-      let data = [...table] 
-      let id = (data.findIndex((x) => x.id == item.id))      
-      data[id].cantidad = cant+1     
-      data[id].total = (cant+1)*data[id].precio      
-      setTable(data)      
+      handlePrice(item,cant+1)           
     }
 
     const disminur = (item,cant) =>{          

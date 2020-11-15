@@ -96,24 +96,34 @@ function datosScreen({navigation, route}) {
     }
 
     const handlePrice = (item) => {      
-      if (cantidad == '6')  {if (item.SEIS)  return parseFloat(item.SEIS/6).toFixed(2)}
+      let arrayseis= empaqueFiltrado, arraydoce = empaqueFiltrado
+      
+      let seis = arrayseis.filter((ele) => ele.empaque == 'SEIS' && item.piezas == ele.piezas)      
 
-      if (cantidad % 12 == 0)  {if (item.DOCE)  return parseFloat(item.DOCE/12).toFixed(2)}
+      let doce = arraydoce.filter((ele) => ele.empaque == 'DOCE' && item.piezas == ele.piezas)      
+
+      if (cantidad == '6')  {if (seis.length)  return parseFloat(seis[0].precio/6).toFixed(2)}
+
+      if (cantidad % 12 == 0)  {if (doce.length)  return parseFloat(doce[0].precio/12).toFixed(2)}
 
       return item.precio
     }
 
     const handleTotal = (item) =>{
-      if (cantidad == '6')  {if (item.seis)  return item.seis}
+      let arrayseis= empaqueFiltrado, arraydoce = empaqueFiltrado
+      
+      let seis = arrayseis.filter((ele) => ele.empaque == 'SEIS' && item.piezas == ele.piezas)      
 
-      if (cantidad % 12 == 0)  {if (item.doce)  return (cantidad/12)*item.doce}
+      let doce = arraydoce.filter((ele) => ele.empaque == 'DOCE' && item.piezas == ele.piezas)      
+
+      if (cantidad == '6')  {if (seis.length)  return seis[0].precio}
+
+      if (cantidad % 12 == 0)  {if (doce.length)  return (cantidad/12)*doce[0].precio}
 
       return item.precio*cantidad
     }
 
-    const handleListaEmpaque = (item) =>{
-
-      handlePrice(item)
+    const handleListaEmpaque = (item) =>{      
       
       setlistProductos([
         ...listProductos,{
@@ -122,7 +132,9 @@ function datosScreen({navigation, route}) {
         empaque:item.empaque,
         precio:handlePrice(item), 
         cantidad:cantidad,
-        total: handleTotal(item)}
+        total: handleTotal(item),
+        clave: item.clave,  //los necesito para el boton de aumentar y disminuir de remisiones
+        piezas:item.piezas}
       ])     
 
       //limpiar ventana
