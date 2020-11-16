@@ -43,8 +43,8 @@ function Remisiones({navigation, route}){
       var min = new Date().getMinutes(); //Current Minutes
       var sec = new Date().getSeconds(); //Current Seconds
       setCurrentDate(
-        date + '/' + month + '/' + year 
-        + ' ' + hours + ':' + min + ':' + sec
+        `0${date}`.slice(-2) + '/' + `0${month}`.slice(-2) + '/' + `0${year}`.slice(-2) 
+        + ' ' + `0${hours}`.slice(-2) + ':' + `0${min}`.slice(-2) + ':' + `0${sec}`.slice(-2)
       );           
     },[route]) 
 
@@ -59,52 +59,48 @@ function Remisiones({navigation, route}){
     },[table])
 
     
-    
+    //
     const handlePrice =  (item,cantidad) => {      
-      let resul, datos =[]
+      let resul, datos =[], precio = 0
       db.transaction(
          tx => { 
            tx.executeSql("select * from empaques where clave = ?", [item.clave],  (tx, res) =>  {            
              let index = 0
             
               while (index < res.rows.length) {
-                datos = [...datos,res.rows.item(index)]
-                
+                datos = [...datos,res.rows.item(index)]                
                 index++              
               }
-              let arrayseis= datos, arraydoce = datos
-             
+
+              let arrayseis= datos, arraydoce = datos, arrayunidad =datos             
               let seis = arrayseis.filter((ele) => ele.empaque == 'SEIS' && item.piezas == ele.piezas)                   
+              let doce = arraydoce.filter((ele) => ele.empaque == 'DOCE' && item.piezas == ele.piezas)                    
+              //recuperamos precio original de pz cuando pasamos por mayoreo
+              let unidad = arrayunidad.filter((ele) => ele.empaque == item.empaque)                    
 
-              let doce = arraydoce.filter((ele) => ele.empaque == 'DOCE' && item.piezas == ele.piezas)      
+              precio= unidad[0].precio
+              resul= precio*cantidad
 
-              resul = ''
-
-              if (cantidad == '6')  {if (seis.length)  resul = parseFloat(seis[0].precio).toFixed(2)}
-
-              if (cantidad % 12 == 0)  {if (doce.length) resul = parseFloat((cantidad/12)*doce[0].precio).toFixed(2)}
-
-              if (resul == '')  resul= item.precio 
-
-              setMayoreo({total:resul, cantidad:cantidad,id:item.id})
-
+              if (cantidad == '6')  {if (seis.length)  {resul = parseFloat(seis[0].precio).toFixed(2)
+                                                        precio = (resul/cantidad).toFixed(2)}}
+              if (cantidad % 12 == 0)  {if (doce.length) {resul = parseFloat((cantidad/12)*doce[0].precio).toFixed(2)
+                                                          precio = (resul/cantidad).toFixed(2)}}
               
+              setMayoreo({total:resul, cantidad:cantidad,id:item.id, precio:precio})              
             })
         }
       )              
     }
-
     
-
-    useEffect(() => {
-      console.log(mayoreo)
+    //al presionar aumetar o disminuir cantidad, disparo este codigo
+    useEffect(() => {      
       if (mayoreo.cantidad){
         let data = [...table] 
         let id = (data.findIndex((x) => x.id == mayoreo.id))      
         data[id].cantidad = mayoreo.cantidad     
-        data[id].precio = parseFloat(mayoreo.total/mayoreo.cantidad).toFixed(2)
-        data[id].total = mayoreo.total*mayoreo.cantidad
-        setTable(data)
+        data[id].precio = mayoreo.precio
+        data[id].total = mayoreo.total        
+        setTable(data)                
       }
     },[mayoreo])
 
@@ -113,11 +109,7 @@ function Remisiones({navigation, route}){
     }
 
     const disminur = (item,cant) =>{          
-      let data = [...table] 
-      let id = (data.findIndex((x) => x.id == item.id))      
-      data[id].cantidad = cant-1      
-      data[id].total = (cant-1)*data[id].precio
-      setTable(data)
+      handlePrice(item,cant-1)  
     }
 
     const handleGuardar = () => {
