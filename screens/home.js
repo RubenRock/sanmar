@@ -10,30 +10,31 @@ function HomeScreen({ navigation }) {
 
   return (
     <>
+      
       <View style={styles.container1}>
-        <Image source={image} style={styles.stretch}/>        
-                       
-      </View>
+        <View style = {{flexDirection:'row',alignItems:'center'}}>
+          <View style={styles.shadowimage}>
+            <Image source={image} style={styles.image} />                          
+          </View>
+          <Text style={styles.text}>¡¡Bievenido a San Martin App!!</Text>
+        </View>
+      </View>      
 
       <View style={styles.container2}>
-
-      </View>
-
-      <View style={styles.container3}>
         <TouchableOpacity onPress={() => navigation.navigate('Remisiones',{dataTable: '',encabezado:encabezado})}>
-          <Text>Remisiones</Text>
+          <Text style={styles.menu}>Remisiones</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=> navigation.navigate('ListaRemision')}>
-          <Text>Lista de remisiones</Text>
+          <Text style={styles.menu}>Lista de remisiones</Text>
         </TouchableOpacity>
         <TouchableOpacity >
-          <Text>Ajustes</Text>
+          <Text style={styles.menu}>Ajustes</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('InventarioNube')}>
-          <Text>Descargar inventario de la Nube</Text>
+          <Text style={styles.menu}>Descargar inventario de la Nube</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Extras')}>
-          <Text>Extras</Text>
+          <Text style={styles.menu}>Extras</Text>
         </TouchableOpacity>  
 
       </View>
@@ -43,24 +44,81 @@ function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container1:{
-    flex:1,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    backgroundColor:'#f3a683'
+      flex:1,      
+      justifyContent:"center",
+      marginVertical:20, 
+      marginHorizontal:10,     
+      backgroundColor:'red',    
+      borderRadius:10,
+      padding:8,
+      alignSelf:'stretch',
+
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.36,
+      shadowRadius: 6.68,
+      
+      elevation: 11,
   },
   container2:{
-    flex:0.5
+      flex:2,
+      alignItems:"center",
+      marginVertical:20, 
+      marginHorizontal:10,     
+      backgroundColor:'#0084ff',    
+      borderRadius:10,
+      padding:8,
+      alignSelf:'stretch',
+
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.36,
+      shadowRadius: 6.68,
+      
+      elevation: 11,
   },
-  container3:{
-    flex:1.5,
-    backgroundColor:'#778beb'
+  shadowimage:{
+    borderRadius:50,
+    width: 100,
+    height: 100,  
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.43,
+    shadowRadius: 9.51,
+    
+    elevation: 15,
   },
-  stretch: {
-    width: 110,
-    height: 100,
-    
-    
-    
+  image: {
+    borderRadius:50,
+    width: 100,
+    height: 100,     
+  },
+  text:{
+    fontWeight: 'bold',
+    fontSize:40,
+    color:'white',
+    textAlign:'center',
+    marginLeft:15,    
+  },
+  menu:{
+    marginTop:15,
+    borderRadius:10,
+    backgroundColor:'white',
+    width:250,
+    textAlign:"center",
+    color:'red',
+    fontWeight: 'bold',
+    fontSize:15,    
   }
 })
 
