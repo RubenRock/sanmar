@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, ImageBackground, StyleSheet, Image} from '
 
 let encabezado = {name:'',direccion:'',condicion:'CONTADO'}
 
-const image = require('../lib/Logo4.JPG')
+const image = require('../assets/Logo4.png')
 
 
 function HomeScreen({ navigation }) {
@@ -46,12 +46,11 @@ const styles = StyleSheet.create({
   container1:{
       flex:1,      
       justifyContent:"center",
-      marginVertical:20, 
+      marginTop:20, 
       marginHorizontal:10,     
       backgroundColor:'red',    
       borderRadius:10,
-      padding:8,
-      alignSelf:'stretch',
+      padding:8,      
 
       shadowColor: "#000",
       shadowOffset: {
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
   container2:{
       flex:2,
       alignItems:"center",
-      marginVertical:20, 
+      marginVertical:15, 
       marginHorizontal:10,     
       backgroundColor:'#0084ff',    
       borderRadius:10,
@@ -104,21 +103,38 @@ const styles = StyleSheet.create({
     height: 100,     
   },
   text:{
+   
     fontWeight: 'bold',
-    fontSize:40,
+    fontSize:25,
     color:'white',
-    textAlign:'center',
-    marginLeft:15,    
+    textAlign:"center",    
+    marginLeft:15, 
+    width:'70%',   
   },
   menu:{
-    marginTop:15,
+    textAlignVertical:"center",
+    alignItems:'center',
+    marginTop:20,
     borderRadius:10,
-    backgroundColor:'white',
-    width:250,
+    backgroundColor:'#0084ff',
+    borderColor:'white',
+    borderWidth:2,
+    width:270,
     textAlign:"center",
-    color:'red',
+    color:'white',
     fontWeight: 'bold',
-    fontSize:15,    
+    fontSize:15,   
+    height:30,
+    
+    shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.36,
+      shadowRadius: 6.68,
+      
+      elevation: 11,
   }
 })
 

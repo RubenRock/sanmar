@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react'
 import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList, Alert} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
+import { AntDesign } from '@expo/vector-icons';
 
 const db = SQLITE.openDatabase("db.db");
 
@@ -188,14 +189,14 @@ function Remisiones({navigation, route}){
             //keyExtractor={}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <View style={{flex:2, marginTop:10}}>
+                  <View style={{flex:3, marginTop:10}}>
                     <Text>{item.cantidad} - {item.empaque} {item.producto}</Text>
                     <Text  >     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
                   </View>
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between', marginTop:10}}>
-                    <Button title="+" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
-                    <Button title=" - " onPress={() => disminur(item,parseInt(item.cantidad))}/>
-                    <Button title="borrar" onPress={() => setTable(table.filter((data)=> data.id !==item.id))}/>                                               
+                    <AntDesign name="pluscircleo" size={24} color="blue" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
+                    <AntDesign name="minuscircleo" size={24} color="blue" onPress={() => disminur(item,parseInt(item.cantidad))}/>
+                    <AntDesign style={styles.btneliminar} name="delete" size={24} color="blue" onPress={() => setTable(table.filter((data)=> data.id !==item.id))}/>
                   </View>                  
                 </View>
                 }
@@ -239,5 +240,9 @@ function Remisiones({navigation, route}){
       
     },
     head: { height: 40, backgroundColor: '#f1f8ff' },
-    text: { margin: 6 }
+    text: { margin: 6 },
+    btneliminar:{
+    
+    }
+
 })
