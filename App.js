@@ -24,8 +24,12 @@ const isLogged =() => {
 function MyStack() {
   
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen}/>      
+    <Stack.Navigator>     
+      <Stack.Screen name="Home" component={HomeScreen}  options={{         
+          headerStyle: {
+            backgroundColor: '#3F3DE0',           
+          },
+          headerTintColor: 'white'}}/>      
       <Stack.Screen name="Remisiones" component={remisionesScreen} />      
       <Stack.Screen name="Datos" component={datosScreen} />      
       <Stack.Screen name="Prueba" component={datosScreen} />      

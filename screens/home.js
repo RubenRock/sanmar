@@ -10,7 +10,7 @@ function HomeScreen({ navigation }) {
 
   return (
     <>
-      
+      <View style={styles.container}>
       <View style={styles.container1}>
         <View style = {{flexDirection:'row',alignItems:'center'}}>
           <View style={styles.shadowimage}>
@@ -33,22 +33,27 @@ function HomeScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.navigate('InventarioNube')}>
           <Text style={styles.menu}>Descargar inventario de la Nube</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Extras')}>
+        <TouchableOpacity style={{justifyContent:'center', borderWidth:1}} onPress={() => navigation.navigate('Extras')}>
           <Text style={styles.menu}>Extras</Text>
         </TouchableOpacity>  
 
+      </View>
       </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  container:{
+    flex:1,
+    backgroundColor:'#3F3DE0'
+  },
   container1:{
       flex:1,      
       justifyContent:"center",
-      marginTop:20, 
+       
       marginHorizontal:10,     
-      backgroundColor:'red',    
+      backgroundColor:'rgba(255,255,255,0.1)',    
       borderRadius:10,
       padding:8,      
 
@@ -67,7 +72,7 @@ const styles = StyleSheet.create({
       alignItems:"center",
       marginVertical:15, 
       marginHorizontal:10,     
-      backgroundColor:'#0084ff',    
+      backgroundColor:'rgba(255,255,255,0.1)',    
       borderRadius:10,
       padding:8,
       alignSelf:'stretch',
@@ -102,8 +107,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,     
   },
-  text:{
-   
+  text:{    
     fontWeight: 'bold',
     fontSize:25,
     color:'white',
@@ -111,12 +115,11 @@ const styles = StyleSheet.create({
     marginLeft:15, 
     width:'70%',   
   },
-  menu:{
-    textAlignVertical:"center",
-    alignItems:'center',
+  menu:{    
+    
     marginTop:20,
     borderRadius:10,
-    backgroundColor:'#0084ff',
+    backgroundColor:'#3F3DE0',
     borderColor:'white',
     borderWidth:2,
     width:270,
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     color:'white',
     fontWeight: 'bold',
     fontSize:15,   
-    height:30,
+    height:40,
     
     shadowColor: "#000",
       shadowOffset: {

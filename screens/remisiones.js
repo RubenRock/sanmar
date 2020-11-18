@@ -144,8 +144,8 @@ function Remisiones({navigation, route}){
     }
 
     return (
-      <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'white'}}>          
-        <View style={styles.header}>        
+      <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'red'}}>          
+        <View style={styles.container1}>        
           <View style={{flexDirection:'row', justifyContent:'space-around'}}>
             <Button title="guardar" onPress={() => handleGuardar()}/>
             <Button title="limpiar" onPress={() => handleClear()}/>
@@ -184,7 +184,7 @@ function Remisiones({navigation, route}){
         <Text>total: {total}</Text>
 
       <FlatList 
-            style={styles.header}
+            style={styles.container2}
             data={table}
             //keyExtractor={}
             renderItem={({item}) => 
@@ -208,9 +208,26 @@ function Remisiones({navigation, route}){
   export default Remisiones
 
   const styles = StyleSheet.create({
-    header:{
+    container1:{
+      marginTop:10,
+      backgroundColor:'white',    
+      borderRadius:10,
+      padding:8,
+      alignSelf:'stretch',
+
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 5,
+      },
+      shadowOpacity: 0.36,
+      shadowRadius: 6.68,
+      
+      elevation: 11,
+    },
+    container2:{
       marginTop:20,
-      backgroundColor:'#dfe6e9',    
+      //backgroundColor:'rgba(22,26,247,0.5)', 
       borderRadius:10,
       padding:8,
       alignSelf:'stretch',
