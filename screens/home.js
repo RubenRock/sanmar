@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.36,
       shadowRadius: 6.68,
       
-      elevation: 11,
+     /*  elevation: 11, */
   },
   container2:{
       flex:2,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.36,
       shadowRadius: 6.68,
       
-      elevation: 11,
+     /*  elevation: 11, */
   },
   shadowimage:{
     borderRadius:50,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.43,
     shadowRadius: 9.51,
     
-    elevation: 15,
+    /* elevation: 15, */
   },
   image: {
     borderRadius:50,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.36,
       shadowRadius: 6.68,
       
-      elevation: 11,
+      /* elevation: 11, */
   },
   menu:{    
     
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.36,
       shadowRadius: 6.68,
       
-      elevation: 11,
+      /* elevation: 11, */
   }  
 })
 

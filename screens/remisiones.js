@@ -1,9 +1,11 @@
 import React,{useState, useEffect} from 'react'
-import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList, Alert} from 'react-native'
+import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList, Alert, ImageBackground} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import { AntDesign } from '@expo/vector-icons';
 
-const db = SQLITE.openDatabase("db.db");
+const db = SQLITE.openDatabase("db.db")
+
+const fondo = require('../assets/fondo.png')
 
 
 function Remisiones({navigation, route}){
@@ -144,30 +146,31 @@ function Remisiones({navigation, route}){
     }
 
     return (
-      <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start',padding:10, backgroundColor:'red'}}>          
+      <View style={styles.fondo}>          
+        <ImageBackground source={fondo} style={styles.fondo}>
         <View style={styles.container1}>        
           <View style={{flexDirection:'row', justifyContent:'space-around'}}>
-            <Button title="guardar" onPress={() => handleGuardar()}/>
-            <Button title="limpiar" onPress={() => handleClear()}/>
+            <AntDesign name="save" size={30} color="#3F3DE0" onPress={() => handleGuardar()}/>            
+            <AntDesign name="closecircleo" size={30} color="#3F3DE0" onPress={() => handleClear()}/>                   
           </View>
           
-          <Text>Folio: {folio} </Text>
+          <Text style={styles.text}>Folio: {folio} </Text>
           
           <TextInput 
             placeholder="Nombre del cliente" 
-            style={styles.input}
+            style={[styles.input,styles.text]}
             onChangeText={(val) => setHeader({...header,name:val.toUpperCase()}) }            
             value={header.name}
           />  
           <TextInput 
             placeholder="Domicilio" 
-            style={styles.input}
+            style={[styles.input,styles.text]}
             onChangeText={(val) => setHeader({...header,direccion:val.toUpperCase()})}  
             value={header.direccion}
           />  
           <Picker           
             selectedValue={header.condicion}
-            //style={{ height: 50, width: 150 }}
+            style={{borderRadius:10,  backgroundColor:'rgba(255,255,255,0.1)',color:"#3F3DE0",}}
             onValueChange={(itemValue) => {                
                 setHeader({...header,condicion:itemValue})
               }}
@@ -177,30 +180,31 @@ function Remisiones({navigation, route}){
             <Picker.Item label="PAGA AL RECIBIR" value="PAGA AL RECIBIR" />
             <Picker.Item label="CREDITO" value="CREDITO" />
           </Picker>        
-          <Text>Fecha: {currentDate}</Text>          
-          <Button title='Productos' onPress={() => navigation.navigate('Datos', {dataTable: table, encabezado: header})} />
+          <Text style={styles.text}>Fecha: {currentDate}</Text>          
+          <Button style={styles.boton} title='Productos' onPress={() => navigation.navigate('Datos', {dataTable: table, encabezado: header})} />
         </View>
 
-        <Text>total: {total}</Text>
+        <Text style={[styles.text,{textAlign:'right', margin:10, fontWeight:'bold', fontSize:15}]}>Total: {total}</Text>
 
-      <FlatList 
+          <FlatList 
             style={styles.container2}
             data={table}
             //keyExtractor={}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                   <View style={{flex:3, marginTop:10}}>
-                    <Text>{item.cantidad} - {item.empaque} {item.producto}</Text>
-                    <Text  >     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
+                    <Text style={styles.text}>{item.cantidad} - {item.empaque} {item.producto}</Text>
+                    <Text style={styles.text}>     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
                   </View>
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between', marginTop:10}}>
-                    <AntDesign name="pluscircleo" size={24} color="blue" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
-                    <AntDesign name="minuscircleo" size={24} color="blue" onPress={() => disminur(item,parseInt(item.cantidad))}/>
-                    <AntDesign style={styles.btneliminar} name="delete" size={24} color="blue" onPress={() => setTable(table.filter((data)=> data.id !==item.id))}/>
+                    <AntDesign name="pluscircleo" size={24} color="#3F3DE0" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
+                    <AntDesign name="minuscircleo" size={24} color="#3F3DE0" onPress={() => disminur(item,parseInt(item.cantidad))}/>
+                    <AntDesign name="delete" size={24} color="#3F3DE0" onPress={() => setTable(table.filter((data)=> data.id !==item.id))}/>
                   </View>                  
                 </View>
                 }
           />
+        </ImageBackground>
       </View>
     );
 }
@@ -208,9 +212,13 @@ function Remisiones({navigation, route}){
   export default Remisiones
 
   const styles = StyleSheet.create({
-    container1:{
+    fondo:{
+      flex:1,
+    },
+    container1:{   
       marginTop:10,
-      backgroundColor:'white',    
+      marginHorizontal:10,     
+      backgroundColor:'rgba(255,255,255,0.1)',    
       borderRadius:10,
       padding:8,
       alignSelf:'stretch',
@@ -226,8 +234,9 @@ function Remisiones({navigation, route}){
       elevation: 11,
     },
     container2:{
-      marginTop:20,
-      //backgroundColor:'rgba(22,26,247,0.5)', 
+      
+      marginHorizontal:10,     
+      backgroundColor:'rgba(255,255,255,0.3)',    
       borderRadius:10,
       padding:8,
       alignSelf:'stretch',
@@ -242,9 +251,10 @@ function Remisiones({navigation, route}){
       
       elevation: 11,
     },
-    input:{
+    input:{     
       borderBottomWidth:2,
-      borderColor:'#eee',
+      borderColor:'white',
+      marginBottom:10
     },
     lists:{
       backgroundColor:'#dfe6e9',
@@ -257,9 +267,20 @@ function Remisiones({navigation, route}){
       
     },
     head: { height: 40, backgroundColor: '#f1f8ff' },
-    text: { margin: 6 },
-    btneliminar:{
-    
+    text: {       
+      color:"#3F3DE0" 
+    },
+    boton:{        
+      marginTop:20,
+      borderRadius:10,
+      backgroundColor:'#3F3DE0',
+      borderColor:'white',
+      borderWidth:2,
+      width:270,
+      textAlign:"center",
+      color:'white',
+      fontWeight: 'bold',
+      fontSize:15,   
+      height:30,
     }
-
 })
