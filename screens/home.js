@@ -62,17 +62,17 @@ const styles = StyleSheet.create({
       justifyContent:"center",
       marginTop:15, 
       marginHorizontal:10,     
-      backgroundColor:'rgba(255,255,255,0.1)',    
+      backgroundColor:'rgba(4,119,224,0.2)',    
       borderRadius:10,
       padding:8,      
 
-      shadowColor: "#000",
+     /*  shadowColor: "#000",
       shadowOffset: {
         width: 0,
         height: 5,
       },
       shadowOpacity: 0.36,
-      shadowRadius: 6.68,
+      shadowRadius: 6.68, */
       
      /*  elevation: 11, */
   },
@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
       alignItems:"center",
       marginVertical:15, 
       marginHorizontal:10,     
-      backgroundColor:'rgba(255,255,255,0.1)',    
+      backgroundColor:'rgba(4,119,224,0.2)',
       borderRadius:10,
       padding:8,
       alignSelf:'stretch',
 
-      shadowColor: "#000",
+      /* shadowColor: "#000",
       shadowOffset: {
         width: 0,
         height: 5,
@@ -94,14 +94,14 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.36,
       shadowRadius: 6.68,
       
-     /*  elevation: 11, */
+      elevation: 11, */
   },
   shadowimage:{
     borderRadius:50,
     width: 100,
     height: 100,  
 
-    shadowColor: "#000",
+    /* shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 7,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.43,
     shadowRadius: 9.51,
     
-    /* elevation: 15, */
+    elevation: 15, */
   },
   image: {
     borderRadius:50,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     borderColor:'white',
     borderWidth:2,
 
-    shadowColor: "#000",
+    /* shadowColor: "#000",
       shadowOffset: {
         width: 0,
         height: 5,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.36,
       shadowRadius: 6.68,
       
-      /* elevation: 11, */
+      elevation: 11, */
   },
   menu:{    
     
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize:15,   
     height:30,
     
-    shadowColor: "#000",
+    /* shadowColor: "#000",
       shadowOffset: {
         width: 0,
         height: 5,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.36,
       shadowRadius: 6.68,
       
-      /* elevation: 11, */
+      elevation: 11, */
   }  
 })
 

@@ -1,29 +1,10 @@
 import React,{useEffect, useState} from 'react'
-import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ScrollView, RefreshControlComponent} from 'react-native'
+import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ImageBackground} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
-
 
 const db = SQLITE.openDatabase("db.db");
 
-/* 
-const productos = [
-    {id:'1', producto:'azucar',precio:'20.5'},
-    {id:'2', producto:'jabon',precio:'40'},
-    {id:'3', producto:'leche',precio:'12.5'},
-
-] */
- 
-
-
-const empaques = [
-  {id:'1', id_producto:"21/10/202005:51:54 p.m.",empaque:'kg',precio:'20.5',seis:'112'},
-  {id:'2', id_producto:"21/10/202005:51:54 p.m.",empaque:'bulto',precio:'700'},
-  {id:'3', id_producto:'2',empaque:'250g',precio:'11'},
-  {id:'4', id_producto:'2',empaque:'caja',precio:'256'},
-  {id:'5', id_producto:'3',empaque:'ltr',precio:'17', doce:'200'},
-]
-
-
+const fondo = require('../assets/fondo.png')
 
 function datosScreen({navigation, route}) {
     const {dataTable, encabezado} = route.params   //encabezado trae nombre, domicilio y condicion para que no se borre de remisiones 
@@ -65,12 +46,8 @@ function datosScreen({navigation, route}) {
         },
         (e) => console.log(e.message))
     },[])
-
     
-    
-    
-    
-     useEffect(() =>{
+    useEffect(() =>{
       setproductoFiltrado(dataInventario)
     },[dataInventario])
     
@@ -143,54 +120,56 @@ function datosScreen({navigation, route}) {
       setproductoFiltrado(dataInventario)
       setempaqueFiltrado([])
       settxtProducto('')
-
-      
-      
     }
     
     
     return (
-      <View >
-      
-          <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})} />    
-          <TextInput 
-            placeholder='Producto' 
-            onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }
-            style={styles.input}
-            value={txtProducto}
+      <View style = {{flex:1}}>
+        <ImageBackground source={fondo} style={styles.container}>
             
-          />
-          <TextInput 
-            style={styles.input}
-            placeholder='Cantidad'                        
-            onChangeText={(x) => changeCantidad(x)}                        
-            value={cantidad} 
-            
-          />          
-          <FlatList 
-            style={styles.lists}
-            data={productoFiltrado}            
-            keyExtractor={(item) =>item.clave}
-            renderItem={({item}) => <TouchableOpacity
-                onPress={ () => handleListaProductos(item)}
-              >                
-                <Text >{item.producto}</Text>
-            </TouchableOpacity>}
-          />             
-          <FlatList 
-            style={styles.lists}
-            data={empaqueFiltrado}
-            keyExtractor={(item) =>String(item.id)}
-            renderItem={({item}) =>                 
-                  <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                
-                      
-                    <Text  >{item.empaque} - {item.precio}</Text>             
-                    <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
-                                    
-                  </View>               
-                }
-          />
-       
+            <View  style={[styles.container2]}>
+              <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})} />    
+              <TextInput 
+                placeholder='Producto' 
+                onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }
+                style={styles.input}
+                value={txtProducto}
+              />        
+
+              <TextInput 
+                style={styles.input}
+                placeholder='Cantidad'                        
+                onChangeText={(x) => changeCantidad(x)}                        
+                value={cantidad} 
+              />
+            </View>          
+
+            <View style={{flex:1}}>
+              <FlatList 
+                style={[styles.container2]}
+                data={productoFiltrado}            
+                keyExtractor={(item) =>item.clave}
+                renderItem={({item}) => <TouchableOpacity onPress={ () => handleListaProductos(item)}>                
+                                            <Text style={styles.text}>{item.producto}</Text>
+                                        </TouchableOpacity>}
+              />
+              </View>
+
+              <View style={{flex:1,marginBottom:15}}>
+              <FlatList 
+                 style={[styles.container2]}
+                data={empaqueFiltrado}
+                keyExtractor={(item) =>String(item.id)}
+                renderItem={({item}) =>                 
+                      <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}> 
+                        <Text style={styles.text} >{item.empaque} - {item.precio}</Text>             
+                        <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
+                      </View>               
+                    }
+              />
+              </View>
+             
+        </ImageBackground>
       </View>
                                
     )
@@ -199,17 +178,25 @@ function datosScreen({navigation, route}) {
   export default datosScreen
 
 const styles = StyleSheet.create({
-  lists:{
-    padding:5,
-    marginHorizontal:5,
-    marginTop:20,
-    height:200,
-    borderWidth:2,
-    borderColor:'black',
-    
+  container:{
+    flex:1,    
+  },
+  container2:{  
+    marginTop:10,
+    marginHorizontal:10,     
+    backgroundColor:'rgba(4,119,224,0.2)',
+    borderRadius:10,
+    padding:8,    
   },
   input:{
-    padding:5,
-    margin:5,
+    borderBottomWidth:2,
+    borderColor:'white',
+    marginTop:10,
+    color:"#3F3DE0"
+  },
+  text:{
+    color:"#3F3DE0",
+    fontWeight:"bold"
   }
+
 })

@@ -150,8 +150,9 @@ function Remisiones({navigation, route}){
         <ImageBackground source={fondo} style={styles.fondo}>
         <View style={styles.container1}>        
           <View style={{flexDirection:'row', justifyContent:'space-around'}}>
+            <AntDesign name="pluscircleo" size={24} color="#3F3DE0" onPress={() => navigation.navigate('Datos', {dataTable: table, encabezado: header})} />
             <AntDesign name="save" size={30} color="#3F3DE0" onPress={() => handleGuardar()}/>            
-            <AntDesign name="closecircleo" size={30} color="#3F3DE0" onPress={() => handleClear()}/>                   
+            <AntDesign name="closecircleo" size={30} color="#3F3DE0" onPress={() => handleClear()}/>                               
           </View>
           
           <Text style={styles.text}>Folio: {folio} </Text>
@@ -180,8 +181,7 @@ function Remisiones({navigation, route}){
             <Picker.Item label="PAGA AL RECIBIR" value="PAGA AL RECIBIR" />
             <Picker.Item label="CREDITO" value="CREDITO" />
           </Picker>        
-          <Text style={styles.text}>Fecha: {currentDate}</Text>          
-          <Button style={styles.boton} title='Productos' onPress={() => navigation.navigate('Datos', {dataTable: table, encabezado: header})} />
+          <Text style={styles.text}>Fecha: {currentDate}</Text>                    
         </View>
 
         <Text style={[styles.text,{textAlign:'right', margin:10, fontWeight:'bold', fontSize:15}]}>Total: {total}</Text>
@@ -193,8 +193,8 @@ function Remisiones({navigation, route}){
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                   <View style={{flex:3, marginTop:10}}>
-                    <Text style={styles.text}>{item.cantidad} - {item.empaque} {item.producto}</Text>
-                    <Text style={styles.text}>     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
+                    <Text style={[styles.text,{fontWeight:"bold"}]}>{item.cantidad} - {item.empaque} {item.producto}</Text>
+                    <Text style={[styles.text,{fontWeight:"bold"}]}>     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
                   </View>
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between', marginTop:10}}>
                     <AntDesign name="pluscircleo" size={24} color="#3F3DE0" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
@@ -218,38 +218,22 @@ function Remisiones({navigation, route}){
     container1:{   
       marginTop:10,
       marginHorizontal:10,     
-      backgroundColor:'rgba(255,255,255,0.1)',    
+      backgroundColor:'rgba(4,119,224,0.2)',
       borderRadius:10,
       padding:8,
-      alignSelf:'stretch',
-
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 5,
-      },
-      shadowOpacity: 0.36,
-      shadowRadius: 6.68,
-      
-      elevation: 11,
+      alignSelf:'stretch',     
     },
     container2:{
-      
-      marginHorizontal:10,     
-      backgroundColor:'rgba(255,255,255,0.3)',    
+      marginHorizontal:10,
+      marginBottom:15,           
+      backgroundColor:'rgba(4,119,224,0.2)',
       borderRadius:10,
       padding:8,
       alignSelf:'stretch',
 
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 5,
-      },
-      shadowOpacity: 0.36,
-      shadowRadius: 6.68,
+      shadowColor: "#000",  
       
-      elevation: 11,
+     
     },
     input:{     
       borderBottomWidth:2,
