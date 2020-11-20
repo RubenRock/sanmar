@@ -10,4 +10,16 @@ export const container = {
     alignSelf:'stretch',     
   }
 
+  export const boton = {marginTop:20,
+    borderRadius:10,
+    backgroundColor:'#3F3DE0',
+    borderColor:'white',
+    borderWidth:2,
+    width:270,
+    textAlign:"center",
+    color:'white',
+    fontWeight: 'bold',
+    fontSize:15,   
+    height:30,
+  }
  

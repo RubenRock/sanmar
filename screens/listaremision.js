@@ -200,11 +200,11 @@ function listaRemisionScreen(){
     return(
         <View style={styles.container}>
           <ImageBackground source={Interface.fondo} style={styles.fondo}>
-            <View style={[styles.header,styles.container2]}>
-              {parseInt(folios.inicio) <= parseInt(folios.fin) && folios.fin.trim() !== '' && folios.inicio.trim() !== '' ?
-                <View style={styles.boton}>
-                  <Button  title="Mandar a nube" onPress={() =>handleBoton()}/>                  
-                </View>
+            <View style={[styles.header,Interface.container]}>
+              {parseInt(folios.inicio) <= parseInt(folios.fin) && folios.fin.trim() !== '' && folios.inicio.trim() !== '' ?                
+                  <TouchableOpacity onPress={() =>handleBoton()}>
+                    <Text style={[Interface.boton,{width:150,marginTop:15}]}>Mandar a nube</Text>
+                  </TouchableOpacity>                                                
                 :null
               }
 
@@ -227,11 +227,11 @@ function listaRemisionScreen(){
             data={data}
             keyExtractor={(ele) => String(ele.folio)}
             renderItem={({item}) =>
-                <View style={styles.container2}>
+                <View style={[Interface.container,{marginTop:5}]}>
                   <TouchableOpacity onPress={() => alert(item.folio) }>
-                    <Text style={styles.texto} >Folio: {(item.folio)}    Cliente: {item.cliente} </Text>
+                    <Text style={styles.texto} >Folio: {(item.folio)} -{item.cliente} </Text>
                     <Text style={[styles.texto, styles.texto_pequeño]} >Total: ${item.total}   Fecha: {item.fecha}</Text>
-                    <Text style={[styles.texto, styles.texto_pequeño]} >Domicilio: {item.domicilio}</Text>
+                    {/*  <Text style={[styles.texto, styles.texto_pequeño]} >Domicilio: {item.domicilio}</Text>*/}
                   </TouchableOpacity>
                 </View>
               }
@@ -272,9 +272,7 @@ const styles = StyleSheet.create({
   boton:{
     margin:10
   },
-  container2 : Interface.container,
-
-
+  
 })
 
 export default listaRemisionScreen

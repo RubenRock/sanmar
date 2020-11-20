@@ -1,5 +1,6 @@
 import React from 'react'
 import {View, Text, TouchableOpacity,  StyleSheet, Image,ImageBackground} from 'react-native'
+import * as Interface from '../components/interface'
 
 
 let encabezado = {name:'',direccion:'',condicion:'CONTADO'}
@@ -15,30 +16,30 @@ function HomeScreen({ navigation }) {
       
       <View style={styles.container}>
           <ImageBackground source={fondo} style={styles.fondo}>
-          <View style={styles.container1}>
+          <View style={[Interface.container,{paddingVertical:20}]}>
             <View style = {{flexDirection:'row',alignItems:'center',justifyContent:"center"}}>
-              <View style={styles.shadowimage}>
+              <View>
                 <Image source={image} style={styles.image} />                          
               </View>
               <Text style={styles.text}>¡¡Bievenido a San Martin App!!</Text>
             </View>
           </View>      
 
-          <View style={styles.container2}>
+          <View style={[Interface.container,{alignItems:"center",flex:1,marginBottom:15}]}>
             <TouchableOpacity onPress={() => navigation.navigate('Remisiones',{dataTable: '',encabezado:encabezado})}>
-              <Text style={styles.menu}>Remisiones</Text>
+              <Text style={Interface.boton}>Remisiones</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=> navigation.navigate('ListaRemision')}>
-              <Text style={styles.menu}>Lista de remisiones</Text>
+              <Text style={Interface.boton}>Lista de remisiones</Text>
             </TouchableOpacity>
             <TouchableOpacity >
-              <Text style={styles.menu}>Ajustes</Text>
+              <Text style={Interface.boton}>Ajustes</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('InventarioNube')}>
-              <Text style={styles.menu}>Descargar inventario de la Nube</Text>
+              <Text style={Interface.boton}>Descargar inventario de la Nube</Text>
             </TouchableOpacity>
             <TouchableOpacity  onPress={() => navigation.navigate('Extras')}>
-              <Text style={styles.menu}>Extras</Text>
+              <Text style={Interface.boton}>Extras</Text>
             </TouchableOpacity>  
 
           </View>
@@ -56,61 +57,7 @@ const styles = StyleSheet.create({
   container:{
     flex:1,
     backgroundColor:'white'   
-  },
-  container1:{
-      flex:1,      
-      justifyContent:"center",
-      marginTop:15, 
-      marginHorizontal:10,     
-      backgroundColor:'rgba(4,119,224,0.2)',    
-      borderRadius:10,
-      padding:8,      
-
-     /*  shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 5,
-      },
-      shadowOpacity: 0.36,
-      shadowRadius: 6.68, */
-      
-     /*  elevation: 11, */
-  },
-  container2:{
-      flex:2,
-      alignItems:"center",
-      marginVertical:15, 
-      marginHorizontal:10,     
-      backgroundColor:'rgba(4,119,224,0.2)',
-      borderRadius:10,
-      padding:8,
-      alignSelf:'stretch',
-
-      /* shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 5,
-      },
-      shadowOpacity: 0.36,
-      shadowRadius: 6.68,
-      
-      elevation: 11, */
-  },
-  shadowimage:{
-    borderRadius:50,
-    width: 100,
-    height: 100,  
-
-    /* shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 7,
-    },
-    shadowOpacity: 0.43,
-    shadowRadius: 9.51,
-    
-    elevation: 15, */
-  },
+  }, 
   image: {
     borderRadius:50,
     width: 100,
@@ -138,31 +85,7 @@ const styles = StyleSheet.create({
       shadowRadius: 6.68,
       
       elevation: 11, */
-  },
-  menu:{    
-    
-    marginTop:20,
-    borderRadius:10,
-    backgroundColor:'#3F3DE0',
-    borderColor:'white',
-    borderWidth:2,
-    width:270,
-    textAlign:"center",
-    color:'white',
-    fontWeight: 'bold',
-    fontSize:15,   
-    height:30,
-    
-    /* shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 5,
-      },
-      shadowOpacity: 0.36,
-      shadowRadius: 6.68,
-      
-      elevation: 11, */
-  }  
+  },   
 })
 
   export default HomeScreen
