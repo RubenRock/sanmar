@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text,FlatList, StyleSheet,TouchableOpacity, Button, TextInput, Alert} from 'react-native'
+import {View, Text,FlatList, StyleSheet,TouchableOpacity, Button, TextInput, Alert, ImageBackground} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
+import * as Interface from '../components/interface'
 
 const db = SQLITE.openDatabase("db.db")
 
@@ -103,8 +104,7 @@ function listaRemisionScreen(){
     
   }
   
-  useEffect(() =>{  
-    console.log('datos en listaremision: '+listaRemision.length)
+  useEffect(() =>{      
     listaRemision.length ? mandarNube()
     : null
   },[listaRemision])
@@ -198,8 +198,9 @@ function listaRemisionScreen(){
     },[])
     
     return(
-        <View>
-            <View style={styles.header}>
+        <View style={styles.container}>
+          <ImageBackground source={Interface.fondo} style={styles.fondo}>
+            <View style={[styles.header,styles.container2]}>
               {parseInt(folios.inicio) <= parseInt(folios.fin) && folios.fin.trim() !== '' && folios.inicio.trim() !== '' ?
                 <View style={styles.boton}>
                   <Button  title="Mandar a nube" onPress={() =>handleBoton()}/>                  
@@ -226,7 +227,7 @@ function listaRemisionScreen(){
             data={data}
             keyExtractor={(ele) => String(ele.folio)}
             renderItem={({item}) =>
-                <View style={styles.lista}>
+                <View style={styles.container2}>
                   <TouchableOpacity onPress={() => alert(item.folio) }>
                     <Text style={styles.texto} >Folio: {(item.folio)}    Cliente: {item.cliente} </Text>
                     <Text style={[styles.texto, styles.texto_pequeño]} >Total: ${item.total}   Fecha: {item.fecha}</Text>
@@ -235,47 +236,43 @@ function listaRemisionScreen(){
                 </View>
               }
             />            
+          </ImageBackground>
         </View>
     )
 
 }
 
 const styles = StyleSheet.create({
-  lista:{    
-    padding:5,
-    backgroundColor:"#00AFF0",
-    marginTop:10,
-    marginHorizontal:5,   
-    borderRadius:10,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.36,
-    shadowRadius: 6.68,
-    
-    elevation: 11,
+  container:{
+    flex:1
+  },
+  fondo:{
+    flex:1,
   },
   texto:{
-    color:'white',
+    color:Interface.colorText,
   },
   texto_pequeño:{
     fontSize:12
   },
   header:{
     flexDirection:"row",
-    justifyContent:'flex-end'
+    justifyContent:'flex-end',  
+    
   },
   input:{
+    color: Interface.colorText,
+    fontSize:15,
     borderBottomWidth:1,
+    borderColor:'white',
     marginTop:5,
     marginHorizontal:10,
+   
   },
   boton:{
     margin:10
-  }
+  },
+  container2 : Interface.container,
 
 
 })
