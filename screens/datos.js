@@ -168,8 +168,11 @@ function datosScreen({navigation, route}) {
                     if (item.empaque !=='SEIS' && item.empaque !=='DOCE')
                       return(
                         <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                      
-                          <Text style={styles.text} >{item.empaque} - {item.precio}</Text>             
-                          <AntDesign name="pluscircleo" size={24} color={Interface.colorText} onPress={ () => handleListaEmpaque(item)} />                      
+                          <Text style={styles.text} >{item.empaque} - {item.precio}</Text> 
+                          <View style={{flexDirection:'row'}}>
+                            <AntDesign name="bars" size={24} color={Interface.colorText} style={{marginRight:30}} onPress={()=> navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, producto:productoSeleccionado, empaque:item.empaque})} />            
+                            <AntDesign name="pluscircleo" size={24} color={Interface.colorText} onPress={ () => handleListaEmpaque(item)} />                      
+                          </View>
                         </View>  
                       )                                   
                       
@@ -201,7 +204,7 @@ const styles = StyleSheet.create({
     borderBottomWidth:2,
     borderColor:'white',
     marginTop:10,
-    color:"#3F3DE0"
+    color:Interface.colorText
   },
   text:{
     color:"#3F3DE0",

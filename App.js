@@ -8,6 +8,7 @@ import datosScreen from './screens/datos'
 import extrasScreen from './screens/extras'
 import listaRemisionScreen from './screens/listaremision'
 import DescargarInventario from './screens/descargarinventario'
+import similaresScreen from './screens/similares'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -81,6 +82,14 @@ function MyStack() {
           headerRight: () => (
             <Image source={image} style={styles.image} /> 
           ),}}/> 
+        <Stack.Screen name="Similares" component={similaresScreen} options={{         
+          headerStyle: {
+            backgroundColor: '#3F3DE0',           
+          },
+          headerTintColor: 'white',
+          headerRight: () => (
+            <Image source={image} style={styles.image} /> 
+          ),}}/>
     </Stack.Navigator>
   );
 }

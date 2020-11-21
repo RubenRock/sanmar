@@ -31,10 +31,7 @@ function HomeScreen({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity onPress={()=> navigation.navigate('ListaRemision')}>
               <Text style={Interface.boton}>Lista de remisiones</Text>
-            </TouchableOpacity>
-            <TouchableOpacity >
-              <Text style={Interface.boton}>Ajustes</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>            
             <TouchableOpacity onPress={() => navigation.navigate('InventarioNube')}>
               <Text style={Interface.boton}>Descargar inventario de la Nube</Text>
             </TouchableOpacity>
