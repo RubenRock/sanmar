@@ -1,6 +1,8 @@
 import React,{useEffect, useState} from 'react'
 import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ImageBackground} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
+import * as Interface from '../components/interface'
+import { AntDesign } from '@expo/vector-icons'
 
 const db = SQLITE.openDatabase("db.db");
 
@@ -127,8 +129,10 @@ function datosScreen({navigation, route}) {
       <View style = {{flex:1}}>
         <ImageBackground source={fondo} style={styles.container}>
             
-            <View  style={[styles.container2]}>
-              <Button title="Agregar" onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})} />    
+            <View  style={Interface.container}>
+              <TouchableOpacity  onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})}>
+                <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Agregar</Text>
+              </TouchableOpacity>              
               <TextInput 
                 placeholder='Producto' 
                 onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }
@@ -146,7 +150,7 @@ function datosScreen({navigation, route}) {
 
             <View style={{flex:1}}>
               <FlatList 
-                style={[styles.container2]}
+                style={Interface.container}
                 data={productoFiltrado}            
                 keyExtractor={(item) =>item.clave}
                 renderItem={({item}) => <TouchableOpacity onPress={ () => handleListaProductos(item)}>                
@@ -157,15 +161,20 @@ function datosScreen({navigation, route}) {
 
               <View style={{flex:1,marginBottom:15}}>
               <FlatList 
-                 style={[styles.container2]}
+                 style={Interface.container}
                 data={empaqueFiltrado}
                 keyExtractor={(item) =>String(item.id)}
-                renderItem={({item}) =>                 
-                      <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}> 
-                        <Text style={styles.text} >{item.empaque} - {item.precio}</Text>             
-                        <Button title="Agregar" onPress={ () => handleListaEmpaque(item)} />                             
-                      </View>               
-                    }
+                renderItem={({item}) =>  {
+                    if (item.empaque !=='SEIS' && item.empaque !=='DOCE')
+                      return(
+                        <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                      
+                          <Text style={styles.text} >{item.empaque} - {item.precio}</Text>             
+                          <AntDesign name="pluscircleo" size={24} color={Interface.colorText} onPress={ () => handleListaEmpaque(item)} />                      
+                        </View>  
+                      )                                   
+                      
+                  }
+                  }
               />
               </View>
              

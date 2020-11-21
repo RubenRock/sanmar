@@ -1,6 +1,7 @@
 import React from 'react'
-import {Button, Text, View} from 'react-native'
+import {TouchableOpacity, Text, View, ImageBackground, StyleSheet} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
+import * as Interface from '../components/interface'
 
 const db = SQLITE.openDatabase("db.db");
 
@@ -18,12 +19,26 @@ const formatear = () =>{
 function extrasScreen() {
 
     return(
-        <View>
-            <Text>formatear base de datos</Text>
-            <Button title='formatear' onPress={() =>formatear()}/>
-        </View>
+        <ImageBackground source={Interface.fondo} style={{flex:1,justifyContent:"center"}}>
+            <View style={Interface.container}>
+                <Text style={styles.text}> Formatear base de datos</Text>
+                <TouchableOpacity onPress={() =>formatear()}>
+                    <Text style={[Interface.boton,{marginTop:50, width:"100%",}]}>Formatear</Text>
+                </TouchableOpacity>                
+            </View>
+        </ImageBackground>
     )
     
 }
+
+const styles = StyleSheet.create({
+    text:{
+        color:Interface.colorText,
+        marginTop:10,
+        textAlign:"center",
+        fontSize:20,
+        fontWeight:"bold",
+    }
+})
 
 export default extrasScreen

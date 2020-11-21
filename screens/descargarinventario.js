@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import { View, Text, Button, ActivityIndicator, StyleSheet, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert,ImageBackground } from 'react-native'
 import * as SQLITE from 'expo-sqlite'
+import * as Interface from '../components/interface'
 
 const db = SQLITE.openDatabase("db.db");
 
@@ -112,21 +113,21 @@ function DescargarInventario (){
       fetchEmpaque()
     },[])   
 
-return(
-        <View >
-            <Text style={styles.texto}>Aqui puedes actualizar tu inventario</Text>
-            {dataEmpaque ==undefined && <ActivityIndicator />}
-            {dataInventario && dataEmpaque && 
-                <View style={styles.boton}>
-                  <Button  title="Actualizar" onPress={() => {
-                    borrartodoSql()
-                    agregarSql()}}/>                  
-                </View>
-            }
-            
-
+return(          
+    <ImageBackground source={Interface.fondo} style={{flex:1, justifyContent:"center",}}>
+        <View style={Interface.container}>
+          <Text style={styles.texto}>Aqui puedes actualizar tu inventario</Text>
+          {dataEmpaque ==undefined && <ActivityIndicator />}
+          {dataInventario && dataEmpaque && 
+              <TouchableOpacity onPress={() => {
+                borrartodoSql()
+                agregarSql()}}>
+                <Text style={[Interface.boton,{marginTop:50,width:"100%" }]}>Actualizar</Text>
+              </TouchableOpacity>                
+          }
         </View>
-    )
+    </ImageBackground>    
+)
 }
 
 const styles = StyleSheet.create({
@@ -136,9 +137,10 @@ const styles = StyleSheet.create({
   },
   texto:{
     marginTop:10,
-    alignSelf:'center',
-    alignItems:'center',
-    height:50
+    textAlign:"center",
+    fontSize:20,
+    fontWeight:"bold",
+    color:Interface.colorText
   }
 })
 
