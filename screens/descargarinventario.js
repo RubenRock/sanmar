@@ -23,6 +23,8 @@ const borrartodoSql = () => {
 function DescargarInventario (){    
     const [dataInventario, setDataInventario] = useState() //miarroba
     const [dataEmpaque, setDataEmpaque] = useState() //miarroba
+    const [dataListaSimilar, setDataListaSimilar] = useState() //miarroba
+    const [dataSimilar, setDataSimilar] = useState() //miarroba
 
     //creacion de tablas
     useEffect(() =>{
@@ -31,6 +33,8 @@ function DescargarInventario (){
           tx.executeSql("create table if not exists empaques (clave text, empaque text, precio text, piezas integer, barras text, id integer)");
           tx.executeSql("create table if not exists remisiones (folio integer, cantidad text, producto text, total text, tipo text, empaque text, descuento text)");
           tx.executeSql("create table if not exists lista_remision (folio integer, cliente text, total text, fecha text, vendedor text, condicion text, estado text, domicilio text, impresion text, descuento text)");
+          tx.executeSql("create table if not exists listasimilar (clave integer, descripcion text)");
+          tx.executeSql("create table if not exists similares (clave integer, producto text)");
         });    
       },[])
 
@@ -43,12 +47,22 @@ function DescargarInventario (){
             dataInventario.forEach(
                 (ele) => tx.executeSql("insert into inventario (clave, producto, iva, usuario, fecha , ieps) values (?, ?, ?, ?, ?, ?)", [ele.clave, ele.producto, ele.iva, ele.usuario, ele.fecha, ele.ieps])                
             )
+            
             dataEmpaque.forEach(
               ele => {
                 ele.empaque == '6' ? empaque='SEIS' : ele.empaque == '12' ? empaque='DOCE' : empaque= ele.empaque                
                 tx.executeSql("insert into empaques (clave, empaque, precio, piezas, barras , id) values (?, ?, ?, ?, ?, ?)", [ele.clave, empaque, ele.precio, ele.piezas, ele.barras, ele.id])
               }
-            )            
+            )
+            
+            dataListaSimilar.forEach(
+              (ele) => tx.executeSql("insert into listasimilar (clave, descripcion) values (?, ?)", [ele.clave, ele.descripcion])                
+            )
+
+            dataSimilar.forEach(
+              (ele) => tx.executeSql("insert into similares (clave, producto) values (?, ?)", [ele.clave, ele.producto])                
+            )
+
           },(e) => console.log(e),//error
           () =>  Alert.alert(
             "Inventario Actualizado",
@@ -108,17 +122,33 @@ function DescargarInventario (){
         setDataEmpaque(data)        
       }
 
+      const fetchListaSimilar = async () => {       
+        const response = await fetch('https://vercel-api-eta.vercel.app/api/listasimilar' )
+        
+        const data = await response.json()       
+        setDataListaSimilar(data)        
+      }
+
+      const fetchSimilar = async () => {       
+        const response = await fetch('https://vercel-api-eta.vercel.app/api/similares' )
+        
+        const data = await response.json()       
+        setDataSimilar(data)        
+      }
+
 
       fetchInventario()
       fetchEmpaque()
+      fetchListaSimilar()
+      fetchSimilar()
     },[])   
 
 return(          
     <ImageBackground source={Interface.fondo} style={{flex:1, justifyContent:"center",}}>
         <View style={Interface.container}>
           <Text style={styles.texto}>Aqui puedes actualizar tu inventario</Text>
-          {dataEmpaque ==undefined && <ActivityIndicator />}
-          {dataInventario && dataEmpaque && 
+          {dataSimilar ==undefined && <ActivityIndicator />}
+          {dataSimilar && dataEmpaque && 
               <TouchableOpacity onPress={() => {
                 borrartodoSql()
                 agregarSql()}}>

@@ -20,6 +20,7 @@ function datosScreen({navigation, route}) {
     const [txtProducto, settxtProducto] = useState('')  //necesario para limpiar la caja de producto
     const [dataInventario,setDataInventario] = useState() 
     const [dataEmpaque,setDataEmpaque] = useState() 
+    const [dataSimilares,setDataSimilares] = useState([]) 
 
     const productoFilter = (text) =>  dataInventario.filter((x)=>String(x.producto).includes(text))
 
@@ -43,6 +44,15 @@ function datosScreen({navigation, route}) {
               index++              
             }            
             setDataEmpaque(resul)                                  
+          }),
+
+          tx.executeSql("select * from similares", [],  (tx, res) =>  {            
+            let resul = [];let index = 0
+            while (index < res.rows.length) {
+              resul = [...resul,res.rows.item(index)]
+              index++              
+            }            
+            setDataSimilares(resul)                                  
           })
 
         },
@@ -124,6 +134,11 @@ function datosScreen({navigation, route}) {
       settxtProducto('')
     }
     
+    const handleSurtir = (item) => {
+      let simi = dataSimilares.find(ele => ele.producto == item.clave)      
+      simi ? navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, producto:productoSeleccionado, empaque:item})
+      : alert('No tiene similares')
+    }
     
     return (
       <View style = {{flex:1}}>
@@ -170,7 +185,7 @@ function datosScreen({navigation, route}) {
                         <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                      
                           <Text style={styles.text} >{item.empaque} - {item.precio}</Text> 
                           <View style={{flexDirection:'row'}}>
-                            <AntDesign name="bars" size={24} color={Interface.colorText} style={{marginRight:30}} onPress={()=> navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, producto:productoSeleccionado, empaque:item.empaque})} />            
+                            <AntDesign name="bars" size={24} color={Interface.colorText} style={{marginRight:30}} onPress={()=> handleSurtir(item) }/>            
                             <AntDesign name="pluscircleo" size={24} color={Interface.colorText} onPress={ () => handleListaEmpaque(item)} />                      
                           </View>
                         </View>  

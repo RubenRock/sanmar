@@ -1,38 +1,53 @@
-import React from 'react'
-import {View, ImageBackground,Text, TextInput, StyleSheet} from 'react-native'
+import React, { useState, useEffect } from 'react'
+import {View, ImageBackground,Text, TextInput, StyleSheet, FlatList, TouchableOpacity} from 'react-native'
 import * as Interface from '../components/interface'
+import * as SQLITE from 'expo-sqlite'
 
-const productos = [
-    {id:'1', producto:'azucar',precio:'20.5'},
-    {id:'2', producto:'jabon',precio:'40'},
-    {id:'3', producto:'leche',precio:'12.5'},
-
-]
-
-const empaques = [
-  {id:'1', id_producto:'1',empaque:'kg',precio:'20.5',seis:'112'},
-  {id:'2', id_producto:'1',empaque:'bulto',precio:'700'},
-  {id:'3', id_producto:'2',empaque:'250g',precio:'11'},
-  {id:'4', id_producto:'2',empaque:'caja',precio:'256'},
-  {id:'5', id_producto:'3',empaque:'ltr',precio:'17', doce:'200'},
-]
+const db = SQLITE.openDatabase("db.db");
 
 function similaresScreen({navigation, route}){
-    const {cantidad, producto, empaque} = route.params
-    console.log(cantidad+' '+producto+' '+empaque)
+    const {cantidad, producto, empaque} = route.params  
+
+    const [dataInventario, setDataInventario] = useState([])
+
+    useEffect( () => {
+        db.transaction(
+          tx => {               
+            tx.executeSql("select inventario.clave as claves, inventario.producto as productos from inventario, similares where inventario.clave = similares.producto", [],  (tx, res) =>  {            
+              let resul = [];let index = 0
+              while (index < res.rows.length) {
+                resul = [...resul,res.rows.item(index)]
+                index++              
+              }            
+              setDataInventario(resul)                                  
+            })
+          },
+          (e) => console.log(e.message))
+      },[])
+    
+    console.log(dataInventario)
 
     return(      
         <ImageBackground source={Interface.fondo} style={{flex:1}}>            
             <View style={Interface.container}>
+                <Text>{cantidad} {empaque.empaque} {producto}  Piezas: {cantidad * empaque.piezas}</Text>
                 <TextInput placeholder="Cantidad" style={styles.input}/>
 
             </View>
 
-            <View style={Interface.container}>
+            <View style={{flex:1}}>
+               <FlatList 
+                    style={Interface.container}
+                    data={dataInventario}            
+                    keyExtractor={(item) =>item.claves}
+                    renderItem={({item}) => <TouchableOpacity >                
+                                                <Text>{item.productos}</Text>
+                                            </TouchableOpacity>}
+                /> 
 
-            </View>
+            </View >
 
-            <View style={Interface.container}>
+            <View style={{flex:1}}>
 
             </View>
         </ImageBackground>
