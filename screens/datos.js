@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     color:Interface.colorText
   },
   text:{
-    color:"#3F3DE0",
+    color:Interface.colorText,
     fontWeight:"bold"
   }
 
