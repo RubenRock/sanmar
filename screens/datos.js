@@ -66,6 +66,12 @@ function datosScreen({navigation, route}) {
     
     useEffect(() =>{
       setlistProductos(dataTable)
+
+      setproductoFiltrado('')
+      setCantidad('1')
+      setproductoFiltrado(dataInventario)
+      setempaqueFiltrado([])
+      settxtProducto('')
     },[route]) 
     
     //necesitan los hooks por eso tienen que estar dentro de esta funcion

@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import {View, Text, Button, TextInput, StyleSheet,Picker, FlatList, Alert, ImageBackground} from 'react-native'
+import {View, Text, TextInput, StyleSheet,Picker, FlatList, Alert, ImageBackground} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import { AntDesign } from '@expo/vector-icons';
 
@@ -145,6 +145,8 @@ function Remisiones({navigation, route}){
       obtenerFolio()
     }
 
+    console.log(table)
+
     return (
       <View style={styles.fondo}>          
         <ImageBackground source={fondo} style={styles.fondo}>
@@ -194,12 +196,24 @@ function Remisiones({navigation, route}){
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                   <View style={{flex:3, marginTop:10}}>
                     <Text style={[styles.text,{fontWeight:"bold"}]}>{item.cantidad} - {item.empaque} {item.producto}</Text>
-                    <Text style={[styles.text,{fontWeight:"bold"}]}>     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
+                    {item.precio !== '0' ?  /* los productos surtido le quitamos esta informacion */
+                      <Text style={[styles.text,{fontWeight:"bold"}]}>     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
+                      : null
+                    }
                   </View>
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between', marginTop:10}}>
-                    <AntDesign name="pluscircleo" size={24} color="#3F3DE0" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
-                    <AntDesign name="minuscircleo" size={24} color="#3F3DE0" onPress={() => disminur(item,parseInt(item.cantidad))}/>
-                    <AntDesign name="delete" size={24} color="#3F3DE0" onPress={() => setTable(table.filter((data)=> data.id !==item.id))}/>
+                    { !item.surtido ? 
+                      <>
+                        <AntDesign name="pluscircleo" size={24} color="#3F3DE0" onPress={() => aumentar(item,parseInt(item.cantidad))}/>
+                        <AntDesign name="minuscircleo" size={24} color="#3F3DE0" onPress={() => disminur(item,parseInt(item.cantidad))}/>
+                      </>
+                      : null                    
+                    }
+                    {item.precio !== '0' ?                      
+                        <AntDesign name="delete" size={24} color="#3F3DE0" onPress={() => item.surtido ? setTable(table.filter((data)=> data.surtido !== item.surtido ))
+                                                                                                        : setTable(table.filter((data)=> data.id !==item.id ))}/>                      
+                      : null
+                    } 
                   </View>                  
                 </View>
                 }

@@ -5,12 +5,14 @@ import * as SQLITE from 'expo-sqlite'
 import { AntDesign } from '@expo/vector-icons'
 
 const db = SQLITE.openDatabase("db.db");
+let id_surdito
 
 function similaresScreen({navigation, route}){
-    const {cantidad, empaque, claveSimilar} = route.params  
+    const {dataTable, cantidad, empaque, claveSimilar} = route.params  
     
+    const [terminado, setTerminado] = useState(false) //bandera para indicar que termine el surtido y navegar a datosScreen
     const [dataInventario, setDataInventario] = useState([])
-    const [completo, setCompleto] = useState(false)
+    const [completo, setCompleto] = useState(false) //verifica que el surtido coincida con el total de piezas
     const [nombreSimilar, setNombreSimilar] = useState(false)
     const [totalPiezas, setDatatotalPiezas] = useState('0')
     const [productoSeleccionado, setproductoSeleccionado] = useState('')    
@@ -19,11 +21,19 @@ function similaresScreen({navigation, route}){
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
     const [cant,setCant] = useState('1') 
 
+     //Al terminar enviamos listProductos actualizado 
+     useEffect(() =>{
+      terminado ? navigation.navigate('Datos',{dataTable:listProductos})
+      : null
+    },[terminado])
+
+    //verifica que el surtido coincida con el total de piezas
     useEffect(() =>{
       cantidad * empaque.piezas == totalPiezas ? setCompleto(true)
       : setCompleto(false)
     },[totalPiezas])
 
+    //obtener total
     useEffect(() =>{
       let total = listProductos.map((el) => parseInt(el.cantidad) * el.piezas)            
       let  sum = total.reduce((prev, next) => prev + next,0)      
@@ -31,6 +41,7 @@ function similaresScreen({navigation, route}){
     },[listProductos])
 
     useEffect( () => {
+        id_surdito = String(Math.random()) //id que le voy a asignar a este producto surdito
         db.transaction(
           tx => {               
             tx.executeSql("select inventario.clave as claves, inventario.producto as productos, listasimilar.descripcion as descripciones from inventario, similares, listasimilar where inventario.clave = similares.producto and similares.clave = listasimilar.clave and similares.clave = ?", [claveSimilar],  (tx, res) =>  {            
@@ -61,8 +72,7 @@ function similaresScreen({navigation, route}){
         setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.claves )) //filtra la lista de empaques             
       }
 
-      const handleListaEmpaque = (item) =>{      
-      
+      const handleListaEmpaque = (item) =>{            
         setlistProductos([
           ...listProductos,{
           id: String(Math.random()),
@@ -71,6 +81,7 @@ function similaresScreen({navigation, route}){
           precio:'0', 
           cantidad:cant,
           total: '0',
+          surtido:id_surdito,
           clave: item.clave,  //los necesito para el boton de aumentar y disminuir de remisiones
           piezas:item.piezas}
         ])     
@@ -103,19 +114,21 @@ function similaresScreen({navigation, route}){
 
       const handleAgregar = () => {
         setlistProductos([
+          ...dataTable,
           {
-          id: 'xxx',
+          id: String(Math.random()),
           producto:nombreSimilar,
           empaque:empaque.empaque,
           precio:empaque.precio, 
           cantidad:cantidad,
           total: empaque.precio * cantidad,
-          clave: 'xxx',  //los necesito para el boton de aumentar y disminuir de remisiones
+          surtido:id_surdito,
+          clave: 'GENERICA',  //los necesito para el boton de aumentar y disminuir de remisiones
           piezas:empaque.piezas},
           ...listProductos
-        ])    
+        ])  
+        setTerminado(true)  
       }
-      console.log(listProductos)
       
     return( 
       
