@@ -7,10 +7,11 @@ import { AntDesign } from '@expo/vector-icons'
 const db = SQLITE.openDatabase("db.db");
 
 function similaresScreen({navigation, route}){
-    const {cantidad, producto, empaque} = route.params  
-
+    const {cantidad, empaque, claveSimilar} = route.params  
+    
     const [dataInventario, setDataInventario] = useState([])
     const [completo, setCompleto] = useState(false)
+    const [nombreSimilar, setNombreSimilar] = useState(false)
     const [totalPiezas, setDatatotalPiezas] = useState('0')
     const [productoSeleccionado, setproductoSeleccionado] = useState('')    
     const [dataEmpaque, setDataEmpaque] = useState([])
@@ -32,13 +33,14 @@ function similaresScreen({navigation, route}){
     useEffect( () => {
         db.transaction(
           tx => {               
-            tx.executeSql("select inventario.clave as claves, inventario.producto as productos from inventario, similares where inventario.clave = similares.producto", [],  (tx, res) =>  {            
+            tx.executeSql("select inventario.clave as claves, inventario.producto as productos, listasimilar.descripcion as descripciones from inventario, similares, listasimilar where inventario.clave = similares.producto and similares.clave = listasimilar.clave and similares.clave = ?", [claveSimilar],  (tx, res) =>  {            
               let resul = [];let index = 0
               while (index < res.rows.length) {
                 resul = [...resul,res.rows.item(index)]
                 index++              
               }            
               setDataInventario(resul)                                  
+              setNombreSimilar(resul[0].descripciones)
             }),
 
             tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
@@ -99,18 +101,34 @@ function similaresScreen({navigation, route}){
         }        
       }
 
+      const handleAgregar = () => {
+        setlistProductos([
+          {
+          id: 'xxx',
+          producto:nombreSimilar,
+          empaque:empaque.empaque,
+          precio:empaque.precio, 
+          cantidad:cantidad,
+          total: empaque.precio * cantidad,
+          clave: 'xxx',  //los necesito para el boton de aumentar y disminuir de remisiones
+          piezas:empaque.piezas},
+          ...listProductos
+        ])    
+      }
+      console.log(listProductos)
+      
     return( 
       
         <ImageBackground source={Interface.fondo} style={{flex:1}}>
           <ScrollView >
             <View style={Interface.container}>
                 {completo ?
-                  <TouchableOpacity>
-                    <Text style={[Interface.boton, {marginTop:5}]}>aceptar</Text>
+                  <TouchableOpacity onPress={() => handleAgregar()}>
+                    <Text style={[Interface.boton, {marginTop:5,width:'100%'}]}>aceptar</Text>
                   </TouchableOpacity>
                 : null
-                }
-                <Text style={styles.text}>{cantidad} {empaque.empaque} {producto}  </Text>
+                }                
+                <Text style={styles.text}>{cantidad} {empaque.empaque} {nombreSimilar} ${empaque.precio * cantidad}</Text>
                 <View style={{flexDirection:"row",justifyContent:"space-around"}}>
                     <View>
                       <Text style={[styles.text,{fontSize:20, textAlign:"center"}]}>{cantidad * empaque.piezas}</Text>

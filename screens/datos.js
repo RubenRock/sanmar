@@ -136,7 +136,7 @@ function datosScreen({navigation, route}) {
     
     const handleSurtir = (item) => {
       let simi = dataSimilares.find(ele => ele.producto == item.clave)      
-      simi ? navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, producto:productoSeleccionado, empaque:item})
+      simi ? navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, claveSimilar:simi.clave, empaque:item})
       : alert('No tiene similares')
     }
     
