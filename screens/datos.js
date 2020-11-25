@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button, ImageBackground} from 'react-native'
+import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import { AntDesign } from '@expo/vector-icons'
@@ -83,6 +83,7 @@ function datosScreen({navigation, route}) {
     const handleTxtProducto = (texto) => {
       setproductoFiltrado(productoFilter(texto))
       settxtProducto(texto)
+      setempaqueFiltrado('') //limpiamos lista de empaques
     }
 
     const handleListaProductos = (item)=>{  
@@ -153,13 +154,15 @@ function datosScreen({navigation, route}) {
             <View  style={Interface.container}>
               <TouchableOpacity  onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})}>
                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Agregar</Text>
-              </TouchableOpacity>              
-              <TextInput 
-                placeholder='Producto' 
-                onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }
-                style={styles.input}
-                value={txtProducto}
-              />        
+              </TouchableOpacity>  
+              <View style={{flexDirection:'row', alignItems:"center"}}>
+                <AntDesign name="search1" size={18} color={Interface.colorText} />
+                <TextInput                    
+                  onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }
+                  style={[styles.input,{width:'100%'}]}
+                  value={txtProducto}
+                />        
+              </View>            
 
               <TextInput 
                 style={styles.input}

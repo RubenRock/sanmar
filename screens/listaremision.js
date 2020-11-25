@@ -196,6 +196,28 @@ function listaRemisionScreen(){
         (e) => console.log(e.message))
       })
     },[])
+
+    const leerRemision = (folio) =>{
+      let aremision = []
+      db.transaction(
+        tx => {                                                                       
+           tx.executeSql("select * from remisiones where folio = ?", [folio],  (tx, res) =>  {            
+              let index = 0, extra ='',extra2=''
+              while (index < res.rows.length) {
+                extra= res.rows.item(index) 
+                //agrego campo rowid para el id del documento de firebase
+                extra2 = Object.assign({'rowid':index},extra)              
+                aremision = [...aremision,extra2]              
+                index++              
+              }    
+             
+              alert(JSON.stringify(aremision))
+             
+          },
+          (e) => console.log(e.message))         
+        })
+
+    }
     
     return(
         <View style={styles.container}>
@@ -225,11 +247,12 @@ function listaRemisionScreen(){
 
             <FlatList             
             data={data}
+            style={Interface.container}
             keyExtractor={(ele) => String(ele.folio)}
             renderItem={({item}) =>
-                <View style={[Interface.container,{marginTop:5}]}>
-                  <TouchableOpacity onPress={() => alert(item.folio) }>
-                    <Text style={styles.texto} >Folio: {(item.folio)} -{item.cliente} </Text>
+                <View style={styles.lista}>
+                  <TouchableOpacity onPress={() => leerRemision(item.folio) }>
+                    <Text style={[styles.texto,{fontWeight:'bold'}]} >Folio: {(item.folio)} -{item.cliente} </Text>
                     <Text style={[styles.texto, styles.texto_pequeño]} >Total: ${item.total}   Fecha: {item.fecha}</Text>
                     {/*  <Text style={[styles.texto, styles.texto_pequeño]} >Domicilio: {item.domicilio}</Text>*/}
                   </TouchableOpacity>
@@ -253,7 +276,8 @@ const styles = StyleSheet.create({
     color:Interface.colorText,
   },
   texto_pequeño:{
-    fontSize:12
+    fontSize:12,
+    marginBottom:3
   },
   header:{
     flexDirection:"row",
@@ -267,11 +291,16 @@ const styles = StyleSheet.create({
     borderColor:'white',
     marginTop:5,
     marginHorizontal:10,
+    width:100
    
   },
   boton:{
     margin:10
   },
+  lista:{
+    marginVertical:5,
+    borderBottomWidth:1,
+    borderColor:'white'},
   
 })
 
