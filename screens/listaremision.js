@@ -211,7 +211,14 @@ function listaRemisionScreen(){
                 index++              
               }    
              
-              alert(JSON.stringify(aremision))
+              let resul = []
+              for (let index = 0; index < aremision.length; index++) {
+                resul = resul+aremision[index].cantidad+' '+aremision[index].producto+' '+aremision[index].total+'\n'
+              }
+              //alert(JSON.stringify(aremision))
+              
+              console.log(resul)
+              alert(resul)
              
           },
           (e) => console.log(e.message))         

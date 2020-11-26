@@ -169,6 +169,7 @@ function datosScreen({navigation, route}) {
                 placeholder='Cantidad'                        
                 onChangeText={(x) => changeCantidad(x)}                        
                 value={cantidad} 
+                autoCorrect="false"
               />
             </View>          
 

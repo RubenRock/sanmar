@@ -14,11 +14,8 @@ const borrartodoSql = () => {
         tx.executeSql(`delete from empaques;`, [])        
       },
       (e) => console.log(e.message),//error
-      console.log('Hecho'))// exito
+      () => console.log('Borrado'))// exito
   }
-
- 
-
 
 function DescargarInventario (){    
     const [dataInventario, setDataInventario] = useState() //miarroba
@@ -26,20 +23,7 @@ function DescargarInventario (){
     const [dataListaSimilar, setDataListaSimilar] = useState() //miarroba
     const [dataSimilar, setDataSimilar] = useState() //miarroba
 
-    //creacion de tablas
-    useEffect(() =>{
-        db.transaction(tx => {
-          tx.executeSql("create table if not exists inventario (clave text, producto text, iva text, usuario text, fecha date, ieps text)");
-          tx.executeSql("create table if not exists empaques (clave text, empaque text, precio text, piezas integer, barras text, id integer)");
-          tx.executeSql("create table if not exists remisiones (folio integer, cantidad text, producto text, total text, tipo text, empaque text, descuento text)");
-          tx.executeSql("create table if not exists lista_remision (folio integer, cliente text, total text, fecha text, vendedor text, condicion text, estado text, domicilio text, impresion text, descuento text)");
-          tx.executeSql("create table if not exists listasimilar (clave integer, descripcion text)");
-          tx.executeSql("create table if not exists similares (clave integer, producto text)");
-        });    
-      },[])
-
-    //llenar db local con los datos de la nube    
-
+     //llenar db local con los datos de la nube    
     const agregarSql = () => {        
         db.transaction(
           tx => {       
@@ -63,7 +47,7 @@ function DescargarInventario (){
               (ele) => tx.executeSql("insert into similares (clave, producto) values (?, ?)", [ele.clave, ele.producto])                
             )
 
-          },(e) => console.log(e),//error
+          },(e) => alert(e.message),//error
           () =>  Alert.alert(
             "Inventario Actualizado",
             "Puedes continuar",

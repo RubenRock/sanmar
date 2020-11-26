@@ -164,12 +164,14 @@ function Remisiones({navigation, route}){
             style={[styles.input,styles.text]}
             onChangeText={(val) => setHeader({...header,name:val.toUpperCase()}) }            
             value={header.name}
+            autoCorrect="false"
           />  
           <TextInput 
             placeholder="Domicilio" 
             style={[styles.input,styles.text]}
             onChangeText={(val) => setHeader({...header,direccion:val.toUpperCase()})}  
             value={header.direccion}
+            autoCorrect="false"
           />  
           <Picker           
             selectedValue={header.condicion}
