@@ -141,10 +141,8 @@ function datosScreen({navigation, route}) {
       settxtProducto('')
     }
     
-    const handleSurtir = (item) => {
-      let simi = dataSimilares.find(ele => ele.producto == item.clave)      
-      simi ? navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, claveSimilar:simi.clave, empaque:item})
-      : alert('No tiene similares')
+    const handleSurtir = (item) => {      
+     navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, claveSimilar:simi.clave, empaque:item})     
     }
     
     return (
@@ -195,7 +193,10 @@ function datosScreen({navigation, route}) {
                         <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                      
                           <Text style={styles.text} >{item.empaque} - {item.precio}</Text> 
                           <View style={{flexDirection:'row'}}>
-                            <AntDesign name="bars" size={24} color={Interface.colorText} style={{marginRight:30}} onPress={()=> handleSurtir(item) }/>            
+                            {dataSimilares.find(ele => ele.producto == item.clave) ?  //filtro el boton de surtir solo para los que si pueden hacerlo
+                              <AntDesign name="bars" size={24} color={Interface.colorText} style={{marginRight:30}} onPress={()=> handleSurtir(item) }/>            
+                              : null
+                            }
                             <AntDesign name="pluscircleo" size={24} color={Interface.colorText} onPress={ () => handleListaEmpaque(item)} />                      
                           </View>
                         </View>  
