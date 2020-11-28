@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text,FlatList, StyleSheet,TouchableOpacity, Button, TextInput, Alert, ImageBackground} from 'react-native'
+import {View, Text,FlatList, StyleSheet,TouchableOpacity, TextInput, Alert, ImageBackground, Modal} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 
@@ -176,9 +176,10 @@ function listaRemisionScreen(){
   }
 
   const handleBoton = async() => {
-      await deleteRemisiones() 
+     
+      /* await deleteRemisiones() 
       obtenerRemisiones()
-      obtenerLista() 
+      obtenerLista()  */
           
   }
   
@@ -229,6 +230,17 @@ function listaRemisionScreen(){
     return(
         <View style={styles.container}>
           <ImageBackground source={Interface.fondo} style={styles.fondo}>
+            <Modal              
+              animationType= 'slide'
+              transparent={true}
+              visible={true}
+            >
+              <View style={styles.center}>
+                <Text>Hola desde el modal!!</Text>
+              </View>
+            </Modal> 
+            
+
             <View style={[styles.header,Interface.container]}>
               {parseInt(folios.inicio) <= parseInt(folios.fin) && folios.fin.trim() !== '' && folios.inicio.trim() !== '' ?                
                   <TouchableOpacity onPress={() =>handleBoton()}>
@@ -236,6 +248,7 @@ function listaRemisionScreen(){
                   </TouchableOpacity>                                                
                 :null
               }
+              
 
               
               <View>
@@ -266,6 +279,7 @@ function listaRemisionScreen(){
                 </View>
               }
             />            
+          
           </ImageBackground>
         </View>
     )
@@ -278,6 +292,12 @@ const styles = StyleSheet.create({
   },
   fondo:{
     flex:1,
+  },
+  center:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: 'rgba(0,0,0,0.3) ',
   },
   texto:{
     color:Interface.colorText,
