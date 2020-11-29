@@ -1,11 +1,17 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text,FlatList, StyleSheet,TouchableOpacity, TextInput, Alert, ImageBackground, Modal} from 'react-native'
+import {View, Text,FlatList, StyleSheet,TouchableOpacity, TextInput, Alert, ImageBackground, Button} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
+import MiModal from '../components/mimodal'
+import { ProgressBar, Colors } from 'react-native-paper'
+
 
 const db = SQLITE.openDatabase("db.db")
 
-function listaRemisionScreen(){   
+function listaRemisionScreen(){ 
+  const [modalVisible, setModalVisible]= useState(false)    
+  const [progress, setProgress] = useState(0)
+  const [envioCompleto, setEnvioCompleto] = useState(false)
   const [remisiones, setRemisiones]= useState([])  
   const [listaRemision, setListaRemision] = useState([])
   const [data, setData]= useState([]) // listado de remisones de esta Screen
@@ -84,16 +90,10 @@ function listaRemisionScreen(){
       index++     
       
     }
+    setProgress(1)
+    setEnvioCompleto(true)
 
-    !fallo ?   Alert.alert(
-      "Correcto",
-      "se mandaron los datos a la nube",
-      [              
-        { text: "Cerrar" }
-      ],
-      { cancelable: false }
-    )
-    :  Alert.alert(
+    fallo ?   Alert.alert(
       "Error",
       info, //me dice cual es el error
       [              
@@ -101,6 +101,7 @@ function listaRemisionScreen(){
       ],
       { cancelable: false }
     )    
+    :null
     
   }
   
@@ -121,6 +122,8 @@ function listaRemisionScreen(){
           }    
           
           setListaRemision(alisteRemision)
+          setProgress(0.75)
+
       },
       (e) => console.log(e.message))
     })
@@ -141,6 +144,7 @@ function listaRemisionScreen(){
             }    
            
             setRemisiones(aremision)
+            setProgress(0.5)
         },
         (e) => console.log(e.message))         
       })
@@ -167,8 +171,10 @@ function listaRemisionScreen(){
           'Content-Type':'application/json',
         }
       })            
-      if (responde.status == 200)  
+      if (responde.status == 200){  
         console.log('exito borrar remisiones') 
+        setProgress(0.25)
+      }
       else {  // cuando hay error
         const error = await responde.json()    
         console.log('Hay error: '+ error.details)    
@@ -176,10 +182,12 @@ function listaRemisionScreen(){
   }
 
   const handleBoton = async() => {
-     
-      /* await deleteRemisiones() 
+      setProgress(0)
+      setEnvioCompleto(false)
+      setModalVisible(true)
+      await deleteRemisiones() 
       obtenerRemisiones()
-      obtenerLista()  */
+      obtenerLista()  
           
   }
   
@@ -229,18 +237,24 @@ function listaRemisionScreen(){
     
     return(
         <View style={styles.container}>
-          <ImageBackground source={Interface.fondo} style={styles.fondo}>
-            <Modal              
-              animationType= 'slide'
-              transparent={true}
-              visible={true}
-            >
-              <View style={styles.center}>
-                <Text>Hola desde el modal!!</Text>
-              </View>
-            </Modal> 
-            
 
+          <MiModal visible={modalVisible} progress={progress}>
+                                          
+                {envioCompleto ?                                      
+                    <View style={styles.button}> 
+                      <Button title='Completo'  onPress={() => setModalVisible(false)}></Button>                  
+                    </View>
+                  : 
+                    <View style={{marginTop:65,width:'100%'}}> 
+                      <Text style={[styles.texto,{textAlign:"center"}]}> Se estan enviando los datos..</Text>
+                    </View>
+                }
+
+           
+          </MiModal> 
+
+          <ImageBackground source={Interface.fondo} style={styles.fondo}>
+           
             <View style={[styles.header,Interface.container]}>
               {parseInt(folios.inicio) <= parseInt(folios.fin) && folios.fin.trim() !== '' && folios.inicio.trim() !== '' ?                
                   <TouchableOpacity onPress={() =>handleBoton()}>
@@ -263,7 +277,7 @@ function listaRemisionScreen(){
                   keyboardType='numeric'
                 />
               </View>
-            </View>            
+            </View>          
 
             <FlatList             
             data={data}
@@ -279,8 +293,9 @@ function listaRemisionScreen(){
                 </View>
               }
             />            
-          
+           
           </ImageBackground>
+          
         </View>
     )
 
@@ -292,12 +307,6 @@ const styles = StyleSheet.create({
   },
   fondo:{
     flex:1,
-  },
-  center:{
-    flex:1,
-    justifyContent:'center',
-    alignItems:'center',
-    backgroundColor: 'rgba(0,0,0,0.3) ',
   },
   texto:{
     color:Interface.colorText,
@@ -327,7 +336,12 @@ const styles = StyleSheet.create({
   lista:{
     marginVertical:5,
     borderBottomWidth:1,
-    borderColor:'white'},
+    borderColor:'white'
+  },
+    button:{
+        marginTop:20,
+        width:120,
+    }
   
 })
 

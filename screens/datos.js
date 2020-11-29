@@ -81,8 +81,10 @@ function datosScreen({navigation, route}) {
     }
 
     const handleTxtProducto = (texto) => {
-      setproductoFiltrado(productoFilter(texto))
-      settxtProducto(texto)
+      let text = ''
+      text = texto 
+      setproductoFiltrado(productoFilter(text.toUpperCase()))
+      settxtProducto(text.toUpperCase())
       setempaqueFiltrado('') //limpiamos lista de empaques
     }
 
@@ -142,6 +144,7 @@ function datosScreen({navigation, route}) {
     }
     
     const handleSurtir = (item) => {      
+     let simi = dataSimilares.find(ele => ele.producto == item.clave)     
      navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, claveSimilar:simi.clave, empaque:item})     
     }
     
@@ -156,9 +159,10 @@ function datosScreen({navigation, route}) {
               <View style={{flexDirection:'row', alignItems:"center"}}>
                 <AntDesign name="search1" size={18} color={Interface.colorText} />
                 <TextInput                    
-                  onChangeText={(texto) => handleTxtProducto(texto.toUpperCase()) }
+                  onChangeText={(texto) => handleTxtProducto(texto) }
                   style={[styles.input,{width:'100%'}]}
                   value={txtProducto}
+                 
                 />        
               </View>            
 
@@ -167,7 +171,7 @@ function datosScreen({navigation, route}) {
                 placeholder='Cantidad'                        
                 onChangeText={(x) => changeCantidad(x)}                        
                 value={cantidad} 
-                autoCorrect="false"
+                
               />
             </View>          
 

@@ -120,7 +120,7 @@ function Remisiones({navigation, route}){
         if (header.name.trim()){     
           db.transaction(
             tx => {       
-              tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), header.name, total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion, "SERIE", "0" ]),
+              tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), header.name.toUpperCase(), total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion.toUpperCase(), "SERIE", "0" ]),
             
             dataTable.forEach( (ele) =>{
                 tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
@@ -162,16 +162,14 @@ function Remisiones({navigation, route}){
           <TextInput 
             placeholder="Nombre del cliente" 
             style={[styles.input,styles.text]}
-            onChangeText={(val) => setHeader({...header,name:val.toUpperCase()}) }            
+            onChangeText={(val) => setHeader({...header,name:val}) }            
             value={header.name}
-            autoCorrect="false"
           />  
           <TextInput 
             placeholder="Domicilio" 
             style={[styles.input,styles.text]}
-            onChangeText={(val) => setHeader({...header,direccion:val.toUpperCase()})}  
+            onChangeText={(val) => setHeader({...header,direccion:val})}  
             value={header.direccion}
-            autoCorrect="false"
           />  
           <Picker           
             selectedValue={header.condicion}

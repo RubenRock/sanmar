@@ -4,3 +4,6 @@ npm install expo-sqlite//instalacion sqlite
 
 npm install firebase-admin --save 
 npm install firebase --save // coneccion a firebase
+
+//progress bar (tiene mas componentes)
+npm install react-native-paper

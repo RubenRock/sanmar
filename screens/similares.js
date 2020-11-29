@@ -44,7 +44,7 @@ function similaresScreen({navigation, route}){
         id_surdito = String(Math.random()) //id que le voy a asignar a este producto surdito
         db.transaction(
           tx => {               
-            tx.executeSql("select inventario.clave as claves, inventario.producto as productos, listasimilar.descripcion as descripciones from inventario, similares, listasimilar where inventario.clave = similares.producto and similares.clave = listasimilar.clave and similares.clave = ?", [claveSimilar],  (tx, res) =>  {            
+            tx.executeSql("select inventario.clave as claves, inventario.producto as productos, listasimilar.descripcion as descripciones from inventario, similares, listasimilar where inventario.clave = similares.producto and similares.clave = listasimilar.clave and listasimilar.clave = ?", [claveSimilar],  (tx, res) =>  {            
               let resul = [];let index = 0
               while (index < res.rows.length) {
                 resul = [...resul,res.rows.item(index)]
@@ -66,6 +66,7 @@ function similaresScreen({navigation, route}){
           },
           (e) => console.log(e.message))
       },[])    
+
 
       const handleListaProductos = (item)=>{          
         setproductoSeleccionado(item.productos) //almaceno el producto seleccionado
