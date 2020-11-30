@@ -90,6 +90,7 @@ function similaresScreen({navigation, route}){
         //limpiar ventana        
         setCant('1')        
         setempaqueFiltrado([])        
+        setproductoSeleccionado('')
       }
 
       const changeCantidad = (cant) => {      
@@ -157,19 +158,23 @@ function similaresScreen({navigation, route}){
 
             </View>
 
-            <View style={{height:120}}>
-                <View style={Interface.container}>
-                  <Text style={styles.encabezadoListas}>Productos</Text>
-                  <FlatList                         
-                        data={dataInventario}            
-                        keyExtractor={(item) =>item.claves}
-                        renderItem={({item}) => <TouchableOpacity onPress={ () => handleListaProductos(item)}>                
-                                                    <Text style={styles.text}>{item.productos}</Text>
-                                                </TouchableOpacity>}
-                    /> 
+          
+            <View style={Interface.container}>
+              <Text style={styles.encabezadoListas}>Productos</Text>
+              <FlatList                         
+                    style={{height:110}}
+                    data={dataInventario}            
+                    keyExtractor={(item) =>item.claves}
+                    renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                
+                                                {productoSeleccionado == item.productos ? 
+                                                  <Text style={styles.textstrike}>{item.productos}</Text>
+                                                  : <Text style={styles.text}>{item.productos}</Text>
+                                                }
+                                            </TouchableOpacity>}
+                /> 
 
-              </View>
-            </View >
+          </View>
+          
 
            
             <View style={[Interface.container,{height:150}]}>
@@ -226,9 +231,16 @@ const styles = StyleSheet.create({
         marginTop:10,
         color:Interface.colorText
       },
-      text:{
+      text:{       
         color:Interface.colorText,
         fontWeight:"bold"
+      },
+      textstrike:{
+        color:Interface.colorText,
+        fontWeight:"bold",
+        backgroundColor: 'rgba(0,0,0,0.1) ',
+        borderRadius:50,
+        paddingLeft:5,
       },
       encabezadoListas:{
         backgroundColor:Interface.colorText, 

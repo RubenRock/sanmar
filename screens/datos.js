@@ -60,14 +60,18 @@ function datosScreen({navigation, route}) {
     },[])
     
     useEffect(() =>{
-      setproductoFiltrado(dataInventario)
+      setproductoFiltrado(dataInventario)      
     },[dataInventario])
+
+    useEffect(() =>{
+      console.log(productoSeleccionado)
+    },[productoSeleccionado])
     
     
     useEffect(() =>{
       setlistProductos(dataTable)
 
-      setproductoFiltrado('')
+      
       setCantidad('1')
       setproductoFiltrado(dataInventario)
       setempaqueFiltrado([])
@@ -88,11 +92,12 @@ function datosScreen({navigation, route}) {
       setempaqueFiltrado('') //limpiamos lista de empaques
     }
 
-    const handleListaProductos = (item)=>{  
-      setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques     
+    const handleListaProductos = (item)=>{              
       setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
+      setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques           
+      
     }
-
+    
     const handlePrice = (item) => {      
       let arrayseis= empaqueFiltrado, arraydoce = empaqueFiltrado
       
@@ -136,7 +141,6 @@ function datosScreen({navigation, route}) {
       ])     
 
       //limpiar ventana
-      setproductoFiltrado('')
       setCantidad('1')
       setproductoFiltrado(dataInventario)
       setempaqueFiltrado([])
@@ -180,8 +184,11 @@ function datosScreen({navigation, route}) {
                 style={Interface.container}
                 data={productoFiltrado}            
                 keyExtractor={(item) =>item.clave}
-                renderItem={({item}) => <TouchableOpacity onPress={ () => handleListaProductos(item)}>                
-                                            <Text style={styles.text}>{item.producto}</Text>
+                renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                                                            
+                                            {productoSeleccionado == item.producto ? 
+                                              <Text style={styles.textstrike}>{item.producto}</Text>
+                                              : <Text style={styles.text}>{item.producto} </Text>
+                                            }
                                         </TouchableOpacity>}
               />
               </View>
@@ -239,6 +246,13 @@ const styles = StyleSheet.create({
   text:{
     color:Interface.colorText,
     fontWeight:"bold"
-  }
+  },
+  textstrike:{
+    color:Interface.colorText,
+    fontWeight:"bold",
+    backgroundColor: 'rgba(0,0,0,0.1) ',
+    borderRadius:50,
+    paddingLeft:5,
+  },
 
 })
