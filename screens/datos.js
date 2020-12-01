@@ -13,7 +13,7 @@ function datosScreen({navigation, route}) {
 
     
     const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
-    const [productoFiltrado,setproductoFiltrado] = useState(dataInventario)
+    const [productoFiltrado,setproductoFiltrado] = useState([])
     const [cantidad,setCantidad] = useState('1')    
     const [productoSeleccionado, setproductoSeleccionado] = useState('')    
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
@@ -29,7 +29,7 @@ function datosScreen({navigation, route}) {
       db.transaction(
         tx => {               
           tx.executeSql("select * from inventario", [],  (tx, res) =>  {            
-            let resul = [];let index = 0
+            let resul = [];let index = 0;
             while (index < res.rows.length) {
               resul = [...resul,res.rows.item(index)]
               index++              
@@ -87,7 +87,21 @@ function datosScreen({navigation, route}) {
       setempaqueFiltrado('') //limpiamos lista de empaques
     }  
 
+    const miLista = (item) =>{
+      return(productoSeleccionado == item.producto ? 
+      <Text style={styles.textstrike}>{item.producto}</Text>
+      : <Text style={styles.text}>{item.producto}</Text>)
+    }
+    console.log(dataInventario)
     const handleListaProductos = (item)=>{             
+      let dt = dataInventario
+      let index = (dt.findIndex((x) => x.clave == item.clave))          
+      Object.assign(dt[index], {selected:true})
+      console.log(dt)  
+      
+
+      
+      setproductoFiltrado(dt) 
       setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
       setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques                 
     }
@@ -175,15 +189,15 @@ function datosScreen({navigation, route}) {
 
             <View style={{flex:1}}>
               <FlatList 
-                /* style={Interface.container} */
+                style={Interface.container}
                 data={productoFiltrado}            
                 keyExtractor={(item) =>item.clave}
-                renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => console.log('asd')}>                                                                
-                                            {productoSeleccionado == item.producto ? 
+                renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                                                                
+                                           {item.selected ? 
                                               <Text style={styles.textstrike}>{item.producto}</Text>
                                               : <Text style={styles.text}>{item.producto}</Text>
-                                            }
-                                            {console.log('algo')}
+                                            }                                         
+                                           
                                         </TouchableOpacity>}
               />
               </View>
@@ -197,7 +211,9 @@ function datosScreen({navigation, route}) {
                     if (item.empaque !=='SEIS' && item.empaque !=='DOCE')
                       return(
                         <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>                      
+                        <TouchableOpacity>                        
                           <Text style={styles.text} >{item.empaque} - {item.precio}</Text> 
+                          </TouchableOpacity>
                           <View style={{flexDirection:'row'}}>
                             {dataSimilares.find(ele => ele.producto == item.clave) ?  //filtro el boton de surtir solo para los que si pueden hacerlo
                               <AntDesign name="bars" size={24} color={Interface.colorText} style={{marginRight:30}} onPress={()=> handleSurtir(item) }/>            
