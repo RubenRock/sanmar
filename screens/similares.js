@@ -165,11 +165,11 @@ function similaresScreen({navigation, route}){
                     style={{height:110}}
                     data={dataInventario}            
                     keyExtractor={(item) =>item.claves}
-                    renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                
+                    renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                                                                
                                                 {productoSeleccionado == item.productos ? 
                                                   <Text style={styles.textstrike}>{item.productos}</Text>
                                                   : <Text style={styles.text}>{item.productos}</Text>
-                                                }
+                                                }                                                
                                             </TouchableOpacity>}
                 /> 
 

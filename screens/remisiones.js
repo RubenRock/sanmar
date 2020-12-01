@@ -145,7 +145,7 @@ function Remisiones({navigation, route}){
       obtenerFolio()
     }
 
-    console.log(table)
+    
 
     return (
       <View style={styles.fondo}>          

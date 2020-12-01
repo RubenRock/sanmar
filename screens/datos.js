@@ -60,13 +60,8 @@ function datosScreen({navigation, route}) {
     },[])
     
     useEffect(() =>{
-      setproductoFiltrado(dataInventario)      
-    },[dataInventario])
-
-    useEffect(() =>{
-      console.log(productoSeleccionado)
-    },[productoSeleccionado])
-    
+      setproductoFiltrado(dataInventario) 
+    },[dataInventario])    
     
     useEffect(() =>{
       setlistProductos(dataTable)
@@ -90,12 +85,11 @@ function datosScreen({navigation, route}) {
       setproductoFiltrado(productoFilter(text.toUpperCase()))
       settxtProducto(text.toUpperCase())
       setempaqueFiltrado('') //limpiamos lista de empaques
-    }
+    }  
 
-    const handleListaProductos = (item)=>{              
+    const handleListaProductos = (item)=>{             
       setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
-      setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques           
-      
+      setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques                 
     }
     
     const handlePrice = (item) => {      
@@ -181,14 +175,15 @@ function datosScreen({navigation, route}) {
 
             <View style={{flex:1}}>
               <FlatList 
-                style={Interface.container}
+                /* style={Interface.container} */
                 data={productoFiltrado}            
                 keyExtractor={(item) =>item.clave}
-                renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                                                            
+                renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => console.log('asd')}>                                                                
                                             {productoSeleccionado == item.producto ? 
                                               <Text style={styles.textstrike}>{item.producto}</Text>
-                                              : <Text style={styles.text}>{item.producto} </Text>
+                                              : <Text style={styles.text}>{item.producto}</Text>
                                             }
+                                            {console.log('algo')}
                                         </TouchableOpacity>}
               />
               </View>
