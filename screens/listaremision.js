@@ -338,10 +338,10 @@ const styles = StyleSheet.create({
     borderBottomWidth:1,
     borderColor:'white'
   },
-    button:{
-        marginTop:20,
-        width:120,
-    }
+  button:{
+      marginTop:20,
+      width:120,
+  }
   
 })
 

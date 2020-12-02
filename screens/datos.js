@@ -87,21 +87,9 @@ function datosScreen({navigation, route}) {
       setempaqueFiltrado('') //limpiamos lista de empaques
     }  
 
-    const miLista = (item) =>{
-      return(productoSeleccionado == item.producto ? 
-      <Text style={styles.textstrike}>{item.producto}</Text>
-      : <Text style={styles.text}>{item.producto}</Text>)
-    }
-    console.log(dataInventario)
-    const handleListaProductos = (item)=>{             
-      let dt = dataInventario
-      let index = (dt.findIndex((x) => x.clave == item.clave))          
-      Object.assign(dt[index], {selected:true})
-      console.log(dt)  
-      
-
-      
-      setproductoFiltrado(dt) 
+   
+   
+    const handleListaProductos = (item)=>{                  
       setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
       setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques                 
     }
@@ -153,11 +141,18 @@ function datosScreen({navigation, route}) {
       setproductoFiltrado(dataInventario)
       setempaqueFiltrado([])
       settxtProducto('')
+      setproductoSeleccionado('')
     }
     
     const handleSurtir = (item) => {      
      let simi = dataSimilares.find(ele => ele.producto == item.clave)     
      navigation.navigate('Similares',{dataTable: listProductos,cantidad:cantidad, claveSimilar:simi.clave, empaque:item})     
+    }
+
+    const messageSplash = () => {
+      return(
+         <Text style={{fontSize:10,color:Interface.colorText,textAlign:'right',marginRight:10}}>{productoSeleccionado}</Text>                
+      )      
     }
     
     return (
@@ -172,7 +167,7 @@ function datosScreen({navigation, route}) {
                 <AntDesign name="search1" size={18} color={Interface.colorText} />
                 <TextInput                    
                   onChangeText={(texto) => handleTxtProducto(texto) }
-                  style={[styles.input,{width:'100%'}]}
+                  style={[styles.input,{width:'90%'}]}
                   value={txtProducto}
                  
                 />        
@@ -185,7 +180,9 @@ function datosScreen({navigation, route}) {
                 value={cantidad} 
                 
               />
-            </View>          
+            </View>              
+                
+            {messageSplash()}         
 
             <View style={{flex:1}}>
               <FlatList 
@@ -193,15 +190,11 @@ function datosScreen({navigation, route}) {
                 data={productoFiltrado}            
                 keyExtractor={(item) =>item.clave}
                 renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                                                                
-                                           {item.selected ? 
-                                              <Text style={styles.textstrike}>{item.producto}</Text>
-                                              : <Text style={styles.text}>{item.producto}</Text>
-                                            }                                         
-                                           
+                                            <Text style={styles.text}>{item.producto}</Text>
                                         </TouchableOpacity>}
               />
-              </View>
-
+              </View>                              
+              
               <View style={{flex:1,marginBottom:15}}>
               <FlatList 
                  style={Interface.container}
