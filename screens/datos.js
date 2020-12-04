@@ -18,11 +18,15 @@ function datosScreen({navigation, route}) {
     const [productoSeleccionado, setproductoSeleccionado] = useState('')    
     const [listProductos, setlistProductos] = useState([])  //guarda los datos para la tabla que muestro en remisiones
     const [txtProducto, settxtProducto] = useState('')  //necesario para limpiar la caja de producto
-    const [dataInventario,setDataInventario] = useState() 
+    const [dataInventario,setDataInventario] = useState([]) 
     const [dataEmpaque,setDataEmpaque] = useState() 
     const [dataSimilares,setDataSimilares] = useState([]) 
 
-    const productoFilter = (text) =>  dataInventario.filter((x)=>String(x.producto).includes(text))
+    const productoFilter = (text) => {
+      let resul = []      
+      resul = dataInventario.filter((x)=> String(x.producto).includes(text))
+      return(resul.filter((x,index)=> index <= 20))
+    }
 
     //leemos los datos de la bd local
     useEffect( () => {
@@ -59,8 +63,8 @@ function datosScreen({navigation, route}) {
         (e) => console.log(e.message))
     },[])
     
-    useEffect(() =>{
-      setproductoFiltrado(dataInventario) 
+    useEffect(() =>{                     
+      setproductoFiltrado(dataInventario.filter((x,index) => index<=20)) 
     },[dataInventario])    
     
     useEffect(() =>{
@@ -68,7 +72,7 @@ function datosScreen({navigation, route}) {
 
       
       setCantidad('1')
-      setproductoFiltrado(dataInventario)
+      setproductoFiltrado(dataInventario.slice(20))
       setempaqueFiltrado([])
       settxtProducto('')
     },[route]) 
@@ -138,7 +142,7 @@ function datosScreen({navigation, route}) {
 
       //limpiar ventana
       setCantidad('1')
-      setproductoFiltrado(dataInventario)
+      setproductoFiltrado(dataInventario.slice(20))
       setempaqueFiltrado([])
       settxtProducto('')
       setproductoSeleccionado('')
