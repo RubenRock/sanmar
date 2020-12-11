@@ -36,3 +36,7 @@
 	git pull origin nombreRama
 // clonar una ramma especifica
 	git clone -b <branchname> <remote-repo-url>
+
+git reset <commit>
+
+regresamos a ese <commit> y se borran los demas

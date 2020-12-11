@@ -62,17 +62,19 @@ function datosScreen({navigation, route}) {
         },
         (e) => console.log(e.message))
     },[])
+
+    //filtramos la lista de producto a n items en la vista
+    const inventarioFiltrado = () => dataInventario.filter((x,index) => index<=20)    
     
     useEffect(() =>{                     
-      setproductoFiltrado(dataInventario.filter((x,index) => index<=20)) 
+      setproductoFiltrado(inventarioFiltrado()) 
     },[dataInventario])    
     
     useEffect(() =>{
       setlistProductos(dataTable)
-
       
       setCantidad('1')
-      setproductoFiltrado(dataInventario.slice(20))
+      setproductoFiltrado(inventarioFiltrado())
       setempaqueFiltrado([])
       settxtProducto('')
     },[route]) 
@@ -142,7 +144,7 @@ function datosScreen({navigation, route}) {
 
       //limpiar ventana
       setCantidad('1')
-      setproductoFiltrado(dataInventario.slice(20))
+      setproductoFiltrado(inventarioFiltrado())
       setempaqueFiltrado([])
       settxtProducto('')
       setproductoSeleccionado('')
@@ -188,7 +190,7 @@ function datosScreen({navigation, route}) {
                 
             {messageSplash()}         
 
-            <View style={{flex:1}}>
+            <View style={{flex:1,height:250}}>
               <FlatList 
                 style={Interface.container}
                 data={productoFiltrado}            
@@ -197,9 +199,9 @@ function datosScreen({navigation, route}) {
                                             <Text style={styles.text}>{item.producto}</Text>
                                         </TouchableOpacity>}
               />
-              </View>                              
+            </View>                              
               
-              <View style={{flex:1,marginBottom:15}}>
+              <View style={{flex:1,marginBottom:15,height:150}}>
               <FlatList 
                  style={Interface.container}
                 data={empaqueFiltrado}
