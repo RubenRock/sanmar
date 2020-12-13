@@ -25,6 +25,7 @@ function listaRemisionScreen(){
     console.log('----lista remision------')
      //index para whille, i para arreglo que se va a guardar
      let index =parseInt(folios.inicio),i=0
+     console.log(listaRemision)
     while (index <= parseInt(folios.fin)) {
       
       const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision',{
@@ -81,7 +82,7 @@ function listaRemisionScreen(){
        
        if (responde.status !== 204){  // cuando hay error
          const error = await responde.json()    
-         console.log('Hay error: '+ error.details)    
+         console.log( error)    
          info= error.details
          fallo= true
        }    

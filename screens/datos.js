@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native'
+import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import { AntDesign } from '@expo/vector-icons'
@@ -24,7 +24,9 @@ function datosScreen({navigation, route}) {
 
     const productoFilter = (text) => {
       let resul = []      
-      resul = dataInventario.filter((x)=> String(x.producto).includes(text))
+      let textMayus=''      
+      textMayus = text
+      resul = dataInventario.filter((x)=> String(x.producto).includes(textMayus.toUpperCase()))
       return(resul.filter((x,index)=> index <= 20))
     }
 
@@ -85,11 +87,9 @@ function datosScreen({navigation, route}) {
         setempaqueFiltrado([]) //necesito actualizar el estado de la variable cada vez que la modifico     
     }
 
-    const handleTxtProducto = (texto) => {
-      let text = ''
-      text = texto 
-      setproductoFiltrado(productoFilter(text.toUpperCase()))
-      settxtProducto(text.toUpperCase())
+    const handleTxtProducto = (texto) => {      
+      setproductoFiltrado(productoFilter(texto))
+      settxtProducto(texto)
       setempaqueFiltrado('') //limpiamos lista de empaques
     }  
 
@@ -164,7 +164,7 @@ function datosScreen({navigation, route}) {
     return (
       <View style = {{flex:1}}>
         <ImageBackground source={fondo} style={styles.container}>
-            
+            <ScrollView>
             <View  style={Interface.container}>
               <TouchableOpacity  onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})}>
                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Agregar</Text>
@@ -190,7 +190,7 @@ function datosScreen({navigation, route}) {
                 
             {messageSplash()}         
 
-            <View style={{flex:1,height:250}}>
+            <View style={{height:250}}>
               <FlatList 
                 style={Interface.container}
                 data={productoFiltrado}            
@@ -201,7 +201,7 @@ function datosScreen({navigation, route}) {
               />
             </View>                              
               
-              <View style={{flex:1,marginBottom:15,height:150}}>
+              <View style={{marginBottom:15,height:150}}>
               <FlatList 
                  style={Interface.container}
                 data={empaqueFiltrado}
@@ -227,7 +227,7 @@ function datosScreen({navigation, route}) {
                   }
               />
               </View>
-             
+              </ScrollView>
         </ImageBackground>
       </View>
                                
@@ -251,7 +251,8 @@ const styles = StyleSheet.create({
     borderBottomWidth:2,
     borderColor:'white',
     marginTop:10,
-    color:Interface.colorText
+    color:Interface.colorText,
+    
   },
   text:{
     color:Interface.colorText,
