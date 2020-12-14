@@ -26,71 +26,75 @@ function listaRemisionScreen(){
      //index para whille, i para arreglo que se va a guardar
      let index =parseInt(folios.inicio),i=0
      console.log(listaRemision)
-    while (index <= parseInt(folios.fin)) {
-      
-      const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-        },
-        body:JSON.stringify(
-          {"folio":listaRemision[i].folio,
-          "cliente": listaRemision[i].cliente,
-          "total": listaRemision[i].total,
-          "fecha": listaRemision[i].fecha,
-          "vendedor":listaRemision[i].vendedor,
-          "condicion":listaRemision[i].condicion,
-          "estado":listaRemision[i].estado,
-          "domicilio":listaRemision[i].domicilio,
-          "impresion":listaRemision[i].impresion,
-          "descuento":listaRemision[i].descuento}
-        )
-      })
+    while (index <= parseInt(folios.fin)) {      
+      if (listaRemision[i]){        
+          console.log(listaRemision[i].folio)
+          const responde = await fetch('https://vercel-api-eta.vercel.app/api/listaremision',{
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json',
+            },
+            body:JSON.stringify(
+              {"folio":listaRemision[i].folio,
+              "cliente": listaRemision[i].cliente,
+              "total": listaRemision[i].total,
+              "fecha": listaRemision[i].fecha,
+              "vendedor":listaRemision[i].vendedor,
+              "condicion":listaRemision[i].condicion,
+              "estado":listaRemision[i].estado,
+              "domicilio":listaRemision[i].domicilio,
+              "impresion":listaRemision[i].impresion,
+              "descuento":listaRemision[i].descuento}
+            )
+          })              
+           
+          if (responde.status !== 204) {  // cuando hay error
+            const error = await responde.json()    
+            console.log('Hay error: '+ error.details) 
+            info= error.details          
+            fallo= true
+          } 
+        }
+          index++
+          i++
 
-      if (responde.status !== 204) {  // cuando hay error
-        const error = await responde.json()    
-        console.log('Hay error: '+ error.details) 
-        info= error.details          
-        fallo= true
-      } 
-      index++
-      i++
-
-    }
+        
+      }
       console.log('----remisiones------')
       
-     
-     index =0
-     while (index <= remisiones.length-1) {
-         
-        const responde = await fetch('https://vercel-api-eta.vercel.app/api/remisiones',{
-         method:'POST',
-         headers:{
-           'Content-Type':'application/json',
-         },
-         body:JSON.stringify(
-           {"folio":remisiones[index].folio,
-           "id":remisiones[index].rowid,
-           "cantidad": remisiones[index].cantidad,
-           "producto": remisiones[index].producto,
-           "total": remisiones[index].total,
-           "tipo":remisiones[index].tipo,
-           "empaque":remisiones[index].empaque,
-           "descuento":remisiones[index].descuento}
-         )
-       })
-       
-       if (responde.status !== 204){  // cuando hay error
-         const error = await responde.json()    
-         console.log( error)    
-         info= error.details
-         fallo= true
-       }    
-      
+    
+    index =0
+    while (index <= remisiones.length-1) {
+        if(remisiones[index].folio){
+            const responde = await fetch('https://vercel-api-eta.vercel.app/api/remisiones',{
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json',
+            },
+            body:JSON.stringify(
+              {"folio":remisiones[index].folio,
+              "id":remisiones[index].rowid,
+              "cantidad": remisiones[index].cantidad,
+              "producto": remisiones[index].producto,
+              "total": remisiones[index].total,
+              "tipo":remisiones[index].tipo,
+              "empaque":remisiones[index].empaque,
+              "descuento":remisiones[index].descuento}
+            )
+          })
+          if (responde.status !== 204){  // cuando hay error
+            const error = await responde.json()    
+            console.log( error)    
+            info= error.details
+            fallo= true
+          } 
+        }   
+          
 
-      index++     
+          index++     
+          
+        }
       
-    }
     setProgress(1)
     setEnvioCompleto(true)
 
@@ -108,7 +112,7 @@ function listaRemisionScreen(){
   
   useEffect(() =>{      
     listaRemision.length ? mandarNube()
-    : null
+    : setProgress(1)
   },[listaRemision])
 
   function obtenerLista (){ 
@@ -136,6 +140,7 @@ function listaRemisionScreen(){
       tx => {                                                                       
          tx.executeSql("select * from remisiones where folio >= ? and folio <= ?", [folios.inicio, folios.fin],  (tx, res) =>  {            
             let index = 0, extra ='',extra2=''
+            
             while (index < res.rows.length) {
               extra= res.rows.item(index) 
               //agrego campo rowid para el id del documento de firebase
@@ -143,7 +148,7 @@ function listaRemisionScreen(){
               aremision = [...aremision,extra2]              
               index++              
             }    
-           
+            
             setRemisiones(aremision)
             setProgress(0.5)
         },
@@ -239,7 +244,7 @@ function listaRemisionScreen(){
     return(
         <View style={styles.container}>
 
-          <MiModal visible={modalVisible} progress={progress}>
+          <MiModal visible={modalVisible} progress={progress} title='Subiendo datos de la nube'>
                                           
                 {envioCompleto ?                                      
                     <View style={styles.button}> 

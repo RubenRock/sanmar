@@ -4,7 +4,7 @@ import { ProgressBar, Colors } from 'react-native-paper'
 
 
 
-export default function MiModal({visible, children, progress}){
+export default function MiModal({visible, children, progress, title}){
     return(
         <Modal           
         style={{flex:1}}
@@ -14,7 +14,7 @@ export default function MiModal({visible, children, progress}){
         >
             <View style={styles.container}>                
                 <View style={styles.container2}>
-                    <Text style={styles.text}>Subiendo los datos a la nube</Text> 
+                    <Text style={styles.text}>{title}</Text> 
                     <View style={{width:'100%',alignItems:"center",marginTop:30}}>
                         <ProgressBar style={{width:300,height:10, borderRadius:50}} progress={progress} color={'#3F3DE0'} visible={true}/>
                     </View>

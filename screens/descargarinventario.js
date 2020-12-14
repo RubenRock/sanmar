@@ -149,7 +149,7 @@ function DescargarInventario (){
 
 return(          
     <ImageBackground source={Interface.fondo} style={{flex:1, justifyContent:"center",}}>
-       <MiModal visible={modalVisible} progress={progress}>
+       <MiModal visible={modalVisible} progress={progress} title='Descargando datos de la nube'>
                                           
           {envioCompleto ?                                      
               <View style={styles.button}> 
