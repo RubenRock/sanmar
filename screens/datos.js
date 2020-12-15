@@ -198,7 +198,8 @@ function datosScreen({navigation, route}) {
                 renderItem={({item}) => <TouchableOpacity style={{marginBottom:10}} onPress={ () => handleListaProductos(item)}>                                                                
                                             <Text style={styles.text}>{item.producto}</Text>
                                         </TouchableOpacity>}
-              />
+              />           
+                          
             </View>                              
               
               <View style={{marginBottom:15,height:150}}>
@@ -226,6 +227,10 @@ function datosScreen({navigation, route}) {
                   }
                   }
               />
+              </View>
+              <View>
+                  {/* {productoFiltrado.map(item => <Text>{item.producto}</Text>)} */}
+                  
               </View>
               </ScrollView>
         </ImageBackground>

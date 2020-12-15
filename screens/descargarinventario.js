@@ -106,7 +106,10 @@ function DescargarInventario (){
       const fetchInventario = async () => {       
         const response = await fetch('https://vercel-api-eta.vercel.app/api/inventario' )
         
-        const data = await response.json()       
+        const data = await response.json()  
+        if (response.status != 200){
+          alert(response.status)
+        }
         setDataInventario(data)        
       }
 
@@ -128,7 +131,7 @@ function DescargarInventario (){
         const response = await fetch('https://vercel-api-eta.vercel.app/api/similares' )
         
         const data = await response.json()       
-        setDataSimilar(data)        
+        setDataSimilar(data)                
       }
 
 
