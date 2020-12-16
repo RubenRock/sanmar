@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image} from 'react-native';
 import pruebaScreen from './screens/prueba'
 import HomeScreen from './screens/home'
@@ -12,6 +12,9 @@ import similaresScreen from './screens/similares'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import * as SQLITE from 'expo-sqlite'
+const db = SQLITE.openDatabase("db.db");
+
 
 const image = require('./assets/Logo4.png')
 const Stack = createStackNavigator();
@@ -23,6 +26,23 @@ const isLogged =() => {
 }
 
 function MyStack() {
+  const [dataEmpaque, setDataEmpaque] = useState([])
+
+  useEffect(() => {
+    db.transaction(
+      tx =>{
+      tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
+        let resul = [];let index = 0
+        while (index < res.rows.length) {
+          resul = [...resul,res.rows.item(index)]
+          index++              
+        }            
+        setDataEmpaque(resul)                                  
+      })
+    }
+    )
+
+  }, [])
   
   return (
     <Stack.Navigator>     

@@ -29,9 +29,11 @@ function datosScreen({navigation, route}) {
       resul = dataInventario.filter((x)=> String(x.producto).includes(textMayus.toUpperCase()))
       return(resul.filter((x,index)=> index <= 20))
     }
-
+    
     //leemos los datos de la bd local
+   
     useEffect( () => {
+      let uno, dos ,start = new Date().getTime()
       db.transaction(
         tx => {               
           tx.executeSql("select * from inventario", [],  (tx, res) =>  {            
@@ -43,7 +45,9 @@ function datosScreen({navigation, route}) {
             setDataInventario(resul)                                  
           }),
 
-          tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
+          uno = new Date().getTime()
+          console.log(start - uno)
+        /*   tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
             let resul = [];let index = 0
             while (index < res.rows.length) {
               resul = [...resul,res.rows.item(index)]
@@ -51,6 +55,8 @@ function datosScreen({navigation, route}) {
             }            
             setDataEmpaque(resul)                                  
           }),
+          dos = new Date().getTime()
+          console.log(start - dos) */
 
           tx.executeSql("select * from similares", [],  (tx, res) =>  {            
             let resul = [];let index = 0
@@ -60,6 +66,7 @@ function datosScreen({navigation, route}) {
             }            
             setDataSimilares(resul)                                  
           })
+        
 
         },
         (e) => console.log(e.message))
@@ -69,7 +76,7 @@ function datosScreen({navigation, route}) {
     const inventarioFiltrado = () => dataInventario.filter((x,index) => index<=20)    
     
     useEffect(() =>{                     
-      setproductoFiltrado(inventarioFiltrado()) 
+      setproductoFiltrado(inventarioFiltrado())      
     },[dataInventario])    
     
     useEffect(() =>{
@@ -164,7 +171,7 @@ function datosScreen({navigation, route}) {
     return (
       <View style = {{flex:1}}>
         <ImageBackground source={fondo} style={styles.container}>
-            <ScrollView>
+            {/* <ScrollView> */}
             <View  style={Interface.container}>
               <TouchableOpacity  onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})}>
                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Agregar</Text>
@@ -232,7 +239,7 @@ function datosScreen({navigation, route}) {
                   {/* {productoFiltrado.map(item => <Text>{item.producto}</Text>)} */}
                   
               </View>
-              </ScrollView>
+              {/* </ScrollView> */}
         </ImageBackground>
       </View>
                                

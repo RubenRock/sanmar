@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert,ImageBackground,Button } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert,ImageBackground,Button, NetInfo } from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import MiModal from '../components/mimodal'
@@ -168,13 +168,15 @@ return(
     </MiModal>
         <View style={Interface.container}>
           <Text style={styles.texto}>Aqui puedes actualizar tu inventario</Text>
-          {dataSimilar ==undefined && <ActivityIndicator />}
+          {dataSimilar ==undefined && <ActivityIndicator animating={true}/>}
           {dataSimilar && dataEmpaque && 
               <TouchableOpacity onPress={() => handleBoton()}>
                 <Text style={[Interface.boton,{marginTop:50,width:"100%" }]}>Actualizar</Text>
               </TouchableOpacity>                
           }
         </View>
+        {navigator.onLine ? console.log('awelita') : console.log('nel pastal')}
+         {console.log(NetInfo)}
     </ImageBackground>    
 )
 }
