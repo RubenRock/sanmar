@@ -7,3 +7,6 @@ npm install firebase --save // coneccion a firebase
 
 //progress bar (tiene mas componentes)
 npm install react-native-paper
+
+//redux
+npm add redux react-redux

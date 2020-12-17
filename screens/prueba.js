@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, FlatList, Text, View } from 'react-native';
 import * as SQLITE from 'expo-sqlite'
-import firebase from "firebase/app";
+/* import firebase from "firebase/app";
 import "firebase/firestore";
-import firebaseConfig from './firebaseconfig'
+import firebaseConfig from './firebaseconfig' */
 
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+/* firebase.initializeApp(firebaseConfig);
 
 const dbfirebase = firebase.firestore();
 
@@ -17,7 +17,7 @@ const orale = async () =>{
     const user = doc.data();
     console.log(user)
 }
-
+ */
 
 
 const db = SQLITE.openDatabase("db.db");

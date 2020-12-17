@@ -12,6 +12,10 @@ import similaresScreen from './screens/similares'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import {Provider} from 'react-redux'
+import store from './components/store'
+import Descargas from './components/accionesRedux'
+
 import * as SQLITE from 'expo-sqlite'
 const db = SQLITE.openDatabase("db.db");
 
@@ -125,14 +129,17 @@ function StackPrueba() {
 export default function App() {
 
   return (
-    <NavigationContainer>
-      {isLogged() ? 
-        <MyStack />     
-        :
-        <StackPrueba /> 
-      }
-      <StatusBar style="auto" />
-    </NavigationContainer>
+    <Provider store={store}>
+        <Descargas />
+        <NavigationContainer>
+          {isLogged() ? 
+            <MyStack />     
+            :
+            <StackPrueba /> 
+          }
+          <StatusBar style="auto" />
+        </NavigationContainer>
+    </Provider>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert,ImageBackground,Button, NetInfo } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert,ImageBackground,Button  } from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import MiModal from '../components/mimodal'
@@ -175,8 +175,7 @@ return(
               </TouchableOpacity>                
           }
         </View>
-        {navigator.onLine ? console.log('awelita') : console.log('nel pastal')}
-         {console.log(NetInfo)}
+        {navigator.onLine ? console.log('awelita') : console.log('nel pastal')}        
     </ImageBackground>    
 )
 }
