@@ -13,8 +13,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import {Provider} from 'react-redux'
-import store from './components/store'
-import Descargas from './components/accionesRedux'
+import store from './components/Redux/store'
+import AccionesRedux from './components/Redux/accionesRedux'
 
 import * as SQLITE from 'expo-sqlite'
 const db = SQLITE.openDatabase("db.db");
@@ -130,7 +130,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-        <Descargas />
+        <AccionesRedux />
         <NavigationContainer>
           {isLogged() ? 
             <MyStack />     
