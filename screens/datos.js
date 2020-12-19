@@ -3,6 +3,7 @@ import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, ImageBack
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import { AntDesign } from '@expo/vector-icons'
+import {useSelector} from 'react-redux'
 
 const db = SQLITE.openDatabase("db.db");
 
@@ -22,6 +23,8 @@ function datosScreen({navigation, route}) {
     const [dataEmpaque,setDataEmpaque] = useState() 
     const [dataSimilares,setDataSimilares] = useState([]) 
 
+    const inventarioRedux = useSelector(state => state.inventario)
+
     const productoFilter = (text) => {
       let resul = []      
       let textMayus=''      
@@ -34,6 +37,8 @@ function datosScreen({navigation, route}) {
    
     useEffect( () => {
       let uno, dos ,start = new Date().getTime()
+     
+
       db.transaction(
         tx => {               
           tx.executeSql("select * from inventario", [],  (tx, res) =>  {            
@@ -44,6 +49,7 @@ function datosScreen({navigation, route}) {
             }            
             setDataInventario(resul)                                  
           }),
+         
 
           uno = new Date().getTime()
           console.log(start - uno)
@@ -241,6 +247,7 @@ function datosScreen({navigation, route}) {
               </View>
               {/* </ScrollView> */}
         </ImageBackground>
+        
       </View>
                                
     )

@@ -1,16 +1,49 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {View} from 'react-native'
 import { connect, useSelector  } from 'react-redux'
 
+import * as SQLITE from 'expo-sqlite'
+const db = SQLITE.openDatabase("db.db");
+
 
 const Descargas = ({state,descargar,ponervalor}) =>{
+    const[dataInventario, setDataInventario] = useState([])
+    const[dataEmpaque, setDataEmpaque] = useState([])
+    
+
     useEffect(() =>{
-        descargar('tamales')
-        ponervalor('orale')
+        db.transaction(
+            tx => {               
+              tx.executeSql("select * from inventario", [],  (tx, res) =>  {            
+                let resul = [];let index = 0;
+                while (index < res.rows.length) {
+                  resul = [...resul,res.rows.item(index)]
+                  index++              
+                }            
+                setDataInventario(resul)                                  
+              }),
+
+              tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
+                let resul = [];let index = 0
+                while (index < res.rows.length) {
+                  resul = [...resul,res.rows.item(index)]
+                  index++              
+                }            
+                setDataEmpaque(resul)                                  
+              })
+            })
+            
     },[])
+
+    useEffect(() => {
+        ponervalor(dataEmpaque)
+        descargar(dataInventario)
+    },[dataEmpaque])
     
     //const inven = useSelector(state => console.log(state.inventario))
     
+    //descargar(dataInventario)
+   
 
     return(
         <View>
@@ -26,17 +59,17 @@ const mapStateToProps = state => ({
   })
   
   const mapDispatchToProps = dispatch => ({
-    descargar(x,y){
+    descargar(data){
         dispatch({
-            type:"DESCARGAR_INVENTARIO",
-            x,y
+            type:"CARGAR_INVENTARIO",
+            data
         })
     },
 
-    ponervalor(x){
+    ponervalor(data){
         dispatch({
-            type:"PONER_INVENTARIO",
-            x
+            type:"CARGAR_EMPAQUE",
+            data
         })
     }
 

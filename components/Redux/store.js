@@ -9,18 +9,19 @@ const initialState = {
 
 
 
-const reducer = (state = initialState, action) =>{      
-    if(action.type === "DESCARGAR_INVENTARIO"){   
+const reducer = (state = initialState, action) =>{        
+  console.log(action)
+    if(action.type === "CARGAR_INVENTARIO"){   
       return{
           ...state,
-          inventario: 'entraste a inventario',        
+          inventario: action.data,        
       }
     }
 
-    if(action.type === "PONER_INVENTARIO"){    
+    if(action.type === "CARGAR_EMPAQUE"){    
       return{
         ...state,
-        empaque: 'entraste a empaque',        
+        empaque: action.data,        
       }      
     }
           
