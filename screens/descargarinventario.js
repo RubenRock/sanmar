@@ -1,8 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React, {useDebugValue, useEffect, useState} from 'react'
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert,ImageBackground,Button  } from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import MiModal from '../components/mimodal'
+import {useDispatch, useSelector} from 'react-redux'
+
+
 
 const db = SQLITE.openDatabase("db.db");
 
@@ -13,6 +16,8 @@ const borrartodoSql = () => {
       tx => {
         tx.executeSql(`delete from inventario;`, [])        
         tx.executeSql(`delete from empaques;`, [])        
+        tx.executeSql(`delete from listasimilar;`, [])
+        tx.executeSql(`delete from similares;`, [])
       },
       (e) => console.log(e.message),//error
       () => console.log('Borrado'))// exito
@@ -21,6 +26,9 @@ const borrartodoSql = () => {
   }
 
 function DescargarInventario (){    
+
+    const dispatch = useDispatch()
+  
     const [dataInventario, setDataInventario] = useState() //miarroba
     const [dataEmpaque, setDataEmpaque] = useState() //miarroba
     const [dataListaSimilar, setDataListaSimilar] = useState() //miarroba
@@ -29,7 +37,7 @@ function DescargarInventario (){
     const [progress, setProgress] = useState(0)
     const [envioCompleto, setEnvioCompleto] = useState(false)
 
-     //llenar db local con los datos de la nube    
+     //llenar db local y Redux con los datos de la nube    
     const agregarSql = () => {        
         db.transaction(
           tx => {       
@@ -41,8 +49,8 @@ function DescargarInventario (){
 
             dataEmpaque.forEach(
               ele => {
-                ele.empaque == '6' ? empaque='SEIS' : ele.empaque == '12' ? empaque='DOCE' : empaque= ele.empaque                
-                tx.executeSql("insert into empaques (clave, empaque, precio, piezas, barras , id) values (?, ?, ?, ?, ?, ?)", [ele.clave, empaque, ele.precio, ele.piezas, ele.barras, ele.id])
+                //ele.empaque == '6' ? empaque='SEIS' : ele.empaque == '12' ? empaque='DOCE' : empaque= ele.empaque                
+                tx.executeSql("insert into empaques (clave, empaque, precio, piezas, barras , id) values (?, ?, ?, ?, ?, ?)", [ele.clave, ele.empaque, ele.precio, ele.piezas, ele.barras, ele.id])
               }
             )
             setProgress(0.7)
@@ -54,7 +62,9 @@ function DescargarInventario (){
 
             dataSimilar.forEach(
               (ele) => tx.executeSql("insert into similares (clave, producto) values (?, ?)", [ele.clave, ele.producto])                
-            )
+            )   
+
+            llenarRedux()
             setProgress(1)
             setEnvioCompleto(true)
 
@@ -69,38 +79,14 @@ function DescargarInventario (){
           )
       }
 
-      //llamamos los datos del inventario de miarroba
-    /* useEffect(() => {
-      const fetchInventario = async () => {       
-        const response = await fetch('https://cors-anywhere.herokuapp.com/' +'https://mysilver.webcindario.com/Tiendas/SMinventario.json')   
-        console.log(response)
-        const data = await response.json()       
-        let simpleData =''               
-        
-        //el objeto que traigo con fetch tiene muchas ramas, lo hago mas corto con este codigo
-        for (let index = 0; index < data.FDBS.Manager.TableList[0].RowList.length; index++) {
-          simpleData = [data.FDBS.Manager.TableList[0].RowList[index].Original,...simpleData]
-        }
-        setDataInventario(simpleData)                      
-      } 
+    const llenarRedux = () => {
+      dispatch({type:'CARGAR_INVENTARIO',data:dataInventario})
+      dispatch({type:'CARGAR_EMPAQUE',data:dataEmpaque})
+      dispatch({type:'CARGAR_SIMILAR',data:dataSimilar})
+      console.log('termino Redux')     
+    }
 
-      const fetchEmpaque = async () => {       
-        const response = await fetch('https://cors-anywhere.herokuapp.com/' +'https://mysilver.webcindario.com/Tiendas/SMempaque.json')   
-        console.log(response)
-        const data = await response.json()       
-        let simpleData =''               
-        
-        //el objeto que traigo con fetch tiene muchas ramas, lo hago mas corto con este codigo
-        for (let index = 0; index < data.FDBS.Manager.TableList[0].RowList.length; index++) {
-          simpleData = [data.FDBS.Manager.TableList[0].RowList[index].Original,...simpleData]
-        } 
-
-        
-        setDataEmpaque(simpleData)                      
-      }
-      fetchInventario()
-      fetchEmpaque()
-    },[])  */  
+       
 
     useEffect(() => {
       const fetchInventario = async () => {       
@@ -147,15 +133,17 @@ function DescargarInventario (){
       setModalVisible(true)
       borrartodoSql()
       setProgress(0.3)
-      agregarSql()
+      agregarSql()     
     }
+
+   
 
 return(          
     <ImageBackground source={Interface.fondo} style={{flex:1, justifyContent:"center",}}>
        <MiModal visible={modalVisible} progress={progress} title='Descargando datos de la nube'>
                                           
           {envioCompleto ?                                      
-              <View style={styles.button}> 
+              <View style={styles.button}>                
                 <Button title='Completo'  onPress={() => setModalVisible(false)}></Button>                  
               </View>
             : 
@@ -174,8 +162,7 @@ return(
                 <Text style={[Interface.boton,{marginTop:50,width:"100%" }]}>Actualizar</Text>
               </TouchableOpacity>                
           }
-        </View>
-        {navigator.onLine ? console.log('awelita') : console.log('nel pastal')}        
+        </View>                
     </ImageBackground>    
 )
 }

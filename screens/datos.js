@@ -1,16 +1,18 @@
 import React,{useEffect, useState} from 'react'
 import {View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, ImageBackground, ScrollView} from 'react-native'
-import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import { AntDesign } from '@expo/vector-icons'
 import {useSelector} from 'react-redux'
-
-const db = SQLITE.openDatabase("db.db");
 
 const fondo = require('../assets/fondo.png')
 
 function datosScreen({navigation, route}) {
     const {dataTable, encabezado} = route.params   //encabezado trae nombre, domicilio y condicion para que no se borre de remisiones 
+    
+    //obtenemos los daatos de Redux
+    const inventarioRedux = useSelector(state => state.inventario)
+    const empaqueRedux = useSelector(state => state.empaque)
+    const similarRedux = useSelector(state => state.similar)
 
     
     const [empaqueFiltrado,setempaqueFiltrado]= useState([]) 
@@ -23,7 +25,7 @@ function datosScreen({navigation, route}) {
     const [dataEmpaque,setDataEmpaque] = useState() 
     const [dataSimilares,setDataSimilares] = useState([]) 
 
-    const inventarioRedux = useSelector(state => state.inventario)
+    
 
     const productoFilter = (text) => {
       let resul = []      
@@ -35,47 +37,10 @@ function datosScreen({navigation, route}) {
     
     //leemos los datos de la bd local
    
-    useEffect( () => {
-      let uno, dos ,start = new Date().getTime()
-     
-
-      db.transaction(
-        tx => {               
-          tx.executeSql("select * from inventario", [],  (tx, res) =>  {            
-            let resul = [];let index = 0;
-            while (index < res.rows.length) {
-              resul = [...resul,res.rows.item(index)]
-              index++              
-            }            
-            setDataInventario(resul)                                  
-          }),
-         
-
-          uno = new Date().getTime()
-          console.log(start - uno)
-        /*   tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
-            let resul = [];let index = 0
-            while (index < res.rows.length) {
-              resul = [...resul,res.rows.item(index)]
-              index++              
-            }            
-            setDataEmpaque(resul)                                  
-          }),
-          dos = new Date().getTime()
-          console.log(start - dos) */
-
-          tx.executeSql("select * from similares", [],  (tx, res) =>  {            
-            let resul = [];let index = 0
-            while (index < res.rows.length) {
-              resul = [...resul,res.rows.item(index)]
-              index++              
-            }            
-            setDataSimilares(resul)                                  
-          })
-        
-
-        },
-        (e) => console.log(e.message))
+    useEffect( () => {     
+      setDataInventario(inventarioRedux)  
+      setDataEmpaque(empaqueRedux) 
+      setDataSimilares(similarRedux)       
     },[])
 
     //filtramos la lista de producto a n items en la vista
@@ -110,6 +75,7 @@ function datosScreen({navigation, route}) {
    
     const handleListaProductos = (item)=>{                  
       setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
+      console.log(dataEmpaque)
       setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques                 
     }
     
@@ -177,7 +143,7 @@ function datosScreen({navigation, route}) {
     return (
       <View style = {{flex:1}}>
         <ImageBackground source={fondo} style={styles.container}>
-            {/* <ScrollView> */}
+            <ScrollView>
             <View  style={Interface.container}>
               <TouchableOpacity  onPress={ () => navigation.navigate('Remisiones', {dataTable: listProductos, encabezado: encabezado})}>
                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Agregar</Text>
@@ -215,7 +181,7 @@ function datosScreen({navigation, route}) {
                           
             </View>                              
               
-              <View style={{marginBottom:15,height:150}}>
+              <View style={{marginBottom:15}}>
               <FlatList 
                  style={Interface.container}
                 data={empaqueFiltrado}
@@ -240,12 +206,8 @@ function datosScreen({navigation, route}) {
                   }
                   }
               />
-              </View>
-              <View>
-                  {/* {productoFiltrado.map(item => <Text>{item.producto}</Text>)} */}
-                  
-              </View>
-              {/* </ScrollView> */}
+              </View>              
+              </ScrollView>
         </ImageBackground>
         
       </View>

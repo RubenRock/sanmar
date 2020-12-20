@@ -9,8 +9,7 @@ const initialState = {
 
 
 
-const reducer = (state = initialState, action) =>{        
-  console.log(action)
+const reducer = (state = initialState, action) =>{          
     if(action.type === "CARGAR_INVENTARIO"){   
       return{
           ...state,
@@ -24,6 +23,14 @@ const reducer = (state = initialState, action) =>{
         empaque: action.data,        
       }      
     }
+
+    if(action.type === "CARGAR_SIMILAR"){    
+      return{
+        ...state,
+        similar: action.data,        
+      }      
+    }
+    
           
     return state
 }
