@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image} from 'react-native';
+import React from 'react';
+import { StyleSheet, Image, Text, View} from 'react-native';
 import pruebaScreen from './screens/prueba'
 import HomeScreen from './screens/home'
 import remisionesScreen from './screens/remisiones'
@@ -9,6 +9,7 @@ import extrasScreen from './screens/extras'
 import listaRemisionScreen from './screens/listaremision'
 import DescargarInventario from './screens/descargarinventario'
 import similaresScreen from './screens/similares'
+import LoginScreen from './screens/login'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -26,28 +27,10 @@ const Prueba = createStackNavigator();
 
 const isLogged =() => {
  
-  return (true)
+  return (false)
 }
 
-function MyStack() {
-  const [dataEmpaque, setDataEmpaque] = useState([])
-
-  useEffect(() => {
-    db.transaction(
-      tx =>{
-      tx.executeSql("select * from empaques", [],  (tx, res) =>  {            
-        let resul = [];let index = 0
-        while (index < res.rows.length) {
-          resul = [...resul,res.rows.item(index)]
-          index++              
-        }            
-        setDataEmpaque(resul)                                  
-      })
-    }
-    )
-
-  }, [])
-  
+function MyStack() {  
   return (
     <Stack.Navigator>     
       <Stack.Screen name="Home" component={HomeScreen}  options={{         
@@ -126,17 +109,26 @@ function StackPrueba() {
   );
 }
 
+const tomala = () =>{
+  return(
+      <View>
+          <Text> Hola desde LoginScreen</Text>
+      </View>
+  )
+}
+
 export default function App() {
 
   return (
     <Provider store={store}>
         <AccionesRedux />
         <NavigationContainer>
-          {isLogged() ? 
+          <LoginScreen name='perrita' />
+         {/*  {isLogged() ? 
             <MyStack />     
             :
-            <StackPrueba /> 
-          }
+            loginScreen
+          } */}
           <StatusBar style="auto" />
         </NavigationContainer>
     </Provider>

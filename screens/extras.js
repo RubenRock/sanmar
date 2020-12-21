@@ -14,6 +14,8 @@ const formatear = () =>{
         tx.executeSql("drop table empaques ",[],(e)=>console.log(e),()=>console.log("borrado empaques"));
         tx.executeSql("drop table listasimilar ",[],(e)=>console.log(e),()=>console.log("borrado listasimilar"));
         tx.executeSql("drop table similares ",[],(e)=>console.log(e),()=>console.log("borrado similares"));
+        tx.executeSql("drop table usuarios ",[],(e)=>console.log(e),()=>console.log("borrado usuarios"));
+        tx.executeSql("drop table accesos ",[],(e)=>console.log(e),()=>console.log("borrado accesos"));
       },(e) => alert(e),
       () => alert('Borrado con exito'));
     //db.exec
@@ -28,6 +30,8 @@ const crearTablas = () =>{
         tx.executeSql("create table if not exists lista_remision (folio integer, cliente text, total text, fecha text, vendedor text, condicion text, estado text, domicilio text, impresion text, descuento text)");
         tx.executeSql("create table if not exists listasimilar (clave integer, descripcion text)");
         tx.executeSql("create table if not exists similares (clave integer, producto text)");
+        tx.executeSql("create table if not exists usuarios (login text, password text)");
+        tx.executeSql("create table if not exists accesos (login text, acceso text)");
       },(e) => alert(e),
       () => alert('Tablas Creadas correctamente'));
 }
