@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React ,{useState} from 'react';
 import { StyleSheet, Image, Text, View} from 'react-native';
 import pruebaScreen from './screens/prueba'
 import HomeScreen from './screens/home'
@@ -25,10 +25,6 @@ const image = require('./assets/Logo4.png')
 const Stack = createStackNavigator();
 const Prueba = createStackNavigator();
 
-const isLogged =() => {
- 
-  return (false)
-}
 
 function MyStack() {  
   return (
@@ -109,26 +105,26 @@ function StackPrueba() {
   );
 }
 
-const tomala = () =>{
-  return(
-      <View>
-          <Text> Hola desde LoginScreen</Text>
-      </View>
-  )
-}
+
 
 export default function App() {
+  const [isLogged, setIslogged] = useState(false)
 
   return (
     <Provider store={store}>
         <AccionesRedux />
         <NavigationContainer>
-          <LoginScreen name='perrita' />
+          <LoginScreen name='perrita' accion={setIslogged} />
          {/*  {isLogged() ? 
             <MyStack />     
             :
             loginScreen
           } */}
+          {isLogged ? 
+            console.log('si')
+            :
+            console.log('no')
+          }
           <StatusBar style="auto" />
         </NavigationContainer>
     </Provider>

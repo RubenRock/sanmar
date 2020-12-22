@@ -45,21 +45,17 @@ const Descargas = ({state,cargaInventario ,cargaEmpaque, cargaSimilar}) =>{
             (e) => console.log(e.message))
         },[])
 
-    useEffect(() => {
-      let uno ,start = new Date().getTime()
+    useEffect(() => {      
         cargaEmpaque(dataEmpaque)
         cargaInventario(dataInventario)
-        cargaSimilar(dataSimilares)
-        console.log('carga lista')
-        uno = new Date().getTime()
-        console.log(start - uno)
+        cargaSimilar(dataSimilares)        
     },[dataEmpaque])   
    
    
 
     return(
         <View>
-            {console.log('acciones')}        
+            {/* {console.log('acciones')}         */}
         </View>
     )
 
