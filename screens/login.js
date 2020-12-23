@@ -3,29 +3,77 @@ import {View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity} fr
 import * as Interface from '../components/interface'
 import buscar from '../components/buscarUsuario'
 
+import * as SQLITE from 'expo-sqlite'
+const db = SQLITE.openDatabase("db.db");
+
 const fondo = require('../assets/fondo.png')
 
 function LoginScreen ({name,accion}) {    
-    const [usuario, setUsuario] = useState('')
+    const [password, setPassword] = useState('')
+    const [newUsuario, setNewUsuario] = useState({'usuario':'','contraseña':'','repcontraseña':'' })
+    const [newUserScreen, setNewUserScreen] = useState(false)
 
-    const handleText = (data) => {
+
+    const handleTextIniciarSesion = (data) => {        
+        setPassword(data)        
+    }   
+
+    const handleUsuario = data =>{
         let text = ''
         text= data
-        setUsuario(text.toUpperCase())        
-    }    
+        setNewUsuario({...newUsuario,'usuario':text.toUpperCase()}) 
+    }
+
+    const handleContraseña = data =>{
+        setNewUsuario({...newUsuario,'contraseña':data})
+    }
+    
+    const handleRepContraseña = data =>{
+        setNewUsuario({...newUsuario,'repcontraseña':data})
+    }
+
+    const insertNewUser = data =>{
+        if ((newUsuario.contraseña.trim() === newUsuario.repcontraseña.trim()) && (newUsuario.contraseña.trim()!=''))
+        {
+            db.transaction(
+                tx => {                       
+                    tx.executeSql("insert into usuarios (login, password) values (?, ?)", [newUsuario.usuario, newUsuario.contraseña])                                
+                })
+            alert('Usuario creado correctamente')
+        }
+        else    
+            alert('contraseñas no son iguales')
+    }
     
     return(
         <View style = {{flex:1}}>
             <ImageBackground source={fondo} style = {styles.container}>
                 <View style={styles.container2}>
-                    <Text style= {styles.text}> INICIAR SESION  </Text>
-                    <TextInput secureTextEntry={true} onChangeText={data => handleText(data)} placeholder='Contraseña' style={[styles.input,styles.text]}/>
-                    <TouchableOpacity  onPress={ () => accion(buscar(usuario))}>
-                        <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
-                    </TouchableOpacity>  
-                    <TouchableOpacity style={{marginTop:10}} onPress={() => console.log('haaa keres crear uno')}>
-                        <Text>Nuevo usuario</Text>
-                    </TouchableOpacity>
+                    { newUserScreen ? 
+                        <>
+                            <Text style= {styles.text}> AGREGAR USUSARIO  </Text>
+                            <TextInput onChangeText={(data) => handleUsuario(data)} placeholder='nombre' style={[styles.input,styles.text]}/>
+                            <TextInput secureTextEntry={true} onChangeText={(data) => handleContraseña(data)} placeholder='contraseña' style={[styles.input,styles.text]}/>
+                            <TextInput secureTextEntry={true} onChangeText={(data) => handleRepContraseña(data)} placeholder='repetir contraseña' style={[styles.input,styles.text]}/>
+                            <TouchableOpacity  onPress={ () => insertNewUser()}>
+                                <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
+                            </TouchableOpacity>  
+                            <TouchableOpacity style={{marginTop:10}} onPress={() => setNewUserScreen(false)}>
+                                <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Regresar a inicio de sesion</Text>
+                            </TouchableOpacity>
+                        </>
+                        :
+                        <>
+                            <Text style= {styles.text}> INICIAR SESION  </Text>
+                            <TextInput secureTextEntry={true} onChangeText={data => handleTextIniciarSesion(data)} placeholder='Contraseña' style={[styles.input,styles.text]}/>
+                            <TouchableOpacity  onPress={ () => accion(buscar(password))}>
+                                <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
+                            </TouchableOpacity>  
+                            <TouchableOpacity style={{marginTop:10}} onPress={() => setNewUserScreen(true)}>
+                                <Text>Nuevo usuario</Text>
+                            </TouchableOpacity>
+                        </>
+                    }
                 </View>
             </ImageBackground>
         </View>    
