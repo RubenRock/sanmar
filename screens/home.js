@@ -38,6 +38,9 @@ function HomeScreen({ navigation }) {
             <TouchableOpacity  onPress={() => navigation.navigate('Extras')}>
               <Text style={Interface.boton}>Extras</Text>
             </TouchableOpacity>  
+            <TouchableOpacity  onPress={() => navigation.navigate('Accesos')}>
+              <Text style={Interface.boton}>Accesos</Text>
+            </TouchableOpacity>  
 
           </View>
           </ImageBackground>

@@ -6,15 +6,35 @@ import * as SQLITE from 'expo-sqlite'
 const db = SQLITE.openDatabase("db.db");
 
 
-const Descargas = ({state,cargaInventario ,cargaEmpaque, cargaSimilar}) =>{
+const Descargas = ({state,cargaInventario ,cargaEmpaque, cargaSimilar, cargaUsuarios, cargaAccesos}) =>{
     const[dataInventario, setDataInventario] = useState([])
     const[dataEmpaque, setDataEmpaque] = useState([])
     const[dataSimilares, setDataSimilares] = useState([])
+    const[dataUsuarios, setDataUsuarios] = useState([])
+    const[dataAccesos, setDataAccesos] = useState([])
     
 
     useEffect(() =>{
         db.transaction(
-            tx => {               
+            tx => {   
+              tx.executeSql("select * from usuarios", [],  (tx, res) =>  {            
+                let resul = [];let index = 0
+                while (index < res.rows.length) {
+                  resul = [...resul,res.rows.item(index)]
+                  index++              
+                }            
+                setDataUsuarios(resul)                                  
+              }),
+
+              tx.executeSql("select * from accesos", [],  (tx, res) =>  {            
+                let resul = [];let index = 0
+                while (index < res.rows.length) {
+                  resul = [...resul,res.rows.item(index)]
+                  index++              
+                }            
+                setDataAccesos(resul)                                  
+              }),
+
               tx.executeSql("select * from similares", [],  (tx, res) =>  {            
                 let resul = [];let index = 0
                 while (index < res.rows.length) {
@@ -46,6 +66,8 @@ const Descargas = ({state,cargaInventario ,cargaEmpaque, cargaSimilar}) =>{
         },[])
 
     useEffect(() => {      
+        cargaUsuarios(dataUsuarios)
+        cargaAccesos(dataAccesos)
         cargaEmpaque(dataEmpaque)
         cargaInventario(dataInventario)
         cargaSimilar(dataSimilares)        
@@ -66,7 +88,7 @@ const mapStateToProps = state => ({
     state: state
   })
   
-  const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = dispatch => ({
     cargaInventario(data){
         dispatch({
             type:"CARGAR_INVENTARIO",
@@ -86,7 +108,21 @@ const mapStateToProps = state => ({
             type:"CARGAR_SIMILAR",
             data
         })
-    }
+    },
+    
+    cargaUsuarios(data){
+      dispatch({
+          type:"CARGAR_USUARIOS",
+          data
+      })
+    },
+
+    cargaAccesos(data){
+      dispatch({
+          type:"CARGAR_ACCESOS",
+          data
+      })
+    },
 
   })
 

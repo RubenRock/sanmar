@@ -4,7 +4,9 @@ const initialState = {
     inventario:[],
     empaque:[],
     similar:[],
-    listasimilar:[]
+    listasimilar:[],
+    usuarios:[],
+    accesos:[,]
 }
 
 
@@ -28,6 +30,20 @@ const reducer = (state = initialState, action) =>{
       return{
         ...state,
         similar: action.data,        
+      }      
+    }
+
+    if(action.type === "CARGAR_USUARIOS"){    
+      return{
+        ...state,
+        usuarios: action.data,        
+      }      
+    }
+
+    if(action.type === "CARGAR_ACCESOS"){    
+      return{
+        ...state,
+        accesos: action.data,        
       }      
     }
     

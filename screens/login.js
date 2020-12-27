@@ -38,8 +38,11 @@ function LoginScreen ({name,accion}) {
             db.transaction(
                 tx => {                       
                     tx.executeSql("insert into usuarios (login, password) values (?, ?)", [newUsuario.usuario, newUsuario.contraseña])                                
-                })
-            alert('Usuario creado correctamente')
+                },
+                (error)=> alert('No se creo el usuario: ' + error.message),
+                () =>alert('Usuario creado correctamente')
+            )
+            
         }
         else    
             alert('contraseñas no son iguales')
@@ -50,9 +53,9 @@ function LoginScreen ({name,accion}) {
             <ImageBackground source={fondo} style = {styles.container}>
                 <View style={styles.container2}>
                     { newUserScreen ? 
-                        <>
+                        <>                              
                             <Text style= {styles.text}> AGREGAR USUSARIO  </Text>
-                            <TextInput onChangeText={(data) => handleUsuario(data)} placeholder='nombre' style={[styles.input,styles.text]}/>
+                            <TextInput onChangeText={(data) => handleUsuario(data)} value= {newUsuario.usuario} placeholder='nombre' style={[styles.input,styles.text]} />
                             <TextInput secureTextEntry={true} onChangeText={(data) => handleContraseña(data)} placeholder='contraseña' style={[styles.input,styles.text]}/>
                             <TextInput secureTextEntry={true} onChangeText={(data) => handleRepContraseña(data)} placeholder='repetir contraseña' style={[styles.input,styles.text]}/>
                             <TouchableOpacity  onPress={ () => insertNewUser()}>
@@ -63,15 +66,15 @@ function LoginScreen ({name,accion}) {
                             </TouchableOpacity>
                         </>
                         :
-                        <>
+                        <>                             
                             <Text style= {styles.text}> INICIAR SESION  </Text>
                             <TextInput secureTextEntry={true} onChangeText={data => handleTextIniciarSesion(data)} placeholder='Contraseña' style={[styles.input,styles.text]}/>
-                            <TouchableOpacity  onPress={ () => accion(buscar(password))}>
+                            <TouchableOpacity  onPress={ () => buscar(password).then(resul => resul?  accion(resul) : alert('Usuario incorrecto'))}>
                                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
                             </TouchableOpacity>  
                             <TouchableOpacity style={{marginTop:10}} onPress={() => setNewUserScreen(true)}>
                                 <Text>Nuevo usuario</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>                            
                         </>
                     }
                 </View>
@@ -97,9 +100,10 @@ const styles = StyleSheet.create({
         marginHorizontal:10,     
         backgroundColor:'rgba(4,119,224,0.2)',
         borderRadius:10,
-        padding:8, 
+        paddingHorizontal:10, 
+        paddingVertical:20,
         textAlign:'center',
-        height:250,   
+        //height:250,   
         justifyContent:'center',
         },
 

@@ -10,6 +10,7 @@ import listaRemisionScreen from './screens/listaremision'
 import DescargarInventario from './screens/descargarinventario'
 import similaresScreen from './screens/similares'
 import LoginScreen from './screens/login'
+import accesosScreen from './screens/accesos'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -93,7 +94,16 @@ function MyStack() {
           headerRight: () => (
             <Image source={image} style={styles.image} /> 
           ),}}/>
-    </Stack.Navigator>
+
+          <Stack.Screen name="Accesos" component={accesosScreen} options={{         
+              headerStyle: {
+                backgroundColor: '#3F3DE0',           
+              },
+              headerTintColor: 'white',
+              headerRight: () => (
+                <Image source={image} style={styles.image} /> 
+              ),}}/>
+        </Stack.Navigator>
   );
 }
 
@@ -108,23 +118,22 @@ function StackPrueba() {
 
 
 export default function App() {
-  const [isLogged, setIslogged] = useState(false)
+  const [isLogged, setIslogged] = useState(true)
 
   return (
     <Provider store={store}>
         <AccionesRedux />
-        <NavigationContainer>
-          <LoginScreen name='perrita' accion={setIslogged} />
-         {/*  {isLogged() ? 
+        <NavigationContainer>          
+         {isLogged ? 
             <MyStack />     
             :
-            loginScreen
-          } */}
-          {isLogged ? 
+            <LoginScreen name='perrita' accion={setIslogged} />
+          } 
+         {/*  {isLogged ? 
             console.log('si')
             :
             console.log('no')
-          }
+          } */}
           <StatusBar style="auto" />
         </NavigationContainer>
     </Provider>
