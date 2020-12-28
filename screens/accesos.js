@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {TouchableOpacity, Text, View, ImageBackground, StyleSheet, FlatList} from 'react-native'
 import * as Interface from '../components/interface'
 import { AntDesign } from '@expo/vector-icons'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 import * as SQLITE from 'expo-sqlite'
 const db = SQLITE.openDatabase("db.db");
@@ -10,46 +10,50 @@ const db = SQLITE.openDatabase("db.db");
 
 function accesosScreen() {
     const [usuarios, setUsuarios] = useState(useSelector(state => state.usuarios))
-    const [accesos, setAccesos] = useState([])   
-    let accesos2 =useSelector(state => state.accesos)
-    
+    const [accesos, setAccesos] = useState(useSelector(state => state.accesos))   
+    let accesos2 = useSelector(state => state.accesos)
 
-    const agregarAcceso = (usuario, acceso) =>{    
+    const dispatch = useDispatch()
+    
+    const accionAgregar = (usuario, acceso)=>{
         accesos2 = [...accesos2,{login:usuario,acceso:acceso}]
-        setAccesos(accesos2)     
-        console.log(accesos2)
-        
-        /* let busca = accesos
+        setAccesos(accesos2)            
+        dispatch({type:'CARGAR_ACCESOS',data:accesos2})
+    }
+
+    const agregarAcceso = (usuario, acceso) =>{           
+        let busca = accesos2
         busca = busca.filter(x => x.login == usuario)        
         if (busca.length == 0 ){ 
             db.transaction(
                     tx => {       
                     tx.executeSql("insert into accesos (login, acceso) values (?, ?)", [usuario, acceso])                
                 }, 
-                    error => console.log(error),            
-                )      
-          
+                    error => alert(error), 
+                    () => accionAgregar(usuario, acceso)
+                )                
         } else 
-            alert('ya esta con acceso') */
+            alert('ya esta con acceso') 
     }
 
     const borrarAcceso = usuario => {
         let aux = []                       
-        accesos.forEach(element => {
+       /*  accesos.forEach(element => {
             if (element.login != usuario)
                 aux = [...aux,element]
-        });
+        }); */
+        aux = accesos.filter(x => x.login != usuario);
         
         setAccesos(aux)
+        dispatch({type:'CARGAR_ACCESOS',data:aux})
         
-      /*   db.transaction(
+       db.transaction(
             tx => {       
                tx.executeSql("delete from accesos where login = ?", [usuario])                
         }, 
             error => console.log(error),
            
-        )   */
-
+        )  
     }
 
     return(
@@ -71,7 +75,7 @@ function accesosScreen() {
 
                 <Text style={styles.text}> Usuarios con accesos </Text>
                 
-                <View style={{marginBottom:15}}>
+                <View style={{marginBottom:15,height:150}}>
                     <FlatList 
                         style={Interface.container}
                         data={accesos}

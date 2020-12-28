@@ -2,16 +2,20 @@ import React, {useState} from 'react'
 import {View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity} from 'react-native'
 import * as Interface from '../components/interface'
 import buscar from '../components/buscarUsuario'
+import {useSelector, useDispatch} from 'react-redux'
 
 import * as SQLITE from 'expo-sqlite'
 const db = SQLITE.openDatabase("db.db");
 
 const fondo = require('../assets/fondo.png')
 
-function LoginScreen ({name,accion}) {    
+function LoginScreen ({accion}) {    
     const [password, setPassword] = useState('')
     const [newUsuario, setNewUsuario] = useState({'usuario':'','contraseña':'','repcontraseña':'' })
     const [newUserScreen, setNewUserScreen] = useState(false)
+
+    const usuariosRedux = useSelector(state => state.usuarios)
+    const dispatch = useDispatch()
 
 
     const handleTextIniciarSesion = (data) => {        
@@ -69,7 +73,12 @@ function LoginScreen ({name,accion}) {
                         <>                             
                             <Text style= {styles.text}> INICIAR SESION  </Text>
                             <TextInput secureTextEntry={true} onChangeText={data => handleTextIniciarSesion(data)} placeholder='Contraseña' style={[styles.input,styles.text]}/>
-                            <TouchableOpacity  onPress={ () => buscar(password).then(resul => resul?  accion(resul) : alert('Usuario incorrecto'))}>
+                            <TouchableOpacity  onPress={ () => { // en Redux guardo en user los datos del usuario que entro
+                                                            let user = usuariosRedux.filter(x => x.password == password)
+                                                            buscar(password).then(resul => resul?  accion(resul) : alert('Usuario incorrecto'))
+                                                            dispatch({type:'CARGAR_USER',data:user})
+                                                        }
+                                                        }>
                                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
                             </TouchableOpacity>  
                             <TouchableOpacity style={{marginTop:10}} onPress={() => setNewUserScreen(true)}>

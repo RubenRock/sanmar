@@ -6,7 +6,8 @@ const initialState = {
     similar:[],
     listasimilar:[],
     usuarios:[],
-    accesos:[,]
+    accesos:[],
+    user:[]
 }
 
 
@@ -37,6 +38,13 @@ const reducer = (state = initialState, action) =>{
       return{
         ...state,
         usuarios: action.data,        
+      }      
+    }
+
+    if(action.type === "CARGAR_USER"){    
+      return{
+        ...state,
+        user: action.data,        
       }      
     }
 

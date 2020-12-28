@@ -1,6 +1,8 @@
 import React from 'react'
 import {View, Text, TouchableOpacity,  StyleSheet, Image,ImageBackground} from 'react-native'
 import * as Interface from '../components/interface'
+import {useSelector} from 'react-redux'
+import buscar from '../components/buscarUsuario'
 
 
 let encabezado = {name:'',direccion:'',condicion:'CONTADO'}
@@ -11,9 +13,16 @@ const fondo = require('../assets/fondo.png')
 
 function HomeScreen({ navigation }) {
 
+  const user = useSelector(state => state.user)
+  const accesos = useSelector(state => state.accesos)
+
+  const buscarAcceso = () =>{
+    const resul = accesos.find(x => x.login == user[0].login)
+    return(resul)
+  }
+
   return (
-    <>
-      
+    <>      
       <View style={styles.container}>
           <ImageBackground source={fondo} style={styles.fondo}>
           <View style={[Interface.container,{paddingVertical:20}]}>
@@ -35,12 +44,17 @@ function HomeScreen({ navigation }) {
             <TouchableOpacity onPress={() => navigation.navigate('InventarioNube')}>
               <Text style={Interface.boton}>Descargar inventario de la Nube</Text>
             </TouchableOpacity>
-            <TouchableOpacity  onPress={() => navigation.navigate('Extras')}>
-              <Text style={Interface.boton}>Extras</Text>
-            </TouchableOpacity>  
-            <TouchableOpacity  onPress={() => navigation.navigate('Accesos')}>
-              <Text style={Interface.boton}>Accesos</Text>
-            </TouchableOpacity>  
+            {buscarAcceso() ?
+            <>
+              <TouchableOpacity  onPress={() => navigation.navigate('Extras')}>
+                <Text style={Interface.boton}>Extras</Text>
+              </TouchableOpacity>  
+              <TouchableOpacity  onPress={() => navigation.navigate('Accesos')}>
+                <Text style={Interface.boton}>Accesos</Text>
+              </TouchableOpacity>  
+              </>
+              : null
+            }
 
           </View>
           </ImageBackground>

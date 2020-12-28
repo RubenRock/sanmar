@@ -118,7 +118,7 @@ function StackPrueba() {
 
 
 export default function App() {
-  const [isLogged, setIslogged] = useState(true)
+  const [isLogged, setIslogged] = useState(false)
 
   return (
     <Provider store={store}>
@@ -127,13 +127,8 @@ export default function App() {
          {isLogged ? 
             <MyStack />     
             :
-            <LoginScreen name='perrita' accion={setIslogged} />
-          } 
-         {/*  {isLogged ? 
-            console.log('si')
-            :
-            console.log('no')
-          } */}
+            <LoginScreen accion={setIslogged} />
+          }         
           <StatusBar style="auto" />
         </NavigationContainer>
     </Provider>
