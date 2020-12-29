@@ -74,8 +74,7 @@ function datosScreen({navigation, route}) {
    
    
     const handleListaProductos = (item)=>{                  
-      setproductoSeleccionado(item.producto) //almaceno el producto seleccionado
-      console.log(dataEmpaque)
+      setproductoSeleccionado(item.producto) //almaceno el producto seleccionado      
       setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques                 
     }
     

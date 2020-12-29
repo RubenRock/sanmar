@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity} from 'react-native'
 import * as Interface from '../components/interface'
 import buscar from '../components/buscarUsuario'
@@ -16,6 +16,12 @@ function LoginScreen ({accion}) {
 
     const usuariosRedux = useSelector(state => state.usuarios)
     const dispatch = useDispatch()
+
+    //limpiamos cajas de texto al cambiar de login a crear usuarios
+    useEffect(()=>{
+        setPassword('')
+        setNewUsuario({'usuario':'','contraseña':'','repcontraseña':'' })
+    },[newUserScreen])
 
 
     const handleTextIniciarSesion = (data) => {        
@@ -36,7 +42,12 @@ function LoginScreen ({accion}) {
         setNewUsuario({...newUsuario,'repcontraseña':data})
     }
 
-    const insertNewUser = data =>{
+    const newUsuarioExito = ()=>{
+        alert('Usuario creado correctamente')
+        setNewUserScreen(false)
+    }
+
+    const insertNewUser = () =>{
         if ((newUsuario.contraseña.trim() === newUsuario.repcontraseña.trim()) && (newUsuario.contraseña.trim()!=''))
         {
             db.transaction(
@@ -44,7 +55,7 @@ function LoginScreen ({accion}) {
                     tx.executeSql("insert into usuarios (login, password) values (?, ?)", [newUsuario.usuario, newUsuario.contraseña])                                
                 },
                 (error)=> alert('No se creo el usuario: ' + error.message),
-                () =>alert('Usuario creado correctamente')
+                () =>newUsuarioExito(newUsuario.usuario, newUsuario.contraseña)
             )
             
         }
@@ -62,21 +73,21 @@ function LoginScreen ({accion}) {
                             <TextInput onChangeText={(data) => handleUsuario(data)} value= {newUsuario.usuario} placeholder='nombre' style={[styles.input,styles.text]} />
                             <TextInput secureTextEntry={true} onChangeText={(data) => handleContraseña(data)} placeholder='contraseña' style={[styles.input,styles.text]}/>
                             <TextInput secureTextEntry={true} onChangeText={(data) => handleRepContraseña(data)} placeholder='repetir contraseña' style={[styles.input,styles.text]}/>
-                            <TouchableOpacity  onPress={ () => insertNewUser()}>
+                            <TouchableOpacity  onPress={ () => insertNewUser() }>
                                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
                             </TouchableOpacity>  
                             <TouchableOpacity style={{marginTop:10}} onPress={() => setNewUserScreen(false)}>
-                                <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Regresar a inicio de sesion</Text>
+                                <Text style={{marginTop:5,width:"100%"}}>Regresar a inicio de sesion</Text>
                             </TouchableOpacity>
                         </>
                         :
                         <>                             
                             <Text style= {styles.text}> INICIAR SESION  </Text>
-                            <TextInput secureTextEntry={true} onChangeText={data => handleTextIniciarSesion(data)} placeholder='Contraseña' style={[styles.input,styles.text]}/>
+                            <TextInput secureTextEntry={true} onChangeText={data => handleTextIniciarSesion(data)} placeholder='Contraseña' style={[styles.input,styles.text]} value={password}/>
                             <TouchableOpacity  onPress={ () => { // en Redux guardo en user los datos del usuario que entro
-                                                            let user = usuariosRedux.filter(x => x.password == password)
-                                                            buscar(password).then(resul => resul?  accion(resul) : alert('Usuario incorrecto'))
+                                                            let user = usuariosRedux.filter(x => x.password == password)                                                            
                                                             dispatch({type:'CARGAR_USER',data:user})
+                                                            buscar(password).then(resul => resul?  accion(resul) : alert('Usuario incorrecto'))                                                            
                                                         }
                                                         }>
                                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>

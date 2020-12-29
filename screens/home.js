@@ -2,7 +2,6 @@ import React from 'react'
 import {View, Text, TouchableOpacity,  StyleSheet, Image,ImageBackground} from 'react-native'
 import * as Interface from '../components/interface'
 import {useSelector} from 'react-redux'
-import buscar from '../components/buscarUsuario'
 
 
 let encabezado = {name:'',direccion:'',condicion:'CONTADO'}
@@ -10,14 +9,13 @@ let encabezado = {name:'',direccion:'',condicion:'CONTADO'}
 const image = require('../assets/Logo4.png')
 const fondo = require('../assets/fondo.png')
 
-
 function HomeScreen({ navigation }) {
 
   const user = useSelector(state => state.user)
   const accesos = useSelector(state => state.accesos)
 
-  const buscarAcceso = () =>{
-    const resul = accesos.find(x => x.login == user[0].login)
+  const buscarAcceso = () =>{   
+    const resul = accesos.find(x => x.login == user[0].login)    
     return(resul)
   }
 
@@ -44,6 +42,7 @@ function HomeScreen({ navigation }) {
             <TouchableOpacity onPress={() => navigation.navigate('InventarioNube')}>
               <Text style={Interface.boton}>Descargar inventario de la Nube</Text>
             </TouchableOpacity>
+
             {buscarAcceso() ?
             <>
               <TouchableOpacity  onPress={() => navigation.navigate('Extras')}>

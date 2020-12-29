@@ -32,6 +32,8 @@ const crearTablas = () =>{
         tx.executeSql("create table if not exists similares (clave integer, producto text)");
         tx.executeSql("create table if not exists usuarios (login text, password text PRIMARY KEY)");
         tx.executeSql("create table if not exists accesos (login text, acceso text)");
+        tx.executeSql("insert into usuarios (login, password) values (?, ?)", ['RUBEN', 'avla']);
+        tx.executeSql("insert into accesos (login, acceso) values (?, ?)", ['RUBEN', 'ACTIVO']);
       },(e) => alert(e),
       () => alert('Tablas Creadas correctamente'));
 }
