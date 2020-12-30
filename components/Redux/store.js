@@ -55,6 +55,13 @@ const reducer = (state = initialState, action) =>{
       }      
     }
     
+    if(action.type === "AGREGAR_USUARIOS"){    
+      return{
+        ...state,        
+        usuarios: [action.data].concat(state.usuarios)
+      }      
+    }
+    
           
     return state
 }

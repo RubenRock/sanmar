@@ -13,9 +13,9 @@ function LoginScreen ({accion}) {
     const [password, setPassword] = useState('')
     const [newUsuario, setNewUsuario] = useState({'usuario':'','contraseña':'','repcontraseña':'' })
     const [newUserScreen, setNewUserScreen] = useState(false)
-
-    const usuariosRedux = useSelector(state => state.usuarios)
+    
     const dispatch = useDispatch()
+    const usuariosRedux = useSelector(state => state.usuarios)  
 
     //limpiamos cajas de texto al cambiar de login a crear usuarios
     useEffect(()=>{
@@ -28,10 +28,8 @@ function LoginScreen ({accion}) {
         setPassword(data)        
     }   
 
-    const handleUsuario = data =>{
-        let text = ''
-        text= data
-        setNewUsuario({...newUsuario,'usuario':text.toUpperCase()}) 
+    const handleUsuario = data =>{        
+        setNewUsuario({...newUsuario,'usuario':data}) 
     }
 
     const handleContraseña = data =>{
@@ -42,8 +40,9 @@ function LoginScreen ({accion}) {
         setNewUsuario({...newUsuario,'repcontraseña':data})
     }
 
-    const newUsuarioExito = ()=>{
+    const newUsuarioExito = (usuario, contraseña)=>{
         alert('Usuario creado correctamente')
+        dispatch({type:'AGREGAR_USUARIOS', data:{login:usuario,password:contraseña}})
         setNewUserScreen(false)
     }
 
@@ -52,7 +51,7 @@ function LoginScreen ({accion}) {
         {
             db.transaction(
                 tx => {                       
-                    tx.executeSql("insert into usuarios (login, password) values (?, ?)", [newUsuario.usuario, newUsuario.contraseña])                                
+                    tx.executeSql("insert into usuarios (login, password) values (?, ?)", [newUsuario.usuario.toUpperCase(), newUsuario.contraseña])                                
                 },
                 (error)=> alert('No se creo el usuario: ' + error.message),
                 () =>newUsuarioExito(newUsuario.usuario, newUsuario.contraseña)
@@ -77,14 +76,14 @@ function LoginScreen ({accion}) {
                                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
                             </TouchableOpacity>  
                             <TouchableOpacity style={{marginTop:10}} onPress={() => setNewUserScreen(false)}>
-                                <Text style={{marginTop:5,width:"100%"}}>Regresar a inicio de sesion</Text>
+                                <Text style={{marginTop:5,width:"100%",textAlign:'center',color:Interface.colorText}}>Regresar a inicio de sesion</Text>
                             </TouchableOpacity>
                         </>
                         :
                         <>                             
                             <Text style= {styles.text}> INICIAR SESION  </Text>
                             <TextInput secureTextEntry={true} onChangeText={data => handleTextIniciarSesion(data)} placeholder='Contraseña' style={[styles.input,styles.text]} value={password}/>
-                            <TouchableOpacity  onPress={ () => { // en Redux guardo en user los datos del usuario que entro
+                            <TouchableOpacity  onPress={ () => { // en Redux guardo en user los datos del usuario que entro                                                                                                                        
                                                             let user = usuariosRedux.filter(x => x.password == password)                                                            
                                                             dispatch({type:'CARGAR_USER',data:user})
                                                             buscar(password).then(resul => resul?  accion(resul) : alert('Usuario incorrecto'))                                                            
@@ -93,7 +92,7 @@ function LoginScreen ({accion}) {
                                 <Text style={[Interface.boton,{marginTop:5,width:"100%"}]}>Aceptar</Text>
                             </TouchableOpacity>  
                             <TouchableOpacity style={{marginTop:10}} onPress={() => setNewUserScreen(true)}>
-                                <Text>Nuevo usuario</Text>
+                                <Text style={{textAlign:'center',color:Interface.colorText}}>Nuevo usuario</Text>
                             </TouchableOpacity>                            
                         </>
                     }
@@ -113,6 +112,7 @@ const styles = StyleSheet.create({
         color:Interface.colorText,
         fontWeight:"bold",
         fontSize:20,
+        textAlign:'center',
         },
 
     container2:{          
