@@ -63,6 +63,8 @@ const Descargas = ({state,cargaInventario ,cargaEmpaque, cargaSimilar, cargaUsua
               })
             },
             (e) => console.log(e.message))
+
+            console.log('termino acciones Redux')
         },[])
 
     useEffect(() => {      

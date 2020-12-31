@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity} fr
 import * as Interface from '../components/interface'
 import buscar from '../components/buscarUsuario'
 import {useSelector, useDispatch} from 'react-redux'
+import NetInfo from '@react-native-community/netinfo';
 
 import * as SQLITE from 'expo-sqlite'
 const db = SQLITE.openDatabase("db.db");
@@ -15,8 +16,44 @@ function LoginScreen ({accion}) {
     const [newUserScreen, setNewUserScreen] = useState(false)
     
     const dispatch = useDispatch()
-    const usuariosRedux = useSelector(state => state.usuarios)  
+    const usuariosRedux = useSelector(state => state.usuarios)    
+    
+    
 
+    const agregarUsuario = () => {
+        db.transaction(tx => { 
+            tx.executeSql("insert into usuarios (login, password) values (?, ?)", ['RUBEN', 'avla']);
+            tx.executeSql("insert into accesos (login, acceso) values (?, ?)", ['RUBEN', 'ACTIVO']);
+          },(e) => alert(e),
+          () => {
+                    dispatch({type:'AGREGAR_USUARIOS', data:{login:'RUBEN',password:'avla'}})
+                    dispatch({type:'AGREGAR_ACCESOS', data:{login:'RUBEN',acceso:'ACTIVO'}})
+                    console.log('Accesos creados correctamente')
+                }
+        )
+
+    }
+
+    const verificarTablas = () =>{
+        db.transaction(tx => {         
+            tx.executeSql("create table if not exists inventario (clave text, producto text, iva text, usuario text, fecha date, ieps text)");
+            tx.executeSql("create table if not exists empaques (clave text, empaque text, precio text, piezas integer, barras text, id integer)");
+            tx.executeSql("create table if not exists remisiones (folio integer, cantidad text, producto text, total text, tipo text, empaque text, descuento text)");
+            tx.executeSql("create table if not exists lista_remision (folio integer, cliente text, total text, fecha text, vendedor text, condicion text, estado text, domicilio text, impresion text, descuento text)");
+            tx.executeSql("create table if not exists listasimilar (clave integer, descripcion text)");
+            tx.executeSql("create table if not exists similares (clave integer, producto text)");
+            tx.executeSql("create table if not exists usuarios (login text, password text PRIMARY KEY)");
+            tx.executeSql("create table if not exists accesos (login text, acceso text)");            
+          },(e) => alert(e),
+          () => {                    
+                    console.log(usuariosRedux)                    
+                    if (!usuariosRedux.length)  {
+                        agregarUsuario()                       
+                    }
+                }
+        );
+    }    
+   
     //limpiamos cajas de texto al cambiar de login a crear usuarios
     useEffect(()=>{
         setPassword('')
@@ -81,9 +118,9 @@ function LoginScreen ({accion}) {
                         </>
                         :
                         <>                             
-                            <Text style= {styles.text}> INICIAR SESION  </Text>
+                            <Text style= {styles.text} onPress={() => verificarTablas()}> INICIAR SESION  </Text>
                             <TextInput secureTextEntry={true} onChangeText={data => handleTextIniciarSesion(data)} placeholder='Contraseña' style={[styles.input,styles.text]} value={password}/>
-                            <TouchableOpacity  onPress={ () => { // en Redux guardo en user los datos del usuario que entro                                                                                                                        
+                            <TouchableOpacity  onPress={ () => { // en Redux guardo en user los datos del usuario que entro                                                                                                                                                                                    
                                                             let user = usuariosRedux.filter(x => x.password == password)                                                            
                                                             dispatch({type:'CARGAR_USER',data:user})
                                                             buscar(password).then(resul => resul?  accion(resul) : alert('Usuario incorrecto'))                                                            

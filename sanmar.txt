@@ -10,3 +10,6 @@ npm install react-native-paper
 
 //redux
 npm add redux react-redux
+
+//checar conexion a internet
+npm install @react-native-community/netinfo

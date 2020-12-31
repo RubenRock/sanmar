@@ -2,6 +2,7 @@ import React,{useState, useEffect} from 'react'
 import {View, Text, TextInput, StyleSheet,Picker, FlatList, Alert, ImageBackground} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import { AntDesign } from '@expo/vector-icons';
+import {useSelector} from 'react-redux'
 
 const db = SQLITE.openDatabase("db.db")
 
@@ -17,6 +18,8 @@ function Remisiones({navigation, route}){
     const [total, setTotal] = useState(0)
     const [header, setHeader]= useState({name:'',direccion:'',condicion:'CONTADO'})
     const [folio, setFolio] = useState("1")
+
+    const user = useSelector(state => state.user)
 
   
     //obtenemos numero de folio de la remision
@@ -116,11 +119,12 @@ function Remisiones({navigation, route}){
     }
 
     const handleGuardar = () => {
+      console.log(user[0].login)
       if (table.length >0){
         if (header.name.trim()){     
           db.transaction(
             tx => {       
-              tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), header.name.toUpperCase(), total, currentDate, "ADMIN", header.condicion, "PENDIENTE", header.direccion.toUpperCase(), "SERIE", "0" ]),
+              tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), header.name.toUpperCase(), total, currentDate, user[0].login, header.condicion, "PENDIENTE", header.direccion.toUpperCase(), "SERIE", "0" ]),
             
             dataTable.forEach( (ele) =>{
                 tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
