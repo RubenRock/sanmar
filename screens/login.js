@@ -17,6 +17,14 @@ function LoginScreen ({accion}) {
     
     const dispatch = useDispatch()
     const usuariosRedux = useSelector(state => state.usuarios)    
+
+    NetInfo.fetch('hgjvch').then(state => {
+        console.log(state)
+        console.log('Connection type', state.type);
+        console.log('Is connected?', state.isConnected);
+      });
+
+    
     
     
 
