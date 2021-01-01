@@ -1,9 +1,11 @@
-import React, {useDebugValue, useEffect, useState} from 'react'
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert,ImageBackground,Button  } from 'react-native'
+import React, {useEffect, useState} from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Alert,ImageBackground,Button  } from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import MiModal from '../components/mimodal'
 import {useDispatch, useSelector} from 'react-redux'
+import NetInfo from '@react-native-community/netinfo';
+import { ActivityIndicator } from 'react-native-paper';
 
 
 
@@ -36,6 +38,8 @@ function DescargarInventario (){
     const [modalVisible, setModalVisible]= useState(false)    
     const [progress, setProgress] = useState(0)
     const [envioCompleto, setEnvioCompleto] = useState(false)
+
+    
 
      //llenar db local y Redux con los datos de la nube    
     const agregarSql = () => {        
@@ -128,12 +132,22 @@ function DescargarInventario (){
     },[])   
 
     const handleBoton= () =>{
-      setProgress(0)
-      setEnvioCompleto(false)
-      setModalVisible(true)
-      borrartodoSql()
-      setProgress(0.3)
-      agregarSql()     
+      NetInfo.fetch().then(state => {
+        console.log(state)
+        console.log('Connection type', state.type);
+        console.log('Is connected?', state.isConnected);
+
+        if (state.isConnected){
+          setProgress(0)
+          setEnvioCompleto(false)
+          setModalVisible(true)
+          borrartodoSql()
+          setProgress(0.3)
+          agregarSql()  
+        }else alert('no hay conexion a internet')
+      })
+
+         
     }
 
    
@@ -156,7 +170,7 @@ return(
     </MiModal>
         <View style={Interface.container}>
           <Text style={styles.texto}>Aqui puedes actualizar tu inventario</Text>
-          {dataSimilar ==undefined && <ActivityIndicator animating={true}/>}
+          {dataSimilar ==undefined &&  <ActivityIndicator  size = {'large'} animating={true} color={'blue'} />}
           {dataSimilar && dataEmpaque && 
               <TouchableOpacity onPress={() => handleBoton()}>
                 <Text style={[Interface.boton,{marginTop:50,width:"100%" }]}>Actualizar</Text>

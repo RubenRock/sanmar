@@ -3,7 +3,7 @@ import {View, Text,FlatList, StyleSheet,TouchableOpacity, TextInput, Alert, Imag
 import * as SQLITE from 'expo-sqlite'
 import * as Interface from '../components/interface'
 import MiModal from '../components/mimodal'
-import { ProgressBar, Colors } from 'react-native-paper'
+import NetInfo from '@react-native-community/netinfo';
 
 
 const db = SQLITE.openDatabase("db.db")
@@ -187,14 +187,21 @@ function listaRemisionScreen(){
       } 
   }
 
-  const handleBoton = async() => {
-      setProgress(0)
-      setEnvioCompleto(false)
-      setModalVisible(true)
-      await deleteRemisiones() 
-      obtenerRemisiones()
-      obtenerLista()  
-          
+  const handleBoton = () => {
+    NetInfo.fetch().then(async state => {
+      console.log(state)
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+
+      if (state.isConnected){
+        setProgress(0)
+        setEnvioCompleto(false)
+        setModalVisible(true)
+        await deleteRemisiones() 
+        obtenerRemisiones()
+        obtenerLista()  
+      }else alert('no hay conexion a internet')
+    })    
   }
   
   useEffect (() => {

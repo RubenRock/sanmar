@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity} fr
 import * as Interface from '../components/interface'
 import buscar from '../components/buscarUsuario'
 import {useSelector, useDispatch} from 'react-redux'
-import NetInfo from '@react-native-community/netinfo';
+
 
 import * as SQLITE from 'expo-sqlite'
 const db = SQLITE.openDatabase("db.db");
@@ -16,17 +16,7 @@ function LoginScreen ({accion}) {
     const [newUserScreen, setNewUserScreen] = useState(false)
     
     const dispatch = useDispatch()
-    const usuariosRedux = useSelector(state => state.usuarios)    
-
-    NetInfo.fetch('hgjvch').then(state => {
-        console.log(state)
-        console.log('Connection type', state.type);
-        console.log('Is connected?', state.isConnected);
-      });
-
-    
-    
-    
+    const usuariosRedux = useSelector(state => state.usuarios)  
 
     const agregarUsuario = () => {
         db.transaction(tx => { 
