@@ -198,7 +198,7 @@ function Remisiones({navigation, route}){
             //keyExtractor={}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <View style={{flex:3, marginTop:10}}>
+                  <View style={{flex:3, marginBottom:12}}>
                     <Text style={[styles.text,{fontWeight:"bold"}]}>{item.cantidad} - {item.empaque} {item.producto}</Text>
                     {item.precio !== '0' ?  /* los productos surtido le quitamos esta informacion */
                       <Text style={[styles.text,{fontWeight:"bold"}]}>     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
