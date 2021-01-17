@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import {View, Text, TextInput, StyleSheet,Picker, FlatList, Alert, ImageBackground} from 'react-native'
+import {View, Text, TextInput, StyleSheet,Picker, FlatList, Alert, ImageBackground, TouchableOpacity} from 'react-native'
 import * as SQLITE from 'expo-sqlite'
 import { AntDesign } from '@expo/vector-icons';
 import {useSelector} from 'react-redux'
@@ -18,6 +18,7 @@ function Remisiones({navigation, route}){
     const [total, setTotal] = useState(0)
     const [header, setHeader]= useState({name:'',direccion:'',condicion:'CONTADO'})
     const [folio, setFolio] = useState("1")
+    const [precioPieza, setPrecioPieza] = useState()
 
     const user = useSelector(state => state.user)
 
@@ -149,7 +150,9 @@ function Remisiones({navigation, route}){
       obtenerFolio()
     }
 
-    
+    const obtenerPrecioPieza = (item) =>{      
+        setPrecioPieza((item.precio/item.piezas).toFixed(2))
+    }    
 
     return (
       <View style={styles.fondo}>          
@@ -190,7 +193,14 @@ function Remisiones({navigation, route}){
           <Text style={styles.text}>Fecha: {currentDate}</Text>                    
         </View>
 
-        <Text style={[styles.text,{textAlign:'right', margin:10, fontWeight:'bold', fontSize:15}]}>Total: {total}</Text>
+        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+            {precioPieza ? 
+                <Text style={[styles.text,{margin:10, fontWeight:'bold', fontSize:15}]}>Pieza: {precioPieza} </Text>
+              : <Text style={[styles.text,{margin:10}]}>.</Text>
+            }
+            <Text style={[styles.text,{textAlign:'right', margin:10, fontWeight:'bold', fontSize:15}]}>Total: {total}</Text>
+            
+        </View>      
 
           <FlatList 
             style={styles.container2}
@@ -198,13 +208,15 @@ function Remisiones({navigation, route}){
             //keyExtractor={}
             renderItem={({item}) => 
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <View style={{flex:3, marginBottom:12}}>
+
+                  <TouchableOpacity style={{flex:3, marginBottom:12}} onPress={() => obtenerPrecioPieza(item)}>
                     <Text style={[styles.text,{fontWeight:"bold"}]}>{item.cantidad} - {item.empaque} {item.producto}</Text>
                     {item.precio !== '0' ?  /* los productos surtido le quitamos esta informacion */
                       <Text style={[styles.text,{fontWeight:"bold"}]}>     P.U.:  ${item.precio}      TOTAL: ${item.total} </Text>                                 
                       : null
                     }
-                  </View>
+                  </TouchableOpacity>
+
                   <View style={{flex:1,flexDirection:'row',justifyContent:'space-between', marginTop:10}}>
                     { !item.surtido ? 
                       <>
