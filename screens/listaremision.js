@@ -79,7 +79,10 @@ function listaRemisionScreen(){
               "total": remisiones[index].total,
               "tipo":remisiones[index].tipo,
               "empaque":remisiones[index].empaque,
-              "descuento":remisiones[index].descuento}
+              "descuento":remisiones[index].descuento,
+              "clave":remisiones[index].clave,
+              "clave_empaque":remisiones[index].clave_empaque,
+            }
             )
           })
           if (responde.status !== 204){  // cuando hay error

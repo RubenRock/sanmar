@@ -74,7 +74,7 @@ function datosScreen({navigation, route}) {
    
    
     const handleListaProductos = (item)=>{                  
-      setproductoSeleccionado(item.producto) //almaceno el producto seleccionado      
+      setproductoSeleccionado(item) //almaceno el producto seleccionado      
       setempaqueFiltrado(dataEmpaque.filter(data => data.clave ==item.clave )) //filtra la lista de empaques                 
     }
     
@@ -111,14 +111,15 @@ function datosScreen({navigation, route}) {
       setlistProductos([
         ...listProductos,{
         id: String(Math.random()),
-        producto:productoSeleccionado,
+        producto:productoSeleccionado.producto,
         empaque:item.empaque,
         precio:handlePrice(item), 
         cantidad:cantidad,
         total: handleTotal(item),
         clave: item.clave,  //los necesito para el boton de aumentar y disminuir de remisiones
-        piezas:item.piezas}
-      ])     
+        piezas:item.piezas,
+        clave_empaque: item.id}
+      ]) 
 
       //limpiar ventana
       setCantidad('1')
@@ -126,6 +127,7 @@ function datosScreen({navigation, route}) {
       setempaqueFiltrado([])
       settxtProducto('')
       setproductoSeleccionado('')
+      console.log(listProductos)
     }
     
     const handleSurtir = (item) => {      
@@ -135,7 +137,7 @@ function datosScreen({navigation, route}) {
 
     const messageSplash = () => {
       return(
-         <Text style={{fontSize:10,color:Interface.colorText,textAlign:'right',marginRight:10}}>{productoSeleccionado}</Text>                
+         <Text style={{fontSize:10,color:Interface.colorText,textAlign:'right',marginRight:10}}>{productoSeleccionado.producto}</Text>                
       )      
     }
     

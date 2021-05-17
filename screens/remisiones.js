@@ -128,7 +128,7 @@ function Remisiones({navigation, route}){
               tx.executeSql("insert into lista_remision values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), header.name.toUpperCase(), total, currentDate, user[0].login, header.condicion, "PENDIENTE", header.direccion.toUpperCase(), "SERIE", "0" ]),
             
             dataTable.forEach( (ele) =>{
-                tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?)", [parseInt(folio), ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0"])
+                tx.executeSql("insert into remisiones values (?, ?, ?, ?, ?, ?, ?,?,?)", [parseInt(folio), ele.cantidad, ele.producto, ele.total, "SERIE", ele.empaque,  "0",ele.clave, String(ele.clave_empaque)])
               })
             },
             (e) => console.log(e.message))    

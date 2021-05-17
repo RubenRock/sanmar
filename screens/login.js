@@ -36,7 +36,7 @@ function LoginScreen ({accion}) {
         db.transaction(tx => {         
             tx.executeSql("create table if not exists inventario (clave text, producto text, iva text, usuario text, fecha date, ieps text)");
             tx.executeSql("create table if not exists empaques (clave text, empaque text, precio text, piezas integer, barras text, id integer)");
-            tx.executeSql("create table if not exists remisiones (folio integer, cantidad text, producto text, total text, tipo text, empaque text, descuento text)");
+            tx.executeSql("create table if not exists remisiones (folio integer, cantidad text, producto text, total text, tipo text, empaque text, descuento text, clave text, clave_empaque text)");
             tx.executeSql("create table if not exists lista_remision (folio integer, cliente text, total text, fecha text, vendedor text, condicion text, estado text, domicilio text, impresion text, descuento text)");
             tx.executeSql("create table if not exists listasimilar (clave integer, descripcion text)");
             tx.executeSql("create table if not exists similares (clave integer, producto text)");
